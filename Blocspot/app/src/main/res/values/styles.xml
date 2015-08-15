@@ -1,0 +1,45 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+
+        <!-- Customize your theme here. -->
+
+        <item name="colorPrimaryDark">@color/material_red_dark</item>
+        <item name="colorPrimary">@color/material_red_primary</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="colorAccent">@color/black_87</item>
+        <item name="android:textColor">@color/black_87</item>
+
+    </style>
+
+    <style name="POI_name">
+
+        <item name="android:textColor">@color/black_87</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
+
+    </style>
+
+    <style name="POI_description">
+
+        <item name="android:textColor">@color/black_87</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">2</item>
+
+    </style>
+
+    <style name="POI_distance">
+
+        <item name="android:textColor">@color/black_87</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+
+    </style>
+
+</resources>
