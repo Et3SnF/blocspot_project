@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -42,7 +41,7 @@ public class BlocspotActivity extends AppCompatActivity implements ListFragment.
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Debug.startMethodTracing("BlocspotActivity");
+//        Debug.startMethodTracing("BlocspotActivity");
         Log.e(TAG, "BlocspotActivity onCreate called");
         setContentView(R.layout.activity_blocspot);
 
@@ -84,7 +83,7 @@ public class BlocspotActivity extends AppCompatActivity implements ListFragment.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Debug.stopMethodTracing();
+//        Debug.stopMethodTracing();
     }
 
     @Override
@@ -150,12 +149,10 @@ public class BlocspotActivity extends AppCompatActivity implements ListFragment.
 
         if(mapsFragment != null) {
 
-            if(item.getTitle().equals(getResources().getString(R.string.map_mode_text))) {
-                item.setIcon(R.drawable.menu_list_mode_selector);
+            item.setIcon(R.drawable.menu_list_mode_selector);
 
-                // Change the title back to list mode so it goes back to ListFragment
-                item.setTitle(getResources().getString(R.string.list_mode_text));
-            }
+            // Change the title back to list mode so it goes back to ListFragment
+            item.setTitle(getResources().getString(R.string.list_mode_text));
 
             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot, mapsFragment).commit();
             mapsFragment.goToPOI(poi);
