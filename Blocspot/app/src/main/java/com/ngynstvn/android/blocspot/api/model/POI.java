@@ -7,10 +7,11 @@ import android.util.Log;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class POI extends Model {
+public class POI extends Model implements Serializable {
 
     // Class variables
 

@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,6 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class MapsFragment extends MapFragment {
 
     // Class variables
@@ -29,7 +27,6 @@ public class MapsFragment extends MapFragment {
 
     // Member variables
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private GoogleMap googleMap;
     private boolean mapReady = false;
     private LatLng position;
@@ -97,75 +94,71 @@ public class MapsFragment extends MapFragment {
 
     private void setUpMapAtStartup() {
 
-        getMapAsync(new OnMapReadyCallback() {
+        new Handler().post(new Runnable() {
             @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsFragment.this.googleMap = googleMap;
-                mapReady = true;
+            public void run() {
+                getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        MapsFragment.this.googleMap = googleMap;
+                        mapReady = true;
 
-                MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                //Goes to center of LA
+                        //Goes to center of LA
 
-                position = new LatLng(34.05, -118.25);
-                zoom = 14;
+                        position = new LatLng(34.05, -118.25);
+                        zoom = 14;
 
-                MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
-                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-                for (int i = 0; i < dataSource.poiArrayList.size(); i++) {
+                        for (int i = 0; i < dataSource.poiArrayList.size(); i++) {
 
-                    MapsFragment.this.googleMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(dataSource.poiArrayList.get(i).getLatitudeValue(),
-                                            dataSource.poiArrayList.get(i).getLongitudeValue()))
-                                    .title(dataSource.poiArrayList.get(i).getLocationName())
-                                    .snippet(dataSource.poiArrayList.get(i).getAddress())
-                    );
-                }
+                            MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(dataSource.poiArrayList.get(i).getLatitudeValue(),
+                                                    dataSource.poiArrayList.get(i).getLongitudeValue()))
+                                            .title(dataSource.poiArrayList.get(i).getLocationName())
+                                            .snippet(dataSource.poiArrayList.get(i).getAddress())
+                            );
+                        }
+                    }
+                });
             }
         });
-
     }
 
     // Go to certain location on the map
 
     public void goToPOI(final POI poi) {
 
-        getMapAsync(new OnMapReadyCallback() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsFragment.this.googleMap = googleMap;
-                MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+            public void run() {
+                getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        MapsFragment.this.googleMap = googleMap;
+                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                //Goes to center of LA
+                        //Goes to center of LA
 
-                position = new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue());
-                zoom = 18;
+                        position = new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue());
+                        zoom = 18;
 
-                MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
-                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+                    }
+                });
             }
-        });
-
-    }
-    
-    // Submit task in a background
-
-    void submitTask(Runnable task) {
-
-        if(executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-
-        executorService.submit(task);
-
+        }, 1000);
     }
 
 }
