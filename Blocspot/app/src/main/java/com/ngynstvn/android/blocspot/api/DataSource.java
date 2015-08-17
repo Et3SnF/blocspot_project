@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Handler;
 import android.util.Log;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
@@ -35,7 +36,12 @@ public class DataSource {
 
         poiTable = new POITable();
 
-        databaseOpenHelper = new DatabaseOpenHelper(context, poiTable);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
+            }
+        });
 
         context.deleteDatabase("blocspot_db");
 
