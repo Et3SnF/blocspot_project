@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.api.model;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Handler;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -106,30 +107,36 @@ public class POI extends Model implements Serializable {
 
     public void setLatLngValue() {
 
-        Geocoder geocoder = new Geocoder(BlocspotApplication.getSharedInstance());
-        List<Address> list = new ArrayList<>();
-        Address address;
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Geocoder geocoder = new Geocoder(BlocspotApplication.getSharedInstance());
+                List<Address> list = new ArrayList<>();
+                Address address;
 
-        try {
-            list = geocoder.getFromLocationName(getAddress() + " " + getCity() + " " +
-                    getState(), 1);
+                try {
+                    list = geocoder.getFromLocationName(getAddress() + " " + getCity() + " " +
+                            getState(), 1);
 
-            address = list.get(0);
+                    address = list.get(0);
 
-            // Obtain the values and set them in POI object
+                    // Obtain the values and set them in POI object
 
-            latitudeValue = address.getLatitude();
-            longitudeValue = address.getLongitude();
-        }
-        catch(IOException e) {
+                    latitudeValue = address.getLatitude();
+                    longitudeValue = address.getLongitude();
+                }
+                catch(IOException e) {
 
-            Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
-                    + getCity() + " " + getState());
+                    Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
+                            + getCity() + " " + getState());
 
-            Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
-                    + getCity() + " " + getState());
+                    Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
+                            + getCity() + " " + getState());
 
-        }
+                }
+            }
+        });
+
     }
 
     public double getLatitudeValue() {

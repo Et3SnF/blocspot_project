@@ -36,7 +36,7 @@ public class DataSource {
 
         poiTable = new POITable();
 
-        new Handler().post(new Runnable() {
+        new Handler().postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
                 databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
@@ -57,56 +57,55 @@ public class DataSource {
                 0.00f, 0.00f, "A museum about the history of Japanese Americans during World War II",
                 false, 0.25f);
 
-        poi1.setLatLngValue();
-
         poi2 = new POI(2, "Boba 7", "Alcohol", "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "This place serves alcoholic boba. What an interesting place!", false, 0.3f);
-
-        poi2.setLatLngValue();
 
         poi3 = new POI(3, "Perch", "Nightclub", "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "A night club out in downtown Los Angeles. Beautiful view of downtown when at the top!"
                 , false, 0.4f);
 
-        poi3.setLatLngValue();
-
         poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment", "111 S Grand Avenue", "Los Angeles", "CA",
                 0.00f, 0.00f, "I never knew what this building was. Oddly shaped but I found out it's " +
                 "related to Disney! D:", false, 0.5f);
 
-        poi4.setLatLngValue();
-
         poi5 = new POI(5, "LA City Hall", "Politics", "200 N Spring St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "Hmm...I don't know why I put this thing here. Scariest place in Los Angeles in my opinion!"
                 , false, 0.9f);
-
-        poi5.setLatLngValue();
-
-        poiArrayList.add(poi1);
-        poiArrayList.add(poi2);
-        poiArrayList.add(poi3);
-        poiArrayList.add(poi4);
-        poiArrayList.add(poi5);
 
         Handler handler = new Handler();
 
         // post and post-delayed
 
         handler.post(new Runnable() {
+            @Override
+            public void run() {
 
-                @Override
-                public void run() {
+                poi1.setLatLngValue();
+                poi2.setLatLngValue();
+                poi3.setLatLngValue();
+                poi4.setLatLngValue();
+                poi5.setLatLngValue();
 
-                    insertPOIToDB(poi1);
-                    insertPOIToDB(poi2);
-                    insertPOIToDB(poi3);
-                    insertPOIToDB(poi4);
-                    insertPOIToDB(poi5);
-                    Log.v(TAG, getClass().getSimpleName() + " Database insertion successful.");
+                Log.v(TAG, getClass().getSimpleName() + " LatLng conversion successful.");
 
-                }
+                poiArrayList.add(poi1);
+                poiArrayList.add(poi2);
+                poiArrayList.add(poi3);
+                poiArrayList.add(poi4);
+                poiArrayList.add(poi5);
+
+                Log.v(TAG, getClass().getSimpleName() + " POI object addition successful.");
+
+                insertPOIToDB(poi1);
+                insertPOIToDB(poi2);
+                insertPOIToDB(poi3);
+                insertPOIToDB(poi4);
+                insertPOIToDB(poi5);
+
+                Log.v(TAG, getClass().getSimpleName() + " Database insertion successful.");
+
             }
-        );
+        });
     }
 
     public ArrayList<POI> getPoiArrayList() {
@@ -117,32 +116,32 @@ public class DataSource {
 
     public long insertPOIToDB(POI poi) {
 
-            if (poi == null) {
-                return -1L;
-            }
+        if (poi == null) {
+            return -1L;
+        }
 
-            // To convert boolean into integer equivalent
-            // since DBs don't take boolean
+        // To convert boolean into integer equivalent
+        // since DBs don't take boolean
 
-            int boolInt = 0;
+        int boolInt = 0;
 
-            if (poi.isHasVisited()) {
-                boolInt = 1;
-            } else {
-                boolInt = 0;
-            }
+        if (poi.isHasVisited()) {
+            boolInt = 1;
+        } else {
+            boolInt = 0;
+        }
 
-            return new POITable.Builder()
-                    .setLocationName(poi.getLocationName())
-                    .setCategory(poi.getCategory())
-                    .setAddress(poi.getAddress())
-                    .setCity(poi.getCity())
-                    .setState(poi.getState())
-                    .setLatitude(poi.getLatitudeValue())
-                    .setLongitude(poi.getLongitudeValue())
-                    .setDescription(poi.getDescription())
-                    .setHasVisited(boolInt)
-                    .insert(databaseOpenHelper.getWritableDatabase());
+        return new POITable.Builder()
+                .setLocationName(poi.getLocationName())
+                .setCategory(poi.getCategory())
+                .setAddress(poi.getAddress())
+                .setCity(poi.getCity())
+                .setState(poi.getState())
+                .setLatitude(poi.getLatitudeValue())
+                .setLongitude(poi.getLongitudeValue())
+                .setDescription(poi.getDescription())
+                .setHasVisited(boolInt)
+                .insert(databaseOpenHelper.getWritableDatabase());
     }
 
 

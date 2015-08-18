@@ -158,7 +158,7 @@ public class MapsFragment extends MapFragment {
                     }
                 });
             }
-        }, 1000);
+        }, 100);
     }
 
 }
