@@ -11,4 +11,12 @@
     <string name="text_dummy_distance">0.25 mi</string>
     <string name="text_dummy_comment">This is a weird name for a place but I give it props to the owner for giving it a unique name!</string>
     <string name="text_poi_name">The Fancy Derp Fish</string>
+    <string name="geofence_not_available">Error: Geofence not available</string>
+    <string name="geofence_too_many_geofences">Error: Too many Geofences!</string>
+    <string name="geofence_too_many_pending_intents">Error: Too many geofence pending intents!</string>
+    <string name="unknown_geofence_error">Error: Unknown Geofence</string>
+    <string name="geofence_transition_notification_text">Notifying Geofence</string>
+    <string name="geofence_transition_entered">Geofence Entered</string>
+    <string name="geofence_transition_exited">Geofence Exited</string>
+    <string name="unknown_geofence_transition">Unknown Geofence Transition</string>
 </resources>

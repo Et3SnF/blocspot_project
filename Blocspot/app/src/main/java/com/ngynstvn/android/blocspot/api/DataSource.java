@@ -14,11 +14,11 @@ import java.util.ArrayList;
 
 public class DataSource {
 
-    // Member variables
-
     // For log messaging
 
     private static final String TAG = "Test";
+
+    // Member variables
 
     private POI poi1;
     private POI poi2;
@@ -153,7 +153,8 @@ public class DataSource {
 
         if (POITable.getColumnHasVisited(cursor) == 1) {
             poi.setHasVisited(true);
-        } else if (POITable.getColumnHasVisited(cursor) == 0) {
+        }
+        else if (POITable.getColumnHasVisited(cursor) == 0) {
             poi.setHasVisited(false);
         }
 

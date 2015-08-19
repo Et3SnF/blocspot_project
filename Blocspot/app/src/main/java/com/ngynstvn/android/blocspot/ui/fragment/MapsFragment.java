@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.location.Geofence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -18,7 +19,34 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
 public class MapsFragment extends MapFragment {
+
+    public static interface MapsFragmentDelegate {
+        public void onGeofenceAdded(MapsFragment mapsFragment);
+        public void googleApiClientConnected(MapsFragment mapsFragment);
+        public void googleApiClientDisconnected(MapsFragment mapsFragment);
+        public void onRemovingGeofences(MapsFragment mapsFragment);
+        public double getLatitude(MapsFragment mapsFragment);
+        public double getLongitude(MapsFragment mapsFragment);
+    }
+
+    private WeakReference<MapsFragmentDelegate> mapsFragmentDelegate;
+
+    public void setMapsFragmentDelegate(MapsFragmentDelegate mapsFragmentDelegate) {
+        this.mapsFragmentDelegate = new WeakReference<MapsFragmentDelegate>(mapsFragmentDelegate);
+    }
+
+    public MapsFragmentDelegate getMapFragmentDelegate() {
+
+        if(mapsFragmentDelegate == null) {
+            return null;
+        }
+
+        return mapsFragmentDelegate.get();
+    }
 
     // Class variables
 
@@ -28,11 +56,14 @@ public class MapsFragment extends MapFragment {
     // Member variables
 
     private GoogleMap googleMap;
-    private boolean mapReady = false;
     private LatLng position;
     private float zoom;
 
     private DataSource dataSource = BlocspotApplication.getSharedDataSource();
+
+    private ArrayList<Geofence> geofenceArrayList;
+    private double longitude;
+    private double latitude;
 
     // Critical method for saving instance state. For now null.
 
@@ -44,7 +75,7 @@ public class MapsFragment extends MapFragment {
         return mapsFragment;
     }
 
-    // Lifecycle methods
+    // ---------- Lifecycle methods ----------- //
 
     @Override
     public void onAttach(Activity activity) {
@@ -56,7 +87,9 @@ public class MapsFragment extends MapFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataSource = new DataSource(getActivity());
+        geofenceArrayList = new ArrayList<>();
         Log.e(TAG, getClass().getSimpleName() + " onCreate called");
+
     }
 
     @Override
@@ -70,6 +103,8 @@ public class MapsFragment extends MapFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.e(TAG, getClass().getSimpleName() + " onActivityCreated called");
+
+        getMapFragmentDelegate().onGeofenceAdded(this);
     }
 
     @Override
@@ -81,14 +116,26 @@ public class MapsFragment extends MapFragment {
     @Override
     public void onPause() {
         super.onPause();
+
+        getMapFragmentDelegate().googleApiClientDisconnected(this);
+
         Log.e(TAG, getClass().getSimpleName() + " onPause called");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getMapFragmentDelegate().googleApiClientConnected(this);
         Log.e(TAG, getClass().getSimpleName() + " onResume called");
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getMapFragmentDelegate().onRemovingGeofences(this);
+    }
+
+    // ----------------------------------------- //
 
     // Set up the map
 
@@ -101,15 +148,16 @@ public class MapsFragment extends MapFragment {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         MapsFragment.this.googleMap = googleMap;
-                        mapReady = true;
-
                         MapsFragment.this.googleMap.setMyLocationEnabled(true);
                         MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
                         MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                        //Goes to center of LA
+                        // Goes to center of LA
 
-                        position = new LatLng(34.05, -118.25);
+                        latitude = getMapFragmentDelegate().getLatitude(MapsFragment.this);
+                        longitude = getMapFragmentDelegate().getLongitude(MapsFragment.this);
+
+                        position = new LatLng(latitude, longitude);
                         zoom = 14;
 
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
@@ -124,6 +172,17 @@ public class MapsFragment extends MapFragment {
                                             .title(dataSource.poiArrayList.get(i).getLocationName())
                                             .snippet(dataSource.poiArrayList.get(i).getAddress())
                             );
+
+                            // Add geofence to each POI and then perform request
+
+                            geofenceArrayList.add(new Geofence.Builder()
+                                    .setRequestId(String.valueOf(dataSource.getPoiArrayList().get(i).getRowId()))
+                                    .setCircularRegion(dataSource.getPoiArrayList().get(i).getLatitudeValue(),
+                                            dataSource.getPoiArrayList().get(i).getLongitudeValue(), 400)
+                                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                                    .build());
                         }
                     }
                 });
@@ -152,9 +211,7 @@ public class MapsFragment extends MapFragment {
                         zoom = 18;
 
                         MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
-
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
                     }
                 });
             }
