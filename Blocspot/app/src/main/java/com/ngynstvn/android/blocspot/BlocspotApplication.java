@@ -3,13 +3,12 @@ package com.ngynstvn.android.blocspot;
 import android.app.Application;
 import android.util.Log;
 
-import com.google.android.gms.maps.MapFragment;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
 public class BlocspotApplication extends Application {
 
-    private static final String TAG = "Test";
+    private static final String TAG = "Test (" + BlocspotApplication.class.getSimpleName() + ")";
 
     private static BlocspotApplication sharedInstance;
     private DataSource dataSource;
@@ -20,15 +19,8 @@ public class BlocspotApplication extends Application {
     }
 
     public static DataSource getSharedDataSource() {
+        Log.v(TAG, "getSharedDataSource() called");
         return BlocspotApplication.getSharedInstance().getDataSource();
-    }
-
-    public static MapFragment getSharedMapsFragment() {
-        return BlocspotApplication.getSharedInstance().getMapsFragment();
-    }
-
-    public MapFragment getMapsFragment() {
-        return mapsFragment;
     }
 
     public DataSource getDataSource() {
@@ -37,11 +29,9 @@ public class BlocspotApplication extends Application {
 
     @Override
     public void onCreate() {
-        Log.e(TAG, getClass().getSimpleName() + " - " + "onCreate called");
+        Log.e(TAG, "onCreate() called");
         super.onCreate();
         sharedInstance = this;
         dataSource = new DataSource(this);
-        mapsFragment = new MapsFragment();
-        // Test
     }
 }

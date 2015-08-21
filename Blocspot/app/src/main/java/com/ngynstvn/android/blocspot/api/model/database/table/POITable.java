@@ -3,10 +3,13 @@ package com.ngynstvn.android.blocspot.api.model.database.table;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class POITable extends Table {
 
     // Class variables
+
+    private static final String TAG = "Test " + POITable.class.getSimpleName() + ")";
 
     private static final String NAME = "poi_table";
     private static final String COLUMN_LOCATION_NAME = "location_name";
@@ -30,6 +33,9 @@ public class POITable extends Table {
 
     @Override
     public String getCreateStatement() {
+
+        Log.v(TAG, "getCreateStatement() called");
+
         return "CREATE TABLE " + getName() + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_LOCATION_NAME + " TEXT,"

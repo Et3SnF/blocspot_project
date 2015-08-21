@@ -26,21 +26,9 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         public void onListItemClicked(ListFragment listFragment, POI poi);
     }
 
-    // Class variables
-
-    private static final String BUNDLE_LIST_MODE = ListFragment.class.getCanonicalName().concat(".LIST_MODE");
-    private static final String TAG = "Test";
-
-    // Member variables
-
-    private RecyclerView recyclerView;
-    private PlaceAdapter placeAdapter;
-
-        // For referencing
+    // ----- Setter and getter for ListFragDelegate -----//
 
     private WeakReference<ListFragDelegate> listFragDelegate;
-
-    // ----- Setter and getter for ListFragDelegate -----//
 
     public void setListFragDelegate(ListFragDelegate listFragDelegate) {
         this.listFragDelegate = new WeakReference<ListFragDelegate>(listFragDelegate);
@@ -55,6 +43,16 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         return listFragDelegate.get();
     }
 
+    // ----- Class variables ----- //
+
+    private static final String BUNDLE_LIST_MODE = ListFragment.class.getCanonicalName().concat(".LIST_MODE");
+    private static final String TAG = "Test (" + ListFragment.class.getSimpleName() + ")";
+
+    // ----- Member variables ------ //
+
+    private RecyclerView recyclerView;
+    private PlaceAdapter placeAdapter;
+
     // Keep these here for now. Handle them later.
 
     public static ListFragment listFragmentForPOI(POI poi) {
@@ -65,9 +63,11 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         return listFragment;
     }
 
+    // ----- Lifecycle Methods ----- //
+
     @Override
     public void onAttach(Activity activity) {
-        Log.e(TAG, getClass().getSimpleName() + " onAttach called");
+        Log.e(TAG, "onAttach() called");
         super.onAttach(activity);
 
         // THIS IS THE MOST IMPORTANT LINE FOR DELEGATION AND FRAGMENT --> ACTIVITY COMMUNICATION
@@ -76,17 +76,16 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
         placeAdapter = new PlaceAdapter();
         placeAdapter.setPlaceAdapterDelegate(this);
-
-        Log.e(TAG, getClass().getSimpleName() + " onCreate called");
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.e(TAG, getClass().getSimpleName() + " onCreateView called");
+        Log.e(TAG, "onCreateView() called");
         View inflate = inflater.inflate(R.layout.fragment_list, container, false);
         recyclerView = (RecyclerView) inflate.findViewById(R.id.rv_poi_list);
         return inflate;
@@ -94,7 +93,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        Log.e(TAG, getClass().getSimpleName() + " onActivityCreated called");
+        Log.e(TAG, "onActivityCreated() called");
         super.onActivityCreated(savedInstanceState);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -103,28 +102,47 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     }
 
     @Override
+    public void onResume() {
+        Log.e(TAG, "onResume() called");
+        super.onResume();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.e(TAG, getClass().getSimpleName() + " onSaveInstanceState called");
+        Log.e(TAG, "onSaveInstanceState() called");
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onPause() {
+        Log.e(TAG, "onPause() called");
         Log.e(TAG, getClass().getSimpleName() + " onPause called");
         super.onPause();
     }
 
     @Override
-    public void onResume() {
-        Log.e(TAG, getClass().getSimpleName() + " onResume called");
-        super.onResume();
+    public void onDestroyView() {
+        Log.e(TAG, "onDestroyView() called");
+        super.onDestroyView();
     }
+
+    @Override
+    public void onDestroy() {
+        Log.e(TAG, "onDestroy() called");
+        super.onDestroy();
+    }
+
+    /**
+     *
+     * PlaceAdapter.PlaceAdapterDelegate Implemented Methods
+     *
+     */
 
     @Override
     public void onItemClicked(PlaceAdapter placeAdapter, POI poi) {
 
         if(getListFragDelegate() == null) {
-            Log.e(TAG, ListFragment.class.getSimpleName() + " PROBLEM: getListFragmentDelegate() is null");
+            Log.v(TAG, "PROBLEM: getListFragmentDelegate() is null");
             return;
         }
 
