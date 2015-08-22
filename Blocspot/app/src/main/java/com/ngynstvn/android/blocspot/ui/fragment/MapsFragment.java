@@ -103,6 +103,7 @@ public class MapsFragment extends MapFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView() called");
+        setUpMapAtStartup();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -142,6 +143,8 @@ public class MapsFragment extends MapFragment implements
     }
 
     // ----------------------------------------- //
+
+    // ------ Connecting to Google API client ----- //
 
     protected synchronized void buildGoogleApiClient() {
         Log.v(TAG, "buildGoogleApiClient() called");
@@ -227,6 +230,11 @@ public class MapsFragment extends MapFragment implements
             }
         }, 100);
     }
+
+    // Method to add a geofence to a location
+
+
+    // Method to remove geofence if away from location
 
     /**
      *
