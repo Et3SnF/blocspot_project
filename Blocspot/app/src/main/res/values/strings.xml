@@ -19,4 +19,5 @@
     <string name="geofence_transition_entered">Geofence Entered</string>
     <string name="geofence_transition_exited">Geofence Exited</string>
     <string name="unknown_geofence_transition">Unknown Geofence Transition</string>
+    <string name="geofence_transition_invalid_type">Invalid Geofence Type</string>
 </resources>

@@ -1,6 +1,9 @@
 package com.ngynstvn.android.blocspot.ui.fragment;
 
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,21 +14,29 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
+import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MapsFragment extends MapFragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback {
 
     // Interface for future delegation
 
@@ -75,6 +86,16 @@ public class MapsFragment extends MapFragment implements
     private double latitude = 34.05;
     private double longitude = -118.25;
 
+        // Geofence Variables
+
+    private List<Geofence> geofenceList;
+    private PendingIntent geofencePendingIntent;
+
+        // Notification Variables
+
+    private NotificationManager notificationManager;
+    private int notificationId;
+
     // Critical method for saving instance state. For now null.
 
     public static MapsFragment returnMapMarkers() {
@@ -98,6 +119,7 @@ public class MapsFragment extends MapFragment implements
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+        geofenceList = new ArrayList<>();
     }
 
     @Override
@@ -193,6 +215,8 @@ public class MapsFragment extends MapFragment implements
                                             .title(dSpoiArrayList.get(i).getLocationName())
                                             .snippet(dSpoiArrayList.get(i).getAddress())
                             );
+
+                            addGeofence(dSpoiArrayList.get(i));
                         }
                     }
                 });
@@ -225,14 +249,76 @@ public class MapsFragment extends MapFragment implements
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+                        // Get the geofence of this location
+
                     }
                 });
             }
         }, 100);
     }
 
+    // Activate geofences
+
+    public void activateGeofences() {
+        LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeofencingRequest(),
+                getGeofencePendingIntent()).setResultCallback(this);
+    }
+
+    // Geofence Methods
+
+    private GeofencingRequest getGeofencingRequest() {
+        Log.v(TAG, "getGeofencingRequest() called");
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(geofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        Log.v(TAG, "getGeofencePendingIntent() called");
+        // Reuse the PendingIntent if we already have it.
+
+        if (geofencePendingIntent != null) {
+            return geofencePendingIntent;
+        }
+
+        Intent intent = new Intent(getActivity(), GeofenceTransitionsIntentService.class);
+
+        return PendingIntent.getService(getActivity(), 0, intent, PendingIntent.
+                FLAG_UPDATE_CURRENT);
+    }
+
     // Method to add a geofence to a location
 
+    public void addGeofence(POI poi) {
+
+        double poiLatitude = poi.getLatitudeValue();
+        double poiLongitude = poi.getLongitudeValue();
+        int geofenceRadius = 400; //defaulted to 1/4 mi for now. Will add feature later to adjust
+
+        // Add geofence to the list defined earlier for request to work
+
+        geofenceList.add(new Geofence.Builder()
+                .setRequestId(String.valueOf(1))
+                .setCircularRegion(poiLatitude, poiLongitude, geofenceRadius)
+                .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                .setLoiteringDelay(10000)
+                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+                .build());
+
+        Log.v(TAG, "Number of Geofences: " + geofenceList.size());
+
+        // Add the circular fence around each point of interest
+
+        googleMap.addCircle(new CircleOptions()
+                .center(new LatLng(poiLatitude, poiLongitude))
+                .radius(geofenceRadius)
+                .fillColor(getResources().getColor(R.color.red_50))
+                .strokeColor(getResources().getColor(R.color.red_50))
+                .strokeWidth(0.00f));
+
+    }
 
     // Method to remove geofence if away from location
 
@@ -272,6 +358,17 @@ public class MapsFragment extends MapFragment implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    /**
+     *
+     * ResultCallback Implemented Methods
+     *
+     */
+
+    @Override
+    public void onResult(Result result) {
 
     }
 }
