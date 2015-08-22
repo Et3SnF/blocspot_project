@@ -16,7 +16,7 @@ public class DataSource {
 
     // For log messaging
 
-    private static final String TAG = "Test";
+    private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
 
     // Member variables
 
@@ -28,11 +28,13 @@ public class DataSource {
 
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
-    public ArrayList<POI> poiArrayList = new ArrayList<>();
+    private ArrayList<POI> poiArrayList = new ArrayList<>();
 
     // Constructor
 
     public DataSource(Context context) {
+
+        Log.v(TAG, "DataSource instantiated");
 
         poiTable = new POITable();
 
@@ -52,6 +54,8 @@ public class DataSource {
     // ---- Test insertion with fake data.... Will remove later! ---- //
 
     public void fakeDataTest() {
+
+        Log.v(TAG, "fakeDataTest() called");
 
         poi1 = new POI(1, "Japanese American National Museum", "Museum", "100 N Central Avenue", "Los Angeles", "CA",
                 0.00f, 0.00f, "A museum about the history of Japanese Americans during World War II",
@@ -86,7 +90,7 @@ public class DataSource {
                 poi4.setLatLngValue();
                 poi5.setLatLngValue();
 
-                Log.v(TAG, getClass().getSimpleName() + " LatLng conversion successful.");
+                Log.v(TAG, "LatLng conversion successful.");
 
                 poiArrayList.add(poi1);
                 poiArrayList.add(poi2);
@@ -94,7 +98,7 @@ public class DataSource {
                 poiArrayList.add(poi4);
                 poiArrayList.add(poi5);
 
-                Log.v(TAG, getClass().getSimpleName() + " POI object addition successful.");
+                Log.v(TAG, "POI object addition successful.");
 
                 insertPOIToDB(poi1);
                 insertPOIToDB(poi2);
@@ -102,19 +106,22 @@ public class DataSource {
                 insertPOIToDB(poi4);
                 insertPOIToDB(poi5);
 
-                Log.v(TAG, getClass().getSimpleName() + " Database insertion successful.");
+                Log.v(TAG, "Database insertion successful.");
 
             }
         });
     }
 
     public ArrayList<POI> getPoiArrayList() {
+        Log.v(TAG, "getPOIArrayList() called");
         return poiArrayList;
     }
 
     // Test method to insert into database
 
     public long insertPOIToDB(POI poi) {
+
+        Log.v(TAG, "insertPOIToDB() called");
 
         if (poi == null) {
             return -1L;
@@ -148,6 +155,8 @@ public class DataSource {
     // Add POI item from DB
 
     static POI itemFromCursor(final Cursor cursor) {
+
+        Log.v(TAG, "itemFromCursor() called");
 
         POI poi = new POI(POITable.getRowId(cursor));
 

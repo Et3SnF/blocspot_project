@@ -11,7 +11,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     // For logging purposes
 
-    private static final String TAG = "Test";
+    private static final String TAG = "Test (" + DatabaseOpenHelper.class.getSimpleName() + "): ";
 
     // Class variables
 
@@ -34,9 +34,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.v(TAG, "onCreate() called");
         for(int i = 0; i < tables.length; i++) {
             db.execSQL(tables[i].getCreateStatement());
-            Log.e(TAG, "DatabaseOpenHelper onCreate method called");
         }
     }
 
@@ -44,9 +44,9 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.v(TAG, "onUpgrade() called");
         for(int i = 0; i < tables.length; i++) {
             tables[i].onUpgrade(db, oldVersion, newVersion);
-            Log.v(TAG, "DatabaseOpenHelper onUpgrade called");
         }
     }
 }

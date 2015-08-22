@@ -41,30 +41,31 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         return adapterDelegate.get();
     }
 
-    // -------------------------------------------------------- //
+    // ----- Class Variables ----- //
 
-    // Class Variables
+    private static final String TAG = "Test (" + PlaceAdapter.class.getSimpleName() + ")";
 
-    private static final String TAG = "Test";
+    // ----- Member variables ----- //
 
-    // Member variables
+    // ----- PlaceAdapter methods ----- //
 
-    // PlaceAdapter methods
+    @Override
+    public int getItemCount() {
+        // Log.v(TAG, "getItemCount() called");
+        return BlocspotApplication.getSharedDataSource().getPoiArrayList().size();
+    }
 
     @Override
     public PlaceAdapter.PlaceAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Log.v(TAG, "onCreateViewHolder() called");
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.poi_item, parent, false);
         return new PlaceAdapterViewHolder(inflate);
     }
 
     @Override
     public void onBindViewHolder(PlaceAdapter.PlaceAdapterViewHolder holder, int position) {
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().poiArrayList.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return BlocspotApplication.getSharedDataSource().poiArrayList.size();
+        // Log.v(TAG, "onBindViewHolder() called");
+        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
     }
 
     class PlaceAdapterViewHolder extends RecyclerView.ViewHolder {
@@ -80,8 +81,9 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         // Constructor
 
         public PlaceAdapterViewHolder(View itemView) {
-            super(itemView);
 
+            super(itemView);
+//            Log.v(TAG, "PlaceAdapterViewHolder() instantiated");
             visitCheckbox = (CheckBox) itemView.findViewById(R.id.cb_has_visited);
             poiDistance = (TextView) itemView.findViewById(R.id.tv_dist_to_poi);
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
@@ -93,12 +95,10 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if(getAdapterDelegate() != null) {
                         getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
                         Log.v(TAG, "getAdapterDelegate() is not null!");
                     }
-
                 }
             });
 
@@ -119,6 +119,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         }
 
         void updateViewHolder(POI poi) {
+//            Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
