@@ -1,6 +1,7 @@
 package com.ngynstvn.android.blocspot.ui.fragment;
 
 import android.app.Activity;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -8,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -20,7 +24,8 @@ import com.ngynstvn.android.blocspot.api.model.POI;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class MapsFragment extends MapFragment {
+public class MapsFragment extends MapFragment implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     // Interface for future delegation
 
@@ -53,11 +58,22 @@ public class MapsFragment extends MapFragment {
     // ----- Member variables ----- //
 
         // DataSource's ArrayList access
+
     private ArrayList<POI> dSpoiArrayList = BlocspotApplication.getSharedDataSource().getPoiArrayList();
 
     private GoogleMap googleMap;
     private LatLng position;
     private float zoom;
+
+        // GoogleApiClient variables
+
+    private GoogleApiClient googleApiClient;
+    private Location location;
+
+        // Defaulted to center of Los Angeles
+
+    private double latitude = 34.05;
+    private double longitude = -118.25;
 
     // Critical method for saving instance state. For now null.
 
@@ -75,6 +91,7 @@ public class MapsFragment extends MapFragment {
     public void onAttach(Activity activity) {
         Log.e(TAG, "onAttach() called");
         super.onAttach(activity);
+        buildGoogleApiClient();
     }
 
     @Override
@@ -86,7 +103,6 @@ public class MapsFragment extends MapFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView() called");
-        setUpMapAtStartup();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -127,6 +143,20 @@ public class MapsFragment extends MapFragment {
 
     // ----------------------------------------- //
 
+    protected synchronized void buildGoogleApiClient() {
+        Log.v(TAG, "buildGoogleApiClient() called");
+        googleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        if (googleApiClient != null) {
+            Log.v(TAG, "googleApiClient is connected");
+            googleApiClient.connect();
+        }
+    }
+
     // Set up the map
 
     private void setUpMapAtStartup() {
@@ -145,10 +175,10 @@ public class MapsFragment extends MapFragment {
 
                         // Goes to center of LA
 
-                        position = new LatLng(34.05, -118.25);
-                        zoom = 14;
+                        position = new LatLng(latitude, longitude);
+                        zoom = 16;
 
-                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -187,9 +217,10 @@ public class MapsFragment extends MapFragment {
                         //Goes to center of LA
 
                         position = new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue());
-                        zoom = 18;
+                        zoom = 17;
 
-                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
                     }
                 });
@@ -197,4 +228,42 @@ public class MapsFragment extends MapFragment {
         }, 100);
     }
 
+    /**
+     *
+     * GoogleApiClient.ConnectionCallbacks Implemented Methods
+     *
+     */
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.v(TAG, "onConnected() called");
+
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+            setUpMapAtStartup();
+        }
+        else {
+            Log.v(TAG, "Location is null. Unable to get location");
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    /**
+     *
+     * GoogleApiClient.OnConnectionFailedListener Implemented Methods
+     *
+     */
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 }
