@@ -25,6 +25,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -125,7 +126,6 @@ public class MapsFragment extends MapFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.e(TAG, "onCreateView() called");
-        setUpMapAtStartup();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -156,6 +156,8 @@ public class MapsFragment extends MapFragment implements
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView() called");
         super.onDestroyView();
+        removeAllGeofences();
+        geofenceList.clear();
     }
 
     @Override
@@ -209,19 +211,29 @@ public class MapsFragment extends MapFragment implements
 
                         for (int i = 0; i < dSpoiArrayList.size(); i++) {
 
-                            MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                            Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                                             .position(new LatLng(dSpoiArrayList.get(i).getLatitudeValue(),
                                                     dSpoiArrayList.get(i).getLongitudeValue()))
                                             .title(dSpoiArrayList.get(i).getLocationName())
-                                            .snippet(dSpoiArrayList.get(i).getAddress())
+                                            .snippet(dSpoiArrayList.get(i).getAddress() + " ("
+                                                    + dSpoiArrayList.get(i).getCity() + "," + dSpoiArrayList.get(i).getState() + ")")
                             );
 
                             addGeofence(dSpoiArrayList.get(i));
+
+                            // Not the best algorithm out there...but will probably do the job...
+
+                            if(dSpoiArrayList.get(i).isHasVisited()) {
+                                geofenceList.remove(i);
+                                marker.remove();
+                            }
+
                         }
                     }
                 });
             }
         });
+
     }
 
     // Go to certain location on the map
@@ -244,7 +256,7 @@ public class MapsFragment extends MapFragment implements
                         //Goes to center of LA
 
                         position = new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue());
-                        zoom = 17;
+                        zoom = 15;
 
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
 
@@ -300,7 +312,7 @@ public class MapsFragment extends MapFragment implements
         // Add geofence to the list defined earlier for request to work
 
         geofenceList.add(new Geofence.Builder()
-                .setRequestId(String.valueOf(1))
+                .setRequestId(String.valueOf(poi.getRowId()))
                 .setCircularRegion(poiLatitude, poiLongitude, geofenceRadius)
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .setLoiteringDelay(10000)
@@ -314,13 +326,18 @@ public class MapsFragment extends MapFragment implements
         googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(poiLatitude, poiLongitude))
                 .radius(geofenceRadius)
-                .fillColor(getResources().getColor(R.color.red_50))
-                .strokeColor(getResources().getColor(R.color.red_50))
+                .fillColor(getResources().getColor(R.color.red_20))
+                .strokeColor(getResources().getColor(R.color.red_20))
                 .strokeWidth(0.00f));
 
     }
 
-    // Method to remove geofence if away from location
+    // Method to remove geofence
+
+    public void removeAllGeofences() {
+        LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent())
+                .setResultCallback(this);
+    }
 
     /**
      *
@@ -342,6 +359,7 @@ public class MapsFragment extends MapFragment implements
         }
         else {
             Log.v(TAG, "Location is null. Unable to get location");
+            setUpMapAtStartup();
         }
     }
 

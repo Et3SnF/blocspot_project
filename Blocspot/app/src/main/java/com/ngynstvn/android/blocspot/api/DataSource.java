@@ -45,7 +45,7 @@ public class DataSource {
             }
         });
 
-        context.deleteDatabase("blocspot_db");
+//        context.deleteDatabase("blocspot_db");
 
         // Insert fake data here to test database insertion. WILL REMOVE LATER
         fakeDataTest();
