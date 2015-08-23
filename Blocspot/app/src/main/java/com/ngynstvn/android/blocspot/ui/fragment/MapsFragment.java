@@ -211,6 +211,15 @@ public class MapsFragment extends MapFragment implements
 
         });
 
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                addMarkers();
+                Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
+                activateGeofences();
+            }
+        });
+
     }
 
     // Go to certain location on the map
@@ -219,7 +228,7 @@ public class MapsFragment extends MapFragment implements
 
         Log.v(TAG, "goToPOI() called");
 
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 getMapAsync(new OnMapReadyCallback() {
@@ -238,13 +247,9 @@ public class MapsFragment extends MapFragment implements
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
                     }
                 });
-
-                addMarkers();
-                activateGeofences();
-                Log.v(TAG, "" + geofenceList.size());
             }
 
-        }, 100);
+        });
     }
 
     // Add Markers to Map
@@ -313,7 +318,7 @@ public class MapsFragment extends MapFragment implements
 
         double poiLatitude = poi.getLatitudeValue();
         double poiLongitude = poi.getLongitudeValue();
-        int geofenceRadius = 450; //defaulted to 1/4 mi for now. Will add feature later to adjust
+        int geofenceRadius = 400; //defaulted to 1/4 mi for now. Will add feature later to adjust
 
         // Add geofence to the list defined earlier for request to work
 
