@@ -113,13 +113,13 @@ public class MapsFragment extends MapFragment implements
     public void onAttach(Activity activity) {
         Log.e(TAG, "onAttach() called");
         super.onAttach(activity);
-        buildGoogleApiClient();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+        buildGoogleApiClient();
         geofenceList = new ArrayList<>();
     }
 
@@ -156,14 +156,14 @@ public class MapsFragment extends MapFragment implements
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView() called");
         super.onDestroyView();
-        removeAllGeofences();
-        geofenceList.clear();
     }
 
     @Override
     public void onDestroy() {
         Log.e(TAG, "onDestroy() called");
         super.onDestroy();
+        removeAllGeofences();
+        geofenceList.clear();
     }
 
     // ----------------------------------------- //
@@ -186,52 +186,29 @@ public class MapsFragment extends MapFragment implements
 
     // Set up the map
 
-    private void setUpMapAtStartup() {
-        Log.v(TAG, "setUpMapAtStartup() called");
+    private void startUpMap() {
+        Log.v(TAG, "startUpMap() called");
 
-        new Handler().post(new Runnable() {
+        getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void run() {
-                getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        MapsFragment.this.googleMap = googleMap;
-                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+            public void onMapReady(GoogleMap googleMap) {
+                MapsFragment.this.googleMap = googleMap;
+                MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                        // Goes to center of LA
+                // Goes to center of LA
 
-                        position = new LatLng(latitude, longitude);
-                        zoom = 16;
+                position = new LatLng(latitude, longitude);
+                zoom = 16;
 
-                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+                        .newLatLngZoom(position, zoom));
 
-                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-                        for (int i = 0; i < dSpoiArrayList.size(); i++) {
-
-                            Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
-                                            .position(new LatLng(dSpoiArrayList.get(i).getLatitudeValue(),
-                                                    dSpoiArrayList.get(i).getLongitudeValue()))
-                                            .title(dSpoiArrayList.get(i).getLocationName())
-                                            .snippet(dSpoiArrayList.get(i).getAddress() + " ("
-                                                    + dSpoiArrayList.get(i).getCity() + "," + dSpoiArrayList.get(i).getState() + ")")
-                            );
-
-                            addGeofence(dSpoiArrayList.get(i));
-
-                            // Not the best algorithm out there...but will probably do the job...
-
-                            if(dSpoiArrayList.get(i).isHasVisited()) {
-                                geofenceList.remove(i);
-                                marker.remove();
-                            }
-
-                        }
-                    }
-                });
             }
+
         });
 
     }
@@ -259,22 +236,51 @@ public class MapsFragment extends MapFragment implements
                         zoom = 15;
 
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
-
-                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-                        // Get the geofence of this location
-
                     }
                 });
+
+                addMarkers();
+                activateGeofences();
+                Log.v(TAG, "" + geofenceList.size());
             }
+
         }, 100);
+    }
+
+    // Add Markers to Map
+
+    private void addMarkers() {
+        for (int i = 0; i < dSpoiArrayList.size(); i++) {
+
+            Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(dSpoiArrayList.get(i).getLatitudeValue(),
+                                    dSpoiArrayList.get(i).getLongitudeValue()))
+                            .title(dSpoiArrayList.get(i).getLocationName())
+                            .snippet(dSpoiArrayList.get(i).getAddress() + " ("
+                                    + dSpoiArrayList.get(i).getCity() + ","
+                                    + dSpoiArrayList.get(i).getState() + ")")
+            );
+
+            addGeofence(dSpoiArrayList.get(i));
+
+            // Not the best algorithm out there...but will probably do the job...
+
+            if (dSpoiArrayList.get(i).isHasVisited()) {
+                geofenceList.remove(i);
+                marker.remove();
+            }
+
+        }
     }
 
     // Activate geofences
 
-    public void activateGeofences() {
+    private void activateGeofences() {
+        Log.v(TAG, "activateGeofences() called");
+
         LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeofencingRequest(),
                 getGeofencePendingIntent()).setResultCallback(this);
+
     }
 
     // Geofence Methods
@@ -303,11 +309,11 @@ public class MapsFragment extends MapFragment implements
 
     // Method to add a geofence to a location
 
-    public void addGeofence(POI poi) {
+    private void addGeofence(POI poi) {
 
         double poiLatitude = poi.getLatitudeValue();
         double poiLongitude = poi.getLongitudeValue();
-        int geofenceRadius = 400; //defaulted to 1/4 mi for now. Will add feature later to adjust
+        int geofenceRadius = 450; //defaulted to 1/4 mi for now. Will add feature later to adjust
 
         // Add geofence to the list defined earlier for request to work
 
@@ -318,8 +324,6 @@ public class MapsFragment extends MapFragment implements
                 .setLoiteringDelay(10000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                 .build());
-
-        Log.v(TAG, "Number of Geofences: " + geofenceList.size());
 
         // Add the circular fence around each point of interest
 
@@ -334,7 +338,7 @@ public class MapsFragment extends MapFragment implements
 
     // Method to remove geofence
 
-    public void removeAllGeofences() {
+    private void removeAllGeofences() {
         LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent())
                 .setResultCallback(this);
     }
@@ -355,11 +359,11 @@ public class MapsFragment extends MapFragment implements
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
-            setUpMapAtStartup();
+            startUpMap();
         }
         else {
             Log.v(TAG, "Location is null. Unable to get location");
-            setUpMapAtStartup();
+            startUpMap();
         }
     }
 

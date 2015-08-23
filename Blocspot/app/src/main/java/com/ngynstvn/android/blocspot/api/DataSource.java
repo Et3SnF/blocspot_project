@@ -25,6 +25,7 @@ public class DataSource {
     private POI poi3;
     private POI poi4;
     private POI poi5;
+    private POI poi6;
 
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
@@ -57,24 +58,28 @@ public class DataSource {
 
         Log.v(TAG, "fakeDataTest() called");
 
-        poi1 = new POI(1, "Japanese American National Museum", "Museum", "100 N Central Avenue", "Los Angeles", "CA",
-                0.00f, 0.00f, "A museum about the history of Japanese Americans during World War II",
-                false, 0.25f);
+        poi1 = new POI(1, "Americana at Brand", "Social", "889 Americana Way", "Glendale", "CA",
+                0.00f, 0.00f, "A mall in Glendale similar to that of the Grove. Opened in 2008.",
+                false, 2.3f);
 
         poi2 = new POI(2, "Boba 7", "Alcohol", "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
-                "This place serves alcoholic boba. What an interesting place!", false, 0.3f);
+                "This place serves alcoholic boba. What an interesting place!", false, 9.3f);
 
         poi3 = new POI(3, "Perch", "Nightclub", "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "A night club out in downtown Los Angeles. Beautiful view of downtown when at the top!"
-                , false, 0.4f);
+                , false, 9.6f);
 
         poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment", "111 S Grand Avenue", "Los Angeles", "CA",
                 0.00f, 0.00f, "I never knew what this building was. Oddly shaped but I found out it's " +
-                "related to Disney! D:", false, 0.5f);
+                "related to Disney! D:", false, 8.7f);
 
-        poi5 = new POI(5, "LA City Hall", "Politics", "200 N Spring St", "Los Angeles", "CA", 0.00f, 0.00f,
-                "Hmm...I don't know why I put this thing here. Scariest place in Los Angeles in my opinion!"
-                , false, 0.9f);
+        poi5 = new POI(5, "DogHaus", "Food", "3817 W Olive Ave", "Burbank", "CA", 0.00f, 0.00f,
+                "I heard this place has crazy hot dogs! Not like those typical dodger dogs!"
+                , false, 5.0f);
+
+        poi6 = new POI(6, "7-Eleven", "Food", "843 Glenoaks Blvd", "Glendale", "CA", 0.00f, 0.00f,
+                "Just a convenience store..."
+                , false, 5.0f);
 
         Handler handler = new Handler();
 
@@ -89,6 +94,7 @@ public class DataSource {
                 poi3.setLatLngValue();
                 poi4.setLatLngValue();
                 poi5.setLatLngValue();
+                poi6.setLatLngValue();
 
                 Log.v(TAG, "LatLng conversion successful.");
 
@@ -97,6 +103,7 @@ public class DataSource {
                 poiArrayList.add(poi3);
                 poiArrayList.add(poi4);
                 poiArrayList.add(poi5);
+                poiArrayList.add(poi6);
 
                 Log.v(TAG, "POI object addition successful.");
 
@@ -105,6 +112,7 @@ public class DataSource {
                 insertPOIToDB(poi3);
                 insertPOIToDB(poi4);
                 insertPOIToDB(poi5);
+                insertPOIToDB(poi6);
 
                 Log.v(TAG, "Database insertion successful.");
 
