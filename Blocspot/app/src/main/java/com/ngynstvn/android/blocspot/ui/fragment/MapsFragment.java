@@ -189,34 +189,39 @@ public class MapsFragment extends MapFragment implements
     private void startUpMap() {
         Log.v(TAG, "startUpMap() called");
 
-        getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsFragment.this.googleMap = googleMap;
-                MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
-
-                // Goes to center of LA
-
-                position = new LatLng(latitude, longitude);
-                zoom = 16;
-
-                MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                        .newLatLngZoom(position, zoom));
-
-                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-            }
-
-        });
-
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                addMarkers();
-                Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
-                activateGeofences();
+                getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        MapsFragment.this.googleMap = googleMap;
+                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+                        // Goes to center of LA
+
+                        position = new LatLng(latitude, longitude);
+                        zoom = 16;
+
+                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+                                .newLatLngZoom(position, zoom));
+
+                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+                    }
+
+                });
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        addMarkers();
+                        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
+                        activateGeofences();
+                    }
+                });
             }
         });
 
@@ -228,7 +233,7 @@ public class MapsFragment extends MapFragment implements
 
         Log.v(TAG, "goToPOI() called");
 
-        new Handler().post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 getMapAsync(new OnMapReadyCallback() {
@@ -247,9 +252,12 @@ public class MapsFragment extends MapFragment implements
                         MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
                     }
                 });
+
+                addMarkers();
+                activateGeofences();
             }
 
-        });
+        }, 100);
     }
 
     // Add Markers to Map
