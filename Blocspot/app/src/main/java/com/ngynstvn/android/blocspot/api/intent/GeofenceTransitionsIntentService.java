@@ -109,7 +109,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     public void displayNotification(String notificationDetails) {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_beenhere_white_24dp)
                 .setContentTitle("BlocSpot")
                 .setContentText(notificationDetails)
                 .setVibrate(new long[] {0, 500, 300, 500}) // vibrate 500, stop 300, vibrate 500

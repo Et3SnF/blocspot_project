@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -108,7 +107,6 @@ public class POI extends Model implements Serializable {
         Geocoder geocoder = new Geocoder(BlocspotApplication.getSharedInstance());
         List<Address> list;
         Address address;
-
         try {
             list = geocoder.getFromLocationName(getAddress() + " " + getCity() + " " +
                     getState(), 1);
@@ -120,12 +118,11 @@ public class POI extends Model implements Serializable {
             latitudeValue = address.getLatitude();
             longitudeValue = address.getLongitude();
         }
-        catch(IOException e) {
-
+        catch(Exception e) {
             Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
                     + getCity() + " " + getState());
 
-            Log.v(TAG, CLASS_NAME + " Unable to insert latitude for " + getAddress() + " "
+            Log.v(TAG, CLASS_NAME + " Unable to insert longitude for " + getAddress() + " "
                     + getCity() + " " + getState());
         }
     }

@@ -63,8 +63,8 @@ public class DataSource {
 
         Log.v(TAG, "fakeDataTest() called");
 
-        poi1 = new POI(1, "Americana at Brand", "Social", "889 Americana Way", "Glendale", "CA",
-                0.00f, 0.00f, "A mall in Glendale similar to that of the Grove. Opened in 2008.",
+        poi1 = new POI(1, "Glendale Galleria", "Social", "889 Americana Way", "Glendale", "CA",
+                0.00f, 0.00f, "A very well known mall in the city. Across from Americana.",
                 false, 2.3f);
 
         poi2 = new POI(2, "Boba 7", "Alcohol", "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
