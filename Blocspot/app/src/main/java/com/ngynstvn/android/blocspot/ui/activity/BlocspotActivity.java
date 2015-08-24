@@ -1,6 +1,7 @@
 package com.ngynstvn.android.blocspot.ui.activity;
 
 import android.annotation.TargetApi;
+import android.app.DialogFragment;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
@@ -42,6 +44,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     private MapsFragment mapsFragment;
     private ListFragment listFragment;
+
+    private int mStackLevel = 0;
 
     // ----- LIFECYCLE METHODS ----- //
 
@@ -151,7 +155,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             case R.id.action_filter:
 
-                Toast.makeText(this, item.getTitle() + " Icon is pressed", Toast.LENGTH_SHORT).show();
+                showDialog();
                 Log.v(TAG, "BlocspotActivity " + item.getTitle() + " Icon Pressed");
                 return true;
 
@@ -193,4 +197,20 @@ public class BlocspotActivity extends AppCompatActivity implements
      *
      */
 
+    // ----- Separate Methods ----- //
+
+    public void doPositiveClick() {
+        Log.v(TAG, "Positive Click");
+    }
+
+    public void doNegativeClick() {
+        Log.v(TAG, "Negative Click");
+    }
+
+    void showDialog() {
+        DialogFragment newFragment = CatDialogFragment.newInstance(R.string.alert_dialog_two_button_title);
+
+        // "dialog" will help us find this dialog later if we recall it
+        newFragment.show(getFragmentManager(), "dialog");
+    }
 }

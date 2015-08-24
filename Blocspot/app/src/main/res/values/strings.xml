@@ -1,16 +1,27 @@
 <resources>
+
+    <!-- App Name -->
+
     <string name="app_name">Blocspot</string>
-    <string name="ic_search_text">Search</string>
-    <string name="intro_text">I am Blocspot!</string>
-    <string name="temporary_drawer_message">This is Blocspot\'s Drawer</string>
+
+    <!-- Toolbar Titles -->
+
     <string name="list_mode_text">List Mode</string>
     <string name="map_mode_text">Map Mode</string>
+    <string name="ic_search_text">Search</string>
     <string name="filter_category">Filter by Category</string>
     <string name="list_fragment_text">List Fragment</string>
     <string name="map_fragment_text">Map Fragment</string>
+
+
+    <!-- Dummy POI content for Layout -->
+
     <string name="text_dummy_distance">0.25 mi</string>
     <string name="text_dummy_comment">This is a weird name for a place but I give it props to the owner for giving it a unique name!</string>
     <string name="text_poi_name">The Fancy Derp Fish</string>
+
+    <!-- Geofence Strings -->
+
     <string name="geofence_not_available">Error: Geofence not available</string>
     <string name="geofence_too_many_geofences">Error: Too many Geofences!</string>
     <string name="geofence_too_many_pending_intents">Error: Too many geofence pending intents!</string>
@@ -20,4 +31,11 @@
     <string name="geofence_transition_exited">Geofence Exited</string>
     <string name="unknown_geofence_transition">Unknown Geofence Transition</string>
     <string name="geofence_transition_invalid_type">Invalid Geofence Type</string>
+
+    <!-- AlertDialog String -->
+
+    <string name="alert_dialog_okay">Okay</string>
+    <string name="alert_dialog_cancel">Cancel</string>
+    <string name="alert_dialog_two_button_title">Filter by Category</string>
+
 </resources>

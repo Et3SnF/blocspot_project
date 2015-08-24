@@ -113,6 +113,7 @@ public class MapsFragment extends MapFragment implements
     public void onAttach(Activity activity) {
         Log.e(TAG, "onAttach() called");
         super.onAttach(activity);
+        mapFragDelegate = new WeakReference<MapFragDelegate>((MapFragDelegate) activity);
     }
 
     @Override
