@@ -88,14 +88,13 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiDistance = (TextView) itemView.findViewById(R.id.tv_dist_to_poi);
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
-            poiItemSetting = (Button) itemView.findViewById(R.id.btn_item_settings);
 
             // Listeners
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(getAdapterDelegate() != null) {
+                    if (getAdapterDelegate() != null) {
                         getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
                         Log.v(TAG, "getAdapterDelegate() is not null!");
                     }
@@ -106,13 +105,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
-                }
-            });
-
-            poiItemSetting.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Item Settings Pressed");
                 }
             });
 
