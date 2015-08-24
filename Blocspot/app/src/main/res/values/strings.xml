@@ -34,8 +34,11 @@
 
     <!-- AlertDialog String -->
 
-    <string name="alert_dialog_okay">Okay</string>
+    <string name="alert_dialog_ok">Ok</string>
     <string name="alert_dialog_cancel">Cancel</string>
     <string name="alert_dialog_two_button_title">Filter by Category</string>
+    <string name="fbc_title_text">Filter by Category</string>
+    <string name="alert_dialog_okay">Ok</string>
+    <string name="fbc_add_category_text">+</string>
 
 </resources>

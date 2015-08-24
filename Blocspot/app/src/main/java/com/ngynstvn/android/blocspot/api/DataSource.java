@@ -11,6 +11,8 @@ import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class DataSource {
 
@@ -30,6 +32,9 @@ public class DataSource {
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
     private ArrayList<POI> poiArrayList = new ArrayList<>();
+    private ArrayList<String> categoryList = new ArrayList<>();
+
+    private Set<String> categorySet = new LinkedHashSet<>(categoryList);
 
     // Constructor
 
@@ -159,6 +164,17 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
+    public Set<String> getCategorySet() {
+
+        for(int i = 0; i < poiArrayList.size(); i++) {
+            categoryList.add(poiArrayList.get(i).getCategory());
+        }
+
+        categorySet.addAll(categoryList);
+
+        return categorySet;
+
+    }
 
     // Add POI item from DB
 
