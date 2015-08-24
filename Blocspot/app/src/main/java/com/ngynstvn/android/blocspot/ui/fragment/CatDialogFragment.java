@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,11 @@ public class CatDialogFragment extends DialogFragment {
         // RecyclerView variables
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdapter;
+
+        // ItemTouchHelper variables
+
+    private ItemTouchHelper itemTouchHelper;
+    private ItemTouchHelper.SimpleCallback simpleCallback;
 
     // New Instance of Category Fragment
 
@@ -73,6 +79,7 @@ public class CatDialogFragment extends DialogFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(categoryAdapter);
+        activateSwipeToAction(recyclerView); // See if this works
 
         builder.setIcon(R.drawable.ic_filter_list_black_24dp)
         .setTitle(title)
@@ -101,6 +108,31 @@ public class CatDialogFragment extends DialogFragment {
         });
 
         return builder.create();
+    }
+
+    // --------------------------------- //
+
+    private void activateSwipeToAction(RecyclerView recyclerView) {
+
+        simpleCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder
+                            viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                    }
+                };
+
+        itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
     }
 
 }

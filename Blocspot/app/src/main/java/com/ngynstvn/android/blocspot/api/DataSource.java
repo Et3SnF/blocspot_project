@@ -63,7 +63,7 @@ public class DataSource {
 
         Log.v(TAG, "fakeDataTest() called");
 
-        poi1 = new POI(1, "Glendale Galleria", "Social", "889 Americana Way", "Glendale", "CA",
+        poi1 = new POI(1, "Glendale Galleria", "Social", "100 W Broadway", "Glendale", "CA",
                 0.00f, 0.00f, "A very well known mall in the city. Across from Americana.",
                 false, 2.3f);
 
