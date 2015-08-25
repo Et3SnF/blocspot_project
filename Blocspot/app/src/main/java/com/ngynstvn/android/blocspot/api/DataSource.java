@@ -4,18 +4,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class DataSource {
 
@@ -35,10 +38,11 @@ public class DataSource {
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
     private ArrayList<POI> poiArrayList = new ArrayList<>();
-    private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private Map<String, Integer> categoryToColor = new HashMap<String, Integer>();
+    private Set<String> categorySet = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
 
     private Set<String> test = new HashSet<>();
+    private ArrayList<Category> categoryArrayList = new ArrayList<Category>();
 
     // Constructor
 
@@ -168,31 +172,42 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public ArrayList<Category> getCategoryList() {
+    public void addCategory(String categoryName) {
 
-//        Set<String> categorySet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER); // Case insensitive
-//        ArrayList<String> categoryStrings = new ArrayList<String>(categorySet);
-//
-//        for(int i = 0; i < poiArrayList.size(); i++) {
-//            categorySet.add(poiArrayList.get(i).getCategory());
-//        }
-//
-//        categoryStrings.addAll(categorySet);
-//        categorySet.clear();
-//
-//        for(int j = 0; j < categoryStrings.size(); j++) {
-//
-//            Integer color = categoryToColor.get(categoryStrings.get(j));
-//
-//            if(color == null) {
-//                color = UIUtils.generateRandomColor(android.R.color.white);
-//                categoryToColor.put(categoryStrings.get(j), color);
-//            }
-//
-//            categoryArrayList.add(new Category(j, categoryStrings.get(j), color));
-//        }
+        if(categorySet.contains(categoryName)) {
+            Toast.makeText(BlocspotApplication.getSharedInstance(), categoryName + " already exists"
+                    , Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        return categoryArrayList;
+        // Category set is for future input validation purposes
+
+        categorySet.add(categoryName); // add the category to the set
+
+        // Adds to the category map
+
+        Integer categoryColor = UIUtils.generateRandomColor(android.R.color.white);
+        categoryToColor.put(categoryName, categoryColor);
+
+        // Add category to arrayList
+
+        categoryArrayList.add(new Category(categoryName, categoryColor));
+
+    }
+
+    public void removeCategory(String categoryName) {
+
+        for(int i = 0; i < categoryArrayList.size(); i++) {
+            if (categoryArrayList.get(i).getCategoryName().equalsIgnoreCase(categoryName)) {
+                categoryArrayList.remove(i);
+                return;
+            }
+            else {
+                Toast.makeText(BlocspotApplication.getSharedInstance(),
+                        "Unable to find category.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
     // Add POI item from DB

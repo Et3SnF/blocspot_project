@@ -24,4 +24,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
 }

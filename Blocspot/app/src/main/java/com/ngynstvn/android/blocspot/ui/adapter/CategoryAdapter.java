@@ -12,7 +12,6 @@ import android.view.ViewOutlineProvider;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
 
@@ -34,7 +33,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return BlocspotApplication.getSharedDataSource().getCategoryList().size();
+        return 0;
     }
 
     @Override
@@ -45,7 +44,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryAdapterViewHolder holder, int position) {
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getCategoryList().get(position));
+
     }
 
     // CategoryAdapterViewHolder inner class
