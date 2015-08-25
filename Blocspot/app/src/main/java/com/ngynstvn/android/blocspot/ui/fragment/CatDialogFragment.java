@@ -79,7 +79,6 @@ public class CatDialogFragment extends DialogFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(categoryAdapter);
-        activateSwipeToAction(recyclerView); // See if this works
 
         builder.setIcon(R.drawable.ic_filter_list_black_24dp)
         .setTitle(title)

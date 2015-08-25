@@ -9,16 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
-import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>{
 
@@ -27,8 +23,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private static final String TAG = "Test (" + CategoryAdapter.class.getSimpleName() + "): ";
 
     // ----- Member Variables ----- //
-
-    private Map<String, Integer> poiCategoryToColor = new HashMap<String, Integer>();
 
     // ----- Constructor ----- //
 
@@ -40,7 +34,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return BlocspotApplication.getSharedDataSource().getPoiArrayList().size();
+        return BlocspotApplication.getSharedDataSource().getCategoryList().size();
     }
 
     @Override
@@ -51,7 +45,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryAdapterViewHolder holder, int position) {
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
+        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getCategoryList().get(position));
     }
 
     // CategoryAdapterViewHolder inner class
@@ -62,8 +56,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         private TextView categoryColor;
         private TextView categoryName;
+        private CheckBox filterCategory;
 
-        private POI poi;
         private Category category;
 
         // Constructor
@@ -76,6 +70,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
             categoryColor = (TextView) itemView.findViewById(R.id.tv_category_color);
             categoryName = (TextView) itemView.findViewById(R.id.tv_category_name);
+            filterCategory = (CheckBox) itemView.findViewById(R.id.cb_filter_category);
 
             // Need this check to check API version otherwise a RunTimeException occurs
 
@@ -100,26 +95,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         // ----- Separate Methods ----- //
 
-        void updateViewHolder(POI poi) {
+        void updateViewHolder(Category category) {
 
-            this.poi  = poi;
+            this.category = category;
 
-            // Set the category name (repeats are here for now)
+            // Set the name and color of the category
 
-            categoryName.setText(poi.getCategory());
-
-            // Generate color for category
-
-            Integer color = poiCategoryToColor.get(poi.getCategory());
-
-            if(color == null) {
-
-                color = UIUtils.generateRandomColor(android.R.color.holo_orange_light);
-                poiCategoryToColor.put(poi.getCategory(), color);
-
-            }
-
-            categoryColor.setBackgroundColor(color);
+            categoryName.setText(category.getCategoryName());
+            categoryColor.setBackgroundColor(category.getCategoryColor());
 
         }
 

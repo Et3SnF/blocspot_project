@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     private RecyclerView recyclerView;
     private PlaceAdapter placeAdapter;
+    private ItemTouchHelper itemTouchHelper;
+    private ItemTouchHelper.SimpleCallback simpleCallback;
 
     // Keep these here for now. Handle them later.
 
@@ -132,6 +135,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         super.onDestroy();
     }
 
+    // ------------------------------- //
+
     /**
      *
      * PlaceAdapter.PlaceAdapterDelegate Implemented Methods
@@ -147,6 +152,31 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         }
 
         getListFragDelegate().onListItemClicked(this, poi);
+
+    }
+
+    // ----- Separate Methods ------ //
+
+    private void activateSwipeToAction(RecyclerView recyclerView) {
+
+        simpleCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder
+                            viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+                    }
+                };
+
+        itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
     }
 }

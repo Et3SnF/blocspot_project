@@ -6,12 +6,15 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
+import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class DataSource {
@@ -32,9 +35,10 @@ public class DataSource {
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
     private ArrayList<POI> poiArrayList = new ArrayList<>();
-    private ArrayList<String> categoryList = new ArrayList<>();
+    private ArrayList<Category> categoryArrayList = new ArrayList<>();
+    private Map<String, Integer> categoryToColor = new HashMap<String, Integer>();
 
-    private Set<String> categorySet = new LinkedHashSet<>(categoryList);
+    private Set<String> test = new HashSet<>();
 
     // Constructor
 
@@ -164,16 +168,31 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public Set<String> getCategorySet() {
+    public ArrayList<Category> getCategoryList() {
 
-        for(int i = 0; i < poiArrayList.size(); i++) {
-            categoryList.add(poiArrayList.get(i).getCategory());
-        }
+//        Set<String> categorySet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER); // Case insensitive
+//        ArrayList<String> categoryStrings = new ArrayList<String>(categorySet);
+//
+//        for(int i = 0; i < poiArrayList.size(); i++) {
+//            categorySet.add(poiArrayList.get(i).getCategory());
+//        }
+//
+//        categoryStrings.addAll(categorySet);
+//        categorySet.clear();
+//
+//        for(int j = 0; j < categoryStrings.size(); j++) {
+//
+//            Integer color = categoryToColor.get(categoryStrings.get(j));
+//
+//            if(color == null) {
+//                color = UIUtils.generateRandomColor(android.R.color.white);
+//                categoryToColor.put(categoryStrings.get(j), color);
+//            }
+//
+//            categoryArrayList.add(new Category(j, categoryStrings.get(j), color));
+//        }
 
-        categorySet.addAll(categoryList);
-
-        return categorySet;
-
+        return categoryArrayList;
     }
 
     // Add POI item from DB

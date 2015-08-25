@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -74,7 +73,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         TextView poiDistance;
         TextView poiName;
         TextView poiDescription;
-        Button poiItemSetting;
 
         POI poi;
 
