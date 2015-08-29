@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.adapter.ItemTouchHelperCallback;
-import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 
 public class CatDialogFragment extends DialogFragment {
 
@@ -25,7 +25,7 @@ public class CatDialogFragment extends DialogFragment {
 
     private Button btnAddCategory;
     private RecyclerView recyclerView;
-    private PlaceAdapter placeAdapter;
+    private CategoryAdapter categoryAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
 
@@ -59,8 +59,8 @@ public class CatDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        placeAdapter = new PlaceAdapter();
-        callback = new ItemTouchHelperCallback(placeAdapter);
+        categoryAdapter = new CategoryAdapter();
+        callback = new ItemTouchHelperCallback(categoryAdapter);
         touchHelper = new ItemTouchHelper(callback);
     }
 
@@ -81,7 +81,7 @@ public class CatDialogFragment extends DialogFragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_custom_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(placeAdapter);
+        recyclerView.setAdapter(categoryAdapter);
         touchHelper.attachToRecyclerView(recyclerView);
 
         builder.setView(view)

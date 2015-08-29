@@ -9,13 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>{
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
+        implements ItemTouchHelperAdapter {
 
     // ----- Class Variables ----- //
 
@@ -47,9 +50,25 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     }
 
+    /**
+     *
+     * ItemTouchHelperAdapter Methods
+     *
+     */
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        return false;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+
+    }
+
     // CategoryAdapterViewHolder inner class
 
-    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder {
+    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         // ----- Member variables ----- //
 
@@ -59,9 +78,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         private Category category;
 
+        boolean isItemClickable = true;
+        SwipeLayout swipeLayout;
+        Button deleteButton;
+        Button editButton;
+
         // Constructor
 
-        public CategoryAdapterViewHolder(View itemView) {
+        public CategoryAdapterViewHolder(final View itemView) {
 
             // Constructor is for inflation and listeners, that's it! No updating info!!..idiot
 
@@ -70,6 +94,49 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryColor = (TextView) itemView.findViewById(R.id.tv_category_color);
             categoryName = (TextView) itemView.findViewById(R.id.tv_category_name);
             filterCategory = (CheckBox) itemView.findViewById(R.id.cb_filter_category);
+
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_category_item);
+            deleteButton = (Button) itemView.findViewById(R.id.btn_delete_category);
+            editButton = (Button) itemView.findViewById(R.id.btn_edit_category);
+
+            // SwipeLayout material
+
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onStartOpen(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onOpen(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onClose(SwipeLayout swipeLayout) {
+                    itemView.setLongClickable(isItemClickable);
+                    itemView.setClickable(isItemClickable);
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
+
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
+
+                }
+            });
 
             // Need this check to check API version otherwise a RunTimeException occurs
 
@@ -103,6 +170,24 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryName.setText(category.getCategoryName());
             categoryColor.setBackgroundColor(category.getCategoryColor());
 
+        }
+
+
+        /**
+         *
+         *
+         * ItemTouchHelperViewHolder methods
+         *
+         */
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(0x1E000000);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0x00000000);
         }
 
     }

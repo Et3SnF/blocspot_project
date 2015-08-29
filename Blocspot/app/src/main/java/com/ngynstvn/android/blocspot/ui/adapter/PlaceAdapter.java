@@ -17,8 +17,7 @@ import com.ngynstvn.android.blocspot.R;
 
 import java.lang.ref.WeakReference;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder>
-        implements ItemTouchHelperAdapter {
+public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder> {
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
@@ -70,23 +69,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
     }
 
-    /**
-     *
-     * ItemTouchHelperAdapter Methods
-     *
-     */
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        return false;
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-
-    }
-
-    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder {
 
         CheckBox visitCheckbox;
         TextView poiDistance;
@@ -110,49 +93,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiDistance = (TextView) itemView.findViewById(R.id.tv_dist_to_poi);
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
-
-            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_category_item);
-            deleteButton = (Button) itemView.findViewById(R.id.btn_delete_category);
-            editButton = (Button) itemView.findViewById(R.id.btn_edit_category);
-
-            // SwipeLayout material
-
-            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-                @Override
-                public void onStartOpen(SwipeLayout swipeLayout) {
-                    itemView.setClickable(!isItemClickable);
-                    itemView.setLongClickable(!isItemClickable);
-                }
-
-                @Override
-                public void onOpen(SwipeLayout swipeLayout) {
-                    itemView.setClickable(!isItemClickable);
-                    itemView.setLongClickable(!isItemClickable);
-                }
-
-                @Override
-                public void onStartClose(SwipeLayout swipeLayout) {
-                    itemView.setClickable(!isItemClickable);
-                    itemView.setLongClickable(!isItemClickable);
-                }
-
-                @Override
-                public void onClose(SwipeLayout swipeLayout) {
-                    itemView.setLongClickable(isItemClickable);
-                    itemView.setClickable(isItemClickable);
-                }
-
-                @Override
-                public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
-
-                }
-
-                @Override
-                public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
-
-                }
-            });
 
             // Listeners
 
@@ -183,21 +123,5 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
         }
 
-        /**
-         *
-         *
-         * ItemTouchHelperViewHolder methods
-         *
-         */
-
-        @Override
-        public void onItemSelected() {
-            itemView.setBackgroundColor(0x1E000000);
-        }
-
-        @Override
-        public void onItemClear() {
-            itemView.setBackgroundColor(0x00000000);
-        }
     }
 }
