@@ -16,9 +16,10 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
+import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
-        implements ItemTouchHelperAdapter {
+        implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     // ----- Class Variables ----- //
 
@@ -68,7 +69,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     // CategoryAdapterViewHolder inner class
 
-    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder
+            implements ItemTouchHelperCallback.ItemTouchHelperViewHolder {
 
         // ----- Member variables ----- //
 

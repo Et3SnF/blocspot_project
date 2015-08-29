@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
-import com.ngynstvn.android.blocspot.ui.adapter.ItemTouchHelperCallback;
+import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 public class CatDialogFragment extends DialogFragment {
 

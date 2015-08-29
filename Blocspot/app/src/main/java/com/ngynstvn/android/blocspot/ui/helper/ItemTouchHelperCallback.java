@@ -1,4 +1,4 @@
-package com.ngynstvn.android.blocspot.ui.adapter;
+package com.ngynstvn.android.blocspot.ui.helper;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,20 @@ import android.util.Log;
 // Must extend ItemTouchHelper.Callback to do this
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
+
+    // Interfaces
+
+    public interface ItemTouchHelperAdapter {
+        boolean onItemMove(int fromPosition, int toPosition);
+        void onItemDismiss(int position);
+    }
+
+    public interface ItemTouchHelperViewHolder {
+        void onItemSelected();
+        void onItemClear();
+    }
+
+    // ---- ----- //
 
     private static final String TAG = "Test (" + ItemTouchHelperCallback.class.getSimpleName() + "): ";
 
