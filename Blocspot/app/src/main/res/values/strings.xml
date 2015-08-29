@@ -40,5 +40,8 @@
     <string name="fbc_title_text">Filter by Category</string>
     <string name="alert_dialog_okay">Ok</string>
     <string name="fbc_add_category_text">+</string>
+    <string name="fbc_dialog_title">Filter by Category</string>
+    <string name="btn_cancel_text">Cancel</string>
+    <string name="btn_ok_text">Ok</string>
 
 </resources>

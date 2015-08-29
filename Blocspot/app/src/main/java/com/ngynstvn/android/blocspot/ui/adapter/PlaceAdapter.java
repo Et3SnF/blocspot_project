@@ -5,17 +5,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
-import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.R;
 
 import java.lang.ref.WeakReference;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder> {
+public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder>
+        implements ItemTouchHelperAdapter {
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
@@ -67,7 +70,23 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
     }
 
-    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder {
+    /**
+     *
+     * ItemTouchHelperAdapter Methods
+     *
+     */
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        return false;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+
+    }
+
+    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
 
         CheckBox visitCheckbox;
         TextView poiDistance;
@@ -76,16 +95,64 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         POI poi;
 
+        boolean isItemClickable = true;
+        SwipeLayout swipeLayout;
+        Button deleteButton;
+        Button editButton;
+
         // Constructor
 
-        public PlaceAdapterViewHolder(View itemView) {
+        public PlaceAdapterViewHolder(final View itemView) {
 
             super(itemView);
-//            Log.v(TAG, "PlaceAdapterViewHolder() instantiated");
+            Log.v(TAG, "PlaceAdapterViewHolder() instantiated");
             visitCheckbox = (CheckBox) itemView.findViewById(R.id.cb_has_visited);
             poiDistance = (TextView) itemView.findViewById(R.id.tv_dist_to_poi);
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
+
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_category_item);
+            deleteButton = (Button) itemView.findViewById(R.id.btn_delete_category);
+            editButton = (Button) itemView.findViewById(R.id.btn_edit_category);
+
+            // SwipeLayout material
+
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onStartOpen(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onOpen(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout swipeLayout) {
+                    itemView.setClickable(!isItemClickable);
+                    itemView.setLongClickable(!isItemClickable);
+                }
+
+                @Override
+                public void onClose(SwipeLayout swipeLayout) {
+                    itemView.setLongClickable(isItemClickable);
+                    itemView.setClickable(isItemClickable);
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
+
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
+
+                }
+            });
 
             // Listeners
 
@@ -116,5 +183,21 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
         }
 
+        /**
+         *
+         *
+         * ItemTouchHelperViewHolder methods
+         *
+         */
+
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundColor(0x1E000000);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0x00000000);
+        }
     }
 }

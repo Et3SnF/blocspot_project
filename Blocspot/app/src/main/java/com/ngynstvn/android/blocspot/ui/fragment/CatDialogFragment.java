@@ -1,5 +1,6 @@
 package com.ngynstvn.android.blocspot.ui.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,128 +11,174 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
-import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
+import com.ngynstvn.android.blocspot.ui.adapter.ItemTouchHelperCallback;
+import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 
 public class CatDialogFragment extends DialogFragment {
 
-    // ----- Class Variables ----- //
-
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
 
-
-    // ----- Member Variables ----- //
-
-    private int num;
-
-        // RecyclerView variables
+    private Button btnAddCategory;
     private RecyclerView recyclerView;
-    private CategoryAdapter categoryAdapter;
+    private PlaceAdapter placeAdapter;
+    private ItemTouchHelper.Callback callback;
+    private ItemTouchHelper touchHelper;
 
-        // ItemTouchHelper variables
-
-    private ItemTouchHelper itemTouchHelper;
-    private ItemTouchHelper.SimpleCallback simpleCallback;
-
-    // New Instance of Category Fragment
+    // Important single instantiation of this class
 
     public static CatDialogFragment newInstance(int title) {
 
         CatDialogFragment catDialogFragment = new CatDialogFragment();
 
-        // Supply num input as an argment
+        // Supply num input as an argument --> for retrieving stuff later
+
         Bundle bundle = new Bundle();
         bundle.putInt("title", title);
 
         catDialogFragment.setArguments(bundle);
 
         return catDialogFragment;
+
     }
 
-    // ----- Lifecycle Methods ------ //
+    // ----- Lifecycle Methods ----- //
 
+    @Override
+    public void onAttach(Activity activity) {
+        Log.v(TAG, "onAttach() called");
+        super.onAttach(activity);
+        // Hmm...to attach or to not attach....
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        categoryAdapter = new CategoryAdapter();
+        placeAdapter = new PlaceAdapter();
+        callback = new ItemTouchHelperCallback(placeAdapter);
+        touchHelper = new ItemTouchHelper(callback);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        int title = getArguments().getInt("title");
+        Log.v(TAG, "onCreateDialog() called");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MaterialAlertDialogStyle);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                R.style.MaterialAlertDialogStyle);
 
-        // For custom layout dialog view, find a way to inflate it
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_layout, null);
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        // Inflate anything specifically in this lifecycle method
 
-        // Add some form of RecyclerView in here
+        btnAddCategory = (Button) view.findViewById(R.id.btn_add_category);
 
-        View view = inflater.inflate(R.layout.fragment_category_dialog, null, false);
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.rv_category_list);
+        recyclerView = (RecyclerView) view.findViewById(R.id.rv_custom_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(categoryAdapter);
+        recyclerView.setAdapter(placeAdapter);
+        touchHelper.attachToRecyclerView(recyclerView);
 
-        builder.setIcon(R.drawable.ic_filter_list_black_24dp)
-        .setTitle(title)
-        .setView(view)
-        .setPositiveButton(R.string.alert_dialog_okay,
-                new DialogInterface.OnClickListener() {
+        builder.setView(view)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Positive Button Clicked");
+                        Toast.makeText(getActivity(), "Positive Button Clicked", Toast.LENGTH_SHORT).show();
                     }
-                }
-        )
-        .setNegativeButton(R.string.alert_dialog_cancel,
-                new DialogInterface.OnClickListener() {
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Negative Button Clicked");
+                        Toast.makeText(getActivity(), "Negative Button Clicked", Toast.LENGTH_SHORT).show();
                     }
-                }
-        )
-        .setNeutralButton("Add Category", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.v(TAG, "Add Button Clicked");
-            }
-        });
+                })
+                .setNeutralButton("Reset", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v(TAG, "Reset Button Clicked");
+                        Toast.makeText(getActivity(), "Reset Button Clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         return builder.create();
     }
 
-    // --------------------------------- //
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        Log.v(TAG, "onActivityCreated() called");
+        super.onActivityCreated(savedInstanceState);
+    }
 
-    private void activateSwipeToAction(RecyclerView recyclerView) {
+    @Override
+    public void onStart() {
+        Log.v(TAG, "onStart() called");
+        super.onStart();
+        // This is where the fragment stops at when I first load it.
 
-        simpleCallback =
-                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder
-                            viewHolder, RecyclerView.ViewHolder target) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                    }
-                };
-
-        itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        btnAddCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG, "Add Category Button Clicked");
+                dismiss();
+                showAddCategoryDialog();
+            }
+        });
 
     }
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        Log.v(TAG, "onCancel() called");
+        // This is called only if I touched outside of the dialog to dismiss
+        super.onCancel(dialog);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        Log.v(TAG, "onDismiss() called");
+        super.onDismiss(dialog);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.v(TAG, "onSaveInstanceState() called");
+        super.onSaveInstanceState(outState);
+
+        // Called probably whenever I have another dialog and that I want to call to do something
+        // to update information here
+    }
+
+    @Override
+    public void onStop() {
+        Log.v(TAG, "onStop() called");
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.v(TAG, "onDestroyView() called");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.v(TAG, "onDetach() called");
+        super.onDetach();
+    }
+
+    // ---------------- //
+
+    void showAddCategoryDialog() {
+        AddCategoryDialog addCategoryDialog = AddCategoryDialog.newInstance(1);
+        addCategoryDialog.show(getFragmentManager(), "add_category");
+    }
+
 }
+

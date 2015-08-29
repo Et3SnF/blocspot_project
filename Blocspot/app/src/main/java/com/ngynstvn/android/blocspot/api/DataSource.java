@@ -4,21 +4,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class DataSource {
 
@@ -38,11 +31,7 @@ public class DataSource {
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
     private ArrayList<POI> poiArrayList = new ArrayList<>();
-    private Map<String, Integer> categoryToColor = new HashMap<String, Integer>();
-    private Set<String> categorySet = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-
-    private Set<String> test = new HashSet<>();
-    private ArrayList<Category> categoryArrayList = new ArrayList<Category>();
+    private ArrayList<Category> categoryArrayList = new ArrayList<>();
 
     // Constructor
 
@@ -71,26 +60,26 @@ public class DataSource {
 
         Log.v(TAG, "fakeDataTest() called");
 
-        poi1 = new POI(1, "Glendale Galleria", "Social", "100 W Broadway", "Glendale", "CA",
+        poi1 = new POI(1, "Glendale Galleria", "Social", 0, "100 W Broadway", "Glendale", "CA",
                 0.00f, 0.00f, "A very well known mall in the city. Across from Americana.",
                 false, 2.3f);
 
-        poi2 = new POI(2, "Boba 7", "Alcohol", "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
+        poi2 = new POI(2, "Boba 7", "Alcohol", 0, "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "This place serves alcoholic boba. What an interesting place!", false, 9.3f);
 
-        poi3 = new POI(3, "Perch", "Nightclub", "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
+        poi3 = new POI(3, "Perch", "Nightclub", 0, "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "A night club out in downtown Los Angeles. Beautiful view of downtown when at the top!"
                 , false, 9.6f);
 
-        poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment", "111 S Grand Avenue", "Los Angeles", "CA",
+        poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment", 0, "111 S Grand Avenue", "Los Angeles", "CA",
                 0.00f, 0.00f, "I never knew what this building was. Oddly shaped but I found out it's " +
                 "related to Disney! D:", false, 8.7f);
 
-        poi5 = new POI(5, "DogHaus", "Food", "3817 W Olive Ave", "Burbank", "CA", 0.00f, 0.00f,
+        poi5 = new POI(5, "DogHaus", "Food", 0, "3817 W Olive Ave", "Burbank", "CA", 0.00f, 0.00f,
                 "I heard this place has crazy hot dogs! Not like those typical dodger dogs!"
                 , false, 5.0f);
 
-        poi6 = new POI(6, "7-Eleven", "Food", "843 Glenoaks Blvd", "Glendale", "CA", 0.00f, 0.00f,
+        poi6 = new POI(6, "7-Eleven", "Food", 0, "843 Glenoaks Blvd", "Glendale", "CA", 0.00f, 0.00f,
                 "Just a convenience store..."
                 , false, 5.0f);
 
@@ -162,6 +151,7 @@ public class DataSource {
         return new POITable.Builder()
                 .setLocationName(poi.getLocationName())
                 .setCategory(poi.getCategory())
+                .setCategoryColor(poi.getCategoryColor())
                 .setAddress(poi.getAddress())
                 .setCity(poi.getCity())
                 .setState(poi.getState())
@@ -172,43 +162,7 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public void addCategory(String categoryName) {
-
-        if(categorySet.contains(categoryName)) {
-            Toast.makeText(BlocspotApplication.getSharedInstance(), categoryName + " already exists"
-                    , Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Category set is for future input validation purposes
-
-        categorySet.add(categoryName); // add the category to the set
-
-        // Adds to the category map
-
-        Integer categoryColor = UIUtils.generateRandomColor(android.R.color.white);
-        categoryToColor.put(categoryName, categoryColor);
-
-        // Add category to arrayList
-
-        categoryArrayList.add(new Category(categoryName, categoryColor));
-
-    }
-
-    public void removeCategory(String categoryName) {
-
-        for(int i = 0; i < categoryArrayList.size(); i++) {
-            if (categoryArrayList.get(i).getCategoryName().equalsIgnoreCase(categoryName)) {
-                categoryArrayList.remove(i);
-                return;
-            }
-            else {
-                Toast.makeText(BlocspotApplication.getSharedInstance(),
-                        "Unable to find category.", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
+    // --------- Database Methods ---------- //
 
     // Add POI item from DB
 
@@ -226,9 +180,12 @@ public class DataSource {
         }
 
         return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
-                POITable.getAddress(cursor), POITable.getCity(cursor), POITable.getState(cursor),
-                POITable.getLatitude(cursor), POITable.getLongtitude(cursor), POITable.getColumnDescription(cursor),
-                poi.isHasVisited(), 0.2f);
+                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
+                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongtitude(cursor),
+                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
 
+    public ArrayList<Category> getCategoryArrayList() {
+        return categoryArrayList;
+    }
 }

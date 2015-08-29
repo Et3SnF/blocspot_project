@@ -20,6 +20,7 @@ public class POI extends Model implements Serializable {
 
     private String locationName = "";
     private String category = "";
+    private int categoryColor = 0;
     private String address = "";
     private String city = "";
     private String state = "";
@@ -35,6 +36,7 @@ public class POI extends Model implements Serializable {
         super(rowId);
         String locationName = "";
         String category = "";
+        int categoryColor = 0;
         String address = "";
         String city = "";
         String state = "";
@@ -45,11 +47,13 @@ public class POI extends Model implements Serializable {
         distanceToPOI = 0.00f;
     }
 
-    public POI(long rowId, String locationName, String category, String address, String city, String state,
-               double longitudeValue, double latitudeValue, String description, boolean hasVisited, float distanceToPOI) {
+    public POI(long rowId, String locationName, String category, int categoryColor, String address,
+               String city, String state, double longitudeValue, double latitudeValue,
+               String description, boolean hasVisited, float distanceToPOI) {
         super(rowId);
         this.locationName = locationName;
         this.category = category;
+        this.categoryColor = categoryColor;
         this.address = address;
         this.city = city;
         this.state = state;
@@ -76,6 +80,14 @@ public class POI extends Model implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getCategoryColor() {
+        return categoryColor;
+    }
+
+    public void setCategoryColor(int categoryColor) {
+        this.categoryColor = categoryColor;
     }
 
     public String getAddress() {

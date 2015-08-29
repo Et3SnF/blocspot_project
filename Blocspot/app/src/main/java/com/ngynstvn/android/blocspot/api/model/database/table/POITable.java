@@ -14,6 +14,7 @@ public class POITable extends Table {
     private static final String NAME = "poi_table";
     private static final String COLUMN_LOCATION_NAME = "location_name";
     private static final String COLUMN_CATEGORY = "category";
+    private static final String COLUMN_CATEGORY_COLOR = "category_color";
     private static final String COLUMN_ADDRESS = "address";
     private static final String COLUMN_CITY = "city";
     private static final String COLUMN_STATE = "state";
@@ -23,6 +24,9 @@ public class POITable extends Table {
     private static final String COLUMN_HAS_VISITED = "has_visited";
 
     // Hold off on the distance to POI part for now...
+
+    // SELECT DISTINCT(category) from poi_table --> Query to get categories and then you store them
+    // an array using cursor
 
     // Getters
 
@@ -40,6 +44,7 @@ public class POITable extends Table {
                 + COLUMN_ID + " INTEGER PRIMARY KEY,"
                 + COLUMN_LOCATION_NAME + " TEXT,"
                 + COLUMN_CATEGORY + " TEXT,"
+                + COLUMN_CATEGORY_COLOR + " INTEGER,"
                 + COLUMN_ADDRESS + " TEXT,"
                 + COLUMN_CITY + " TEXT,"
                 + COLUMN_STATE + " TEXT,"
@@ -62,6 +67,11 @@ public class POITable extends Table {
 
         public Builder setCategory(String category) {
             values.put(COLUMN_CATEGORY, category);
+            return this;
+        }
+
+        public Builder setCategoryColor(int categoryColor) {
+            values.put(COLUMN_CATEGORY, categoryColor);
             return this;
         }
 
@@ -114,6 +124,10 @@ public class POITable extends Table {
 
     public static String getCategory(Cursor cursor) {
         return getString(cursor, COLUMN_CATEGORY);
+    }
+
+    public static int getCategoryColor(Cursor cursor) {
+        return getInteger(cursor, COLUMN_CATEGORY_COLOR);
     }
 
     public static String getAddress(Cursor cursor) {

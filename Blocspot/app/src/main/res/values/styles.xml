@@ -10,6 +10,7 @@
         <item name="android:windowBackground">@android:color/white</item>
         <item name="colorAccent">@color/black_87</item>
         <item name="android:textColor">@color/black_87</item>
+        <item name="colorControlActivated">@color/black_60</item>
 
     </style>
 
@@ -19,6 +20,33 @@
 
         <item name = "colorAccent">@color/material_red_dark</item>
         <item name = "android:textColorPrimary">@android:color/black</item>
+
+    </style>
+
+    <style name="DialogBottomButton">
+
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:background">@drawable/click_effect</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+
+    </style>
+
+    <style name="MaterialButton">
+
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:background">@drawable/rounded_button</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:text">+</item>
 
     </style>
 

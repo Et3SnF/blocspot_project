@@ -10,9 +10,14 @@
     <color name="red_30">#4CFF0000</color>
     <color name="red_40">#66FF0000</color>
     <color name="red_50">#80FF0000</color>
-
     <color name="black_87">#DE000000</color>
     <color name="black_26">#42000000</color>
     <color name="black_70">#B3000000</color>
+    <color name="black_12">#1E000000</color>
+    <color name="blue_50">#800000FF</color>
+    <color name="red_70">#B3FF0000</color>
+    <color name="material_blue">#FF2196F3</color>
+    <color name="material_red">#FFF44336</color>
+    <color name="black_60">#99000000</color>
 
 </resources>
