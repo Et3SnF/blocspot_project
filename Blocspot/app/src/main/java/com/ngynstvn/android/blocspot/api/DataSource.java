@@ -10,6 +10,7 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.util.ArrayList;
 
@@ -48,7 +49,7 @@ public class DataSource {
             }
         });
 
-//        context.deleteDatabase("blocspot_db");
+        context.deleteDatabase("blocspot_db");
 
         // Insert fake data here to test database insertion. WILL REMOVE LATER
         fakeDataTest();
@@ -118,6 +119,19 @@ public class DataSource {
 
                 Log.v(TAG, "Database insertion successful.");
 
+                categoryArrayList.add(new Category(poi1.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+                categoryArrayList.add(new Category(poi2.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+                categoryArrayList.add(new Category(poi3.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+                categoryArrayList.add(new Category(poi4.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+                categoryArrayList.add(new Category(poi5.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+                categoryArrayList.add(new Category(poi6.getCategory(),
+                        UIUtils.generateRandomColor(android.R.color.white)));
+
             }
         });
     }
@@ -125,6 +139,10 @@ public class DataSource {
     public ArrayList<POI> getPoiArrayList() {
         Log.v(TAG, "getPOIArrayList() called");
         return poiArrayList;
+    }
+
+    public ArrayList<Category> getCategoryArrayList() {
+        return categoryArrayList;
     }
 
     // Test method to insert into database
@@ -185,7 +203,4 @@ public class DataSource {
                 POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
 
-    public ArrayList<Category> getCategoryArrayList() {
-        return categoryArrayList;
-    }
 }

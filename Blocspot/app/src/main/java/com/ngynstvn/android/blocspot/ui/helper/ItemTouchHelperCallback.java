@@ -37,7 +37,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
         Log.v(TAG, "onSelectedChanged() called");
 
-        if(actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+        if(actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
             if(viewHolder instanceof ItemTouchHelperViewHolder) {
                 ItemTouchHelperViewHolder itemTouchHelperViewHolder =
                         (ItemTouchHelperViewHolder) viewHolder;
@@ -45,6 +45,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
             }
         }
 
+        super.onSelectedChanged(viewHolder, actionState);
     }
 
     @Override
@@ -74,7 +75,15 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
         Log.v(TAG, "getMovementFlags() called.");
         int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
 //        int swipeFlags = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
-        int swipeFlags = ItemTouchHelper.LEFT;
+//        int swipeFlags = ItemTouchHelper.LEFT;
+
+        int swipeFlags = 0;
+
+        // I'll use this to disable any form of dragging movement for now
+
+        if(dragFlags == 3) {
+            dragFlags = 0;
+        }
 
         return makeMovementFlags(dragFlags, swipeFlags);
     }

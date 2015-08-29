@@ -11,12 +11,16 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
+
+import java.util.Collections;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
@@ -37,7 +41,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return 0;
+        return BlocspotApplication.getSharedDataSource().getCategoryArrayList().size();
     }
 
     @Override
@@ -48,7 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(CategoryAdapterViewHolder holder, int position) {
-
+        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position));
     }
 
     /**
@@ -59,12 +63,29 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        return false;
+
+        if(fromPosition < toPosition) {
+            for(int i = fromPosition; i < toPosition; i++) {
+                // allows item to move down
+                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i + 1);
+            }
+        }
+        else {
+            for(int i = fromPosition; i > toPosition; i--) {
+                // allows item to move up
+                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i -1);
+            }
+        }
+
+        notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
+        return true;
+
     }
 
     @Override
     public void onItemDismiss(int position) {
-
+        BlocspotApplication.getSharedDataSource().getCategoryArrayList().remove(position);
+        notifyItemRemoved(position);
     }
 
     // CategoryAdapterViewHolder inner class
@@ -100,6 +121,30 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_category_item);
             deleteButton = (Button) itemView.findViewById(R.id.btn_delete_category);
             editButton = (Button) itemView.findViewById(R.id.btn_edit_category);
+
+            // Filter Category listener material
+
+            filterCategory.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    // Do something here that manipulates the database. Will require delegation
+                    // of some sort.
+                }
+            });
+
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    swipeLayout.close();
+                }
+            });
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    swipeLayout.close();
+                }
+            });
 
             // SwipeLayout material
 
@@ -173,7 +218,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             categoryColor.setBackgroundColor(category.getCategoryColor());
 
         }
-
 
         /**
          *

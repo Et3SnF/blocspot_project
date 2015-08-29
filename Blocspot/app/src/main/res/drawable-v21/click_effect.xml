@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Specific to Lollipop devices -->
-
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-android:color="@color/material_red_dark">
+    android:color="?android:colorControlHighlight">
 
-<item
-    android:drawable="?android:windowBackground"/>
+    <!-- This will give the flat look when doing ripple effect!! -->
+
+    <item android:drawable="?attr/selectableItemBackgroundBorderless"/>
 
 </ripple>

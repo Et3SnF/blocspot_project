@@ -1,5 +1,8 @@
 package com.ngynstvn.android.blocspot.ui.adapter;
 
+import android.annotation.TargetApi;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +15,8 @@ import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
-import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.model.POI;
 
 import java.lang.ref.WeakReference;
 
@@ -115,12 +118,14 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         void updateViewHolder(POI poi) {
 //            Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
+            visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
         }
 
     }
