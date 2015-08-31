@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
-import com.ngynstvn.android.blocspot.ui.fragment.EditCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
@@ -38,7 +37,6 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     private MapsFragment mapsFragment;
     private ListFragment listFragment;
-    private EditCategoryDialog editCategoryDialog;
 
     // ----- LIFECYCLE METHODS ----- //
 
@@ -60,8 +58,6 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         mapsFragment = new MapsFragment();
         mapsFragment.setMapFragDelegate(this);
-
-        editCategoryDialog = new EditCategoryDialog();
 
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();
