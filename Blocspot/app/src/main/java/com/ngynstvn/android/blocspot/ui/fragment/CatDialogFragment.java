@@ -19,7 +19,7 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
-public class CatDialogFragment extends DialogFragment {
+public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate {
 
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
 
@@ -28,6 +28,7 @@ public class CatDialogFragment extends DialogFragment {
     private CategoryAdapter categoryAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
+    private int position = 0;
 
     // Important single instantiation of this class
 
@@ -60,6 +61,7 @@ public class CatDialogFragment extends DialogFragment {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
         categoryAdapter = new CategoryAdapter();
+        categoryAdapter.setCategoryAdapterDelegate(this);
         callback = new ItemTouchHelperCallback(categoryAdapter);
         touchHelper = new ItemTouchHelper(callback);
     }
@@ -175,9 +177,21 @@ public class CatDialogFragment extends DialogFragment {
 
     // ---------------- //
 
+    @Override
+    public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position) {
+        showEditCategoryDialog(position);
+    }
+
+    // ---- Separate Methods ----- //
+
     void showAddCategoryDialog() {
-        AddCategoryDialog addCategoryDialog = AddCategoryDialog.newInstance(1);
-        addCategoryDialog.show(getFragmentManager(), "add_category");
+        DialogFragment dialogFragment = AddCategoryDialog.newInstance(R.string.fbc_add_category_text);
+        dialogFragment.show(getFragmentManager(), "add_category");
+    }
+
+    void showEditCategoryDialog(int position) {
+        DialogFragment dialogFragment = EditCategoryDialog.newInstance(R.string.fbc_edit_category);
+        dialogFragment.show(getFragmentManager(), "edit_category");
     }
 
 }

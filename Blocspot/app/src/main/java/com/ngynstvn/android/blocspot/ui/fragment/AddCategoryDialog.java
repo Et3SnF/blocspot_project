@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -66,7 +67,7 @@ public class AddCategoryDialog extends DialogFragment {
 
         builder.setTitle("Add Category")
                 .setView(view)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Positive Button clicked");
@@ -109,6 +110,8 @@ public class AddCategoryDialog extends DialogFragment {
                     alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 }
             });
+
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
 
             Button okButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 

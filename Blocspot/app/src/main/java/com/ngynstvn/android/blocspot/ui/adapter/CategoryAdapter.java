@@ -18,12 +18,30 @@ import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
+import com.ngynstvn.android.blocspot.ui.fragment.EditCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
-        implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
+        implements ItemTouchHelperCallback.ItemTouchHelperAdapter, EditCategoryDialog.EditCatDialogDelegate {
+
+    // ----- INTERFACE ----- //
+
+    public static interface CategoryAdapterDelegate {
+        public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position);
+    }
+
+    private WeakReference<CategoryAdapterDelegate> categoryAdapterDelegate;
+
+    public CategoryAdapterDelegate getCategoryAdapterDelegate() {
+        return categoryAdapterDelegate.get();
+    }
+
+    public void setCategoryAdapterDelegate(CategoryAdapterDelegate categoryAdapterDelegate) {
+        this.categoryAdapterDelegate = new WeakReference<CategoryAdapterDelegate>(categoryAdapterDelegate);
+    }
 
     // ----- Class Variables ----- //
 
@@ -31,10 +49,14 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     // ----- Member Variables ----- //
 
+    private EditCategoryDialog editCategoryDialog;
+
     // ----- Constructor ----- //
 
     public CategoryAdapter() {
         Log.v(TAG, "CategoryAdapter object instantiated");
+        editCategoryDialog = new EditCategoryDialog();
+        editCategoryDialog.setEditDialogDelegate(this);
     }
 
     // ----- CategoryAdapter Methods ----- //
@@ -79,6 +101,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
         return true;
+
+    }
+
+    /**
+     *
+     * EditCategoryDialog.EditCatDialogDelegate implemented methods
+     *
+     */
+
+    @Override
+    public void onItemEdited(EditCategoryDialog editCategoryDialog, String value) {
 
     }
 
@@ -135,6 +168,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if(categoryAdapterDelegate != null) {
+                        getCategoryAdapterDelegate().onEditButtonClicked(CategoryAdapter.this, getAdapterPosition());
+                    }
+
                     swipeLayout.close();
                 }
             });
@@ -142,6 +180,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    onItemDismiss(getAdapterPosition());
                     swipeLayout.close();
                 }
             });
@@ -221,7 +260,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         /**
          *
-         *
          * ItemTouchHelperViewHolder methods
          *
          */
@@ -237,5 +275,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
     }
+
+
 
 }

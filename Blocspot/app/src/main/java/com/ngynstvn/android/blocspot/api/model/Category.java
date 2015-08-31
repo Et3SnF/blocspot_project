@@ -25,8 +25,17 @@ public class Category {
 
     // Setters and Getters
 
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public String getCategoryName() {
         return categoryName;
+    }
+
+    public void setCategoryColor(int categoryColor) {
+        this.categoryColor = categoryColor;
     }
 
     public int getCategoryColor() {

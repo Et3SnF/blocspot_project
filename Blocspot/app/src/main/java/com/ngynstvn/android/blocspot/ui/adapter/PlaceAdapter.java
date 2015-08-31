@@ -2,21 +2,21 @@ package com.ngynstvn.android.blocspot.ui.adapter;
 
 import android.annotation.TargetApi;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -81,11 +81,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         POI poi;
 
-        boolean isItemClickable = true;
-        SwipeLayout swipeLayout;
-        Button deleteButton;
-        Button editButton;
-
         // Constructor
 
         public PlaceAdapterViewHolder(final View itemView) {
@@ -113,6 +108,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
+
                 }
             });
 
@@ -125,7 +121,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
-            visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
+            visitCheckbox.setButtonTintList(ColorStateList.valueOf(UIUtils.generateRandomColor(Color.RED)));
+            visitCheckbox.setActivated(poi.isHasVisited());
         }
 
     }

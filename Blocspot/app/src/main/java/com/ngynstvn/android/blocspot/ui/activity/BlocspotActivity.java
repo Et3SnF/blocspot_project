@@ -13,10 +13,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
-import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
+import com.ngynstvn.android.blocspot.ui.fragment.EditCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
@@ -35,17 +34,11 @@ public class BlocspotActivity extends AppCompatActivity implements
     private Menu menu;
     private MenuItem item;
 
-        // DataSource variables
-
-    private POITable poiTable;
-    private DataSource dataSource;
-
         // Fragment variables
 
     private MapsFragment mapsFragment;
     private ListFragment listFragment;
-
-    private int mStackLevel = 0;
+    private EditCategoryDialog editCategoryDialog;
 
     // ----- LIFECYCLE METHODS ----- //
 
@@ -66,6 +59,9 @@ public class BlocspotActivity extends AppCompatActivity implements
         // ---- Display map fragment ---- //
 
         mapsFragment = new MapsFragment();
+        mapsFragment.setMapFragDelegate(this);
+
+        editCategoryDialog = new EditCategoryDialog();
 
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();
@@ -199,18 +195,11 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     // ----- Separate Methods ----- //
 
-    public void doPositiveClick() {
-        Log.v(TAG, "Positive Click");
-    }
-
-    public void doNegativeClick() {
-        Log.v(TAG, "Negative Click");
-    }
-
     void showDialog() {
         DialogFragment newFragment = CatDialogFragment.newInstance(R.string.alert_dialog_two_button_title);
 
         // "dialog" will help us find this dialog later if we recall it
         newFragment.show(getFragmentManager(), "dialog");
     }
+
 }

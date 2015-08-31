@@ -19,6 +19,7 @@
         android:maxLength="16"
         android:singleLine="true"
         android:hint="Name"
+        android:textColor="@android:color/black"
         android:ellipsize="end"/>
 
 </LinearLayout>

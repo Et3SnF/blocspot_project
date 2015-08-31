@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.api;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
 
@@ -13,6 +14,8 @@ import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataSource {
 
@@ -33,6 +36,7 @@ public class DataSource {
     private DatabaseOpenHelper databaseOpenHelper;
     private ArrayList<POI> poiArrayList = new ArrayList<>();
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
+    private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
 
     // Constructor
 
@@ -66,7 +70,7 @@ public class DataSource {
                 false, 2.3f);
 
         poi2 = new POI(2, "Boba 7", "Alcohol", 0, "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
-                "This place serves alcoholic boba. What an interesting place!", false, 9.3f);
+                "This place serves alcoholic boba. What an interesting place!", true, 9.3f);
 
         poi3 = new POI(3, "Perch", "Nightclub", 0, "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
                 "A night club out in downtown Los Angeles. Beautiful view of downtown when at the top!"
@@ -78,10 +82,6 @@ public class DataSource {
 
         poi5 = new POI(5, "DogHaus", "Food", 0, "3817 W Olive Ave", "Burbank", "CA", 0.00f, 0.00f,
                 "I heard this place has crazy hot dogs! Not like those typical dodger dogs!"
-                , false, 5.0f);
-
-        poi6 = new POI(6, "7-Eleven", "Food", 0, "843 Glenoaks Blvd", "Glendale", "CA", 0.00f, 0.00f,
-                "Just a convenience store..."
                 , false, 5.0f);
 
         Handler handler = new Handler();
@@ -97,7 +97,6 @@ public class DataSource {
                 poi3.setLatLngValue();
                 poi4.setLatLngValue();
                 poi5.setLatLngValue();
-                poi6.setLatLngValue();
 
                 Log.v(TAG, "LatLng conversion successful.");
 
@@ -106,7 +105,6 @@ public class DataSource {
                 poiArrayList.add(poi3);
                 poiArrayList.add(poi4);
                 poiArrayList.add(poi5);
-                poiArrayList.add(poi6);
 
                 Log.v(TAG, "POI object addition successful.");
 
@@ -115,21 +113,18 @@ public class DataSource {
                 insertPOIToDB(poi3);
                 insertPOIToDB(poi4);
                 insertPOIToDB(poi5);
-                insertPOIToDB(poi6);
 
                 Log.v(TAG, "Database insertion successful.");
 
-                categoryArrayList.add(new Category(poi1.getCategory(),
+                categoryArrayList.add(new Category(poi1.getCategoryName(),
                         UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi2.getCategory(),
+                categoryArrayList.add(new Category(poi2.getCategoryName(),
                         UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi3.getCategory(),
+                categoryArrayList.add(new Category(poi3.getCategoryName(),
                         UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi4.getCategory(),
+                categoryArrayList.add(new Category(poi4.getCategoryName(),
                         UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi5.getCategory(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi6.getCategory(),
+                categoryArrayList.add(new Category(poi5.getCategoryName(),
                         UIUtils.generateRandomColor(android.R.color.white)));
 
             }
@@ -143,6 +138,17 @@ public class DataSource {
 
     public ArrayList<Category> getCategoryArrayList() {
         return categoryArrayList;
+    }
+
+    public int getCategoryColor(String categoryName) {
+
+        if(catNameColorMap.get(categoryName) == null) {
+            // If there is no mapping, generate a random color
+            return UIUtils.generateRandomColor(Color.WHITE);
+        }
+
+        return catNameColorMap.get(categoryName);
+
     }
 
     // Test method to insert into database
@@ -168,8 +174,8 @@ public class DataSource {
 
         return new POITable.Builder()
                 .setLocationName(poi.getLocationName())
-                .setCategory(poi.getCategory())
-                .setCategoryColor(poi.getCategoryColor())
+                .setCategory(poi.getCategoryName())
+                .setCategoryColor(getCategoryColor(poi.getCategoryName()))
                 .setAddress(poi.getAddress())
                 .setCity(poi.getCity())
                 .setState(poi.getState())
@@ -181,8 +187,6 @@ public class DataSource {
     }
 
     // --------- Database Methods ---------- //
-
-    // Add POI item from DB
 
     static POI itemFromCursor(final Cursor cursor) {
 
@@ -202,5 +206,7 @@ public class DataSource {
                 POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongtitude(cursor),
                 POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
+
+
 
 }
