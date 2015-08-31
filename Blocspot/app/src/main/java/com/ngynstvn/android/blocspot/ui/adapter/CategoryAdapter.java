@@ -18,14 +18,13 @@ import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
-import com.ngynstvn.android.blocspot.ui.fragment.EditCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
-        implements ItemTouchHelperCallback.ItemTouchHelperAdapter, EditCategoryDialog.EditCatDialogDelegate {
+        implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     // ----- INTERFACE ----- //
 
@@ -49,14 +48,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     // ----- Member Variables ----- //
 
-    private EditCategoryDialog editCategoryDialog;
 
     // ----- Constructor ----- //
 
     public CategoryAdapter() {
         Log.v(TAG, "CategoryAdapter object instantiated");
-        editCategoryDialog = new EditCategoryDialog();
-        editCategoryDialog.setEditDialogDelegate(this);
     }
 
     // ----- CategoryAdapter Methods ----- //
@@ -101,17 +97,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
         return true;
-
-    }
-
-    /**
-     *
-     * EditCategoryDialog.EditCatDialogDelegate implemented methods
-     *
-     */
-
-    @Override
-    public void onItemEdited(EditCategoryDialog editCategoryDialog, String value) {
 
     }
 
@@ -171,6 +156,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
                     if(categoryAdapterDelegate != null) {
                         getCategoryAdapterDelegate().onEditButtonClicked(CategoryAdapter.this, getAdapterPosition());
+                        notifyDataSetChanged();
                     }
 
                     swipeLayout.close();

@@ -13,22 +13,29 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate {
 
+    // ----- Class Variables ----- //
+
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
+
+    // ----- Member Variables ----- //
 
     private Button btnAddCategory;
     private RecyclerView recyclerView;
     private CategoryAdapter categoryAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
-    private int position = 0;
+
+    private EditText editText;
 
     // Important single instantiation of this class
 
@@ -178,7 +185,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     // ---------------- //
 
     @Override
-    public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position) {
+    public void onEditButtonClicked(CategoryAdapter categoryAdapter, final int position) {
         showEditCategoryDialog(position);
     }
 
@@ -189,10 +196,64 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         dialogFragment.show(getFragmentManager(), "add_category");
     }
 
-    void showEditCategoryDialog(int position) {
-        DialogFragment dialogFragment = EditCategoryDialog.newInstance(R.string.fbc_edit_category);
-        dialogFragment.show(getFragmentManager(), "edit_category");
-    }
+    void showEditCategoryDialog(final int position) {
 
+        dismiss();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MaterialAlertDialogStyle);
+
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
+
+        builder.setTitle("Edit Category")
+                .setView(view)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Leave this blank. It is being handled somewhere else!
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.v(TAG, "Negative Button clicked");
+                        dismiss();
+                    }
+                });
+
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        // Overriding positive button
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.v(TAG, "Overridden positive button clicked");
+                boolean closeDialog = false;
+
+                editText = (EditText) view.findViewById(R.id.et_category_input);
+                String value = editText.getText().toString();
+
+                if (value.equalsIgnoreCase("")) {
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
+                            "try again.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
+                        .getCategoryArrayList().get(position).getCategoryName())) {
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
+                            "or cancel", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position).setCategoryName(value);
+                closeDialog = true;
+
+                if (closeDialog) {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+    }
 }
 
