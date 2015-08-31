@@ -86,33 +86,41 @@ public class EditCategoryDialog extends DialogFragment {
     public void onStart() {
         super.onStart();
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG, "Overridden positive button clicked");
-                boolean closeDialog = false;
+        final AlertDialog alertDialog = (AlertDialog) getDialog();
 
-                String value = editText.getText().toString();
+        if(alertDialog != null) {
 
-                if (value.equalsIgnoreCase("")) {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
-                            "try again.", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
-                        .getCategoryArrayList().get(getArguments().getInt("position")).getCategoryName())) {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
-                            "or cancel", Toast.LENGTH_SHORT).show();
-                    return;
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.v(TAG, "Overridden positive button clicked");
+                    boolean closeDialog = false;
+
+                    String value = editText.getText().toString();
+
+                    if (value.equalsIgnoreCase("")) {
+                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
+                                "try again.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
+                            .getCategoryArrayList().get(getArguments().getInt("position")).getCategoryName())) {
+                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
+                                "or cancel", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    BlocspotApplication.getSharedDataSource().getCategoryArrayList()
+                            .get(getArguments().getInt("position")).setCategoryName(value);
+                    closeDialog = true;
+
+                    if (closeDialog) {
+                        alertDialog.dismiss();
+                    }
                 }
+            });
 
-                BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(getArguments().getInt("position")).setCategoryName(value);
-                closeDialog = true;
-
-                if (closeDialog) {
-                    alertDialog.dismiss();
-                }
-            }
-        });
+        }
 
     }
 
