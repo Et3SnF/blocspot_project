@@ -16,10 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
+
+import java.lang.ref.WeakReference;
 
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate {
 
@@ -54,13 +55,34 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
     }
 
+    // ---- Interface Material ----- //
+
+    public static interface CatDialogFragmentDelegate {
+
+    }
+
+    private WeakReference<CatDialogFragmentDelegate> catDialogFragmentDelegate;
+
+    public void setCatDialogFragmentDelegate(CatDialogFragmentDelegate catDialogFragmentDelegate) {
+        this.catDialogFragmentDelegate = new WeakReference<CatDialogFragmentDelegate>(catDialogFragmentDelegate);
+    }
+
+    public CatDialogFragmentDelegate getCatDialogFragmentDelegate() {
+
+        if(catDialogFragmentDelegate == null) {
+            return null;
+        }
+
+        return catDialogFragmentDelegate.get();
+    }
+
     // ----- Lifecycle Methods ----- //
 
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "onAttach() called");
         super.onAttach(activity);
-        // Hmm...to attach or to not attach....
+        catDialogFragmentDelegate = new WeakReference<CatDialogFragmentDelegate>((CatDialogFragmentDelegate) activity);
     }
 
     @Override
@@ -165,6 +187,12 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     }
 
     @Override
+    public void onPause() {
+        Log.v(TAG, "onPause() called");
+        super.onPause();
+    }
+
+    @Override
     public void onStop() {
         Log.v(TAG, "onStop() called");
         super.onStop();
@@ -200,60 +228,66 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
         dismiss();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.MaterialAlertDialogStyle);
+        EditCategoryDialog editCategoryDialog = EditCategoryDialog.newInstance(position);
+        editCategoryDialog.show(getFragmentManager(), "edit_category");
 
-        final View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
+        // Get fragment by tag from whatever tag name I got. This can be null.
 
-        builder.setTitle("Edit Category")
-                .setView(view)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Leave this blank. It is being handled somewhere else!
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.v(TAG, "Negative Button clicked");
-                        dismiss();
-                    }
-                });
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+//                R.style.MaterialAlertDialogStyle);
+//
+//        final View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
 
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+//        builder.setTitle("Edit Category")
+//                .setView(view)
+//                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        // Leave this blank. It is being handled somewhere else!
+//                    }
+//                })
+//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Log.v(TAG, "Negative Button clicked");
+//                        dismiss();
+//                    }
+//                });
+//
+//        final AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
 
         // Overriding positive button
 
-        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v(TAG, "Overridden positive button clicked");
-                boolean closeDialog = false;
-
-                editText = (EditText) view.findViewById(R.id.et_category_input);
-                String value = editText.getText().toString();
-
-                if (value.equalsIgnoreCase("")) {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
-                            "try again.", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
-                        .getCategoryArrayList().get(position).getCategoryName())) {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
-                            "or cancel", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position).setCategoryName(value);
-                closeDialog = true;
-
-                if (closeDialog) {
-                    alertDialog.dismiss();
-                }
-            }
-        });
+//        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.v(TAG, "Overridden positive button clicked");
+//                boolean closeDialog = false;
+//
+//                editText = (EditText) view.findViewById(R.id.et_category_input);
+//                String value = editText.getText().toString();
+//
+//                if (value.equalsIgnoreCase("")) {
+//                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
+//                            "try again.", Toast.LENGTH_SHORT).show();
+//                    return;
+//                } else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
+//                        .getCategoryArrayList().get(position).getCategoryName())) {
+//                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
+//                            "or cancel", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position).setCategoryName(value);
+//                closeDialog = true;
+//
+//                if (closeDialog) {
+//                    alertDialog.dismiss();
+//                }
+//            }
+//        });
     }
+
 }
 

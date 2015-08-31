@@ -19,7 +19,7 @@ import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
 public class BlocspotActivity extends AppCompatActivity implements
-        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate {
+        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate, CatDialogFragment.CatDialogFragmentDelegate {
 
     // ------ Class variables ----- //
 
@@ -58,6 +58,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         mapsFragment = new MapsFragment();
         mapsFragment.setMapFragDelegate(this);
+
+        // ---- Attach CatDialogFragment ---- //
 
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();

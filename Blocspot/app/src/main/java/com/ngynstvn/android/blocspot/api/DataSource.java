@@ -30,7 +30,6 @@ public class DataSource {
     private POI poi3;
     private POI poi4;
     private POI poi5;
-    private POI poi6;
 
     private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;

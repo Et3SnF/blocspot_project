@@ -19,7 +19,7 @@ public class POITable extends Table {
     private static final String COLUMN_CITY = "city";
     private static final String COLUMN_STATE = "state";
     private static final String COLUMN_LATITUDE = "latitude";
-    private static final String COLUMN_LONGTITUDE = "longitude";
+    private static final String COLUMN_LONGITUDE = "longitude";
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_HAS_VISITED = "has_visited";
 
@@ -49,7 +49,7 @@ public class POITable extends Table {
                 + COLUMN_CITY + " TEXT,"
                 + COLUMN_STATE + " TEXT,"
                 + COLUMN_LATITUDE + " DOUBLE,"
-                + COLUMN_LONGTITUDE + " DOUBLE,"
+                + COLUMN_LONGITUDE + " DOUBLE,"
                 + COLUMN_DESCRIPTION + " TEXT,"
                 + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
     }
@@ -96,7 +96,7 @@ public class POITable extends Table {
         }
 
         public Builder setLongitude(double longitude) {
-            values.put(COLUMN_LONGTITUDE, longitude);
+            values.put(COLUMN_LONGITUDE, longitude);
             return this;
         }
 
@@ -147,7 +147,7 @@ public class POITable extends Table {
     }
 
     public static double getLongtitude(Cursor cursor) {
-        return getDouble(cursor, COLUMN_LONGTITUDE);
+        return getDouble(cursor, COLUMN_LONGITUDE);
     }
 
     public static String getColumnDescription(Cursor cursor) {
