@@ -213,7 +213,8 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     // ---------------- //
 
     @Override
-    public void onEditButtonClicked(CategoryAdapter categoryAdapter, final int position) {
+    public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position) {
+        dismiss();
         showEditCategoryDialog(position);
     }
 
@@ -225,68 +226,8 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     }
 
     void showEditCategoryDialog(final int position) {
-
-        dismiss();
-
         EditCategoryDialog editCategoryDialog = EditCategoryDialog.newInstance(position);
         editCategoryDialog.show(getFragmentManager(), "edit_category");
-
-        // Get fragment by tag from whatever tag name I got. This can be null.
-
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
-//                R.style.MaterialAlertDialogStyle);
-//
-//        final View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
-
-//        builder.setTitle("Edit Category")
-//                .setView(view)
-//                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        // Leave this blank. It is being handled somewhere else!
-//                    }
-//                })
-//                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Log.v(TAG, "Negative Button clicked");
-//                        dismiss();
-//                    }
-//                });
-//
-//        final AlertDialog alertDialog = builder.create();
-//        alertDialog.show();
-
-        // Overriding positive button
-
-//        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.v(TAG, "Overridden positive button clicked");
-//                boolean closeDialog = false;
-//
-//                editText = (EditText) view.findViewById(R.id.et_category_input);
-//                String value = editText.getText().toString();
-//
-//                if (value.equalsIgnoreCase("")) {
-//                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
-//                            "try again.", Toast.LENGTH_SHORT).show();
-//                    return;
-//                } else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
-//                        .getCategoryArrayList().get(position).getCategoryName())) {
-//                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
-//                            "or cancel", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position).setCategoryName(value);
-//                closeDialog = true;
-//
-//                if (closeDialog) {
-//                    alertDialog.dismiss();
-//                }
-//            }
-//        });
     }
 
 }

@@ -15,12 +15,12 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.model.Category;
 
 public class EditCategoryDialog extends DialogFragment {
 
     private static final String TAG = "Test (" + EditCategoryDialog.class.getSimpleName() + "): ";
 
-    private AlertDialog alertDialog;
     private AlertDialog.Builder builder;
     private EditText editText;
 
@@ -50,7 +50,7 @@ public class EditCategoryDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+        builder = new AlertDialog.Builder(getActivity(),
         R.style.MaterialAlertDialogStyle);
 
         View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
@@ -100,16 +100,23 @@ public class EditCategoryDialog extends DialogFragment {
 
                     if (value.equalsIgnoreCase("")) {
                         Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
-                                "try again.", Toast.LENGTH_SHORT).show();
+                                "try again.", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    else if (value.equalsIgnoreCase(BlocspotApplication.getSharedDataSource()
-                            .getCategoryArrayList().get(getArguments().getInt("position")).getCategoryName())) {
-                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Enter a different name " +
-                                "or cancel", Toast.LENGTH_SHORT).show();
-                        return;
+
+                    // Check to see if there are duplicates
+
+                    for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
+                        if(value.equalsIgnoreCase(category.getCategoryName())) {
+                            Toast.makeText(BlocspotApplication.getSharedInstance(), value + " " +
+                                    "is already a category. Enter a different name or cancel.",
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     }
-                    
+
+                    // Major note - Get arguments.getInt to pass around information around fragments!
+
                     BlocspotApplication.getSharedDataSource().getCategoryArrayList()
                             .get(getArguments().getInt("position")).setCategoryName(value);
                     closeDialog = true;
@@ -137,12 +144,14 @@ public class EditCategoryDialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        showCategoryDialog();
+    }
 
+    // ----- Separate Method ----- //
+
+    void showCategoryDialog() {
         // Show the category dialog once this method hits
-
         DialogFragment dialogFragment = CatDialogFragment.newInstance(getArguments().getInt("title"));
         dialogFragment.show(getFragmentManager(), "category_dialog");
-
-        // Call a fragment to recover the dialog
     }
 }
