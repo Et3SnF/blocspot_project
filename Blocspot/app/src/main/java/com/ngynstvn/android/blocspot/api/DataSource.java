@@ -25,6 +25,8 @@ public class DataSource {
 
     // Member variables
 
+    private final int BASE_COLOR = android.R.color.white;
+
     private POI poi1;
     private POI poi2;
     private POI poi3;
@@ -64,24 +66,26 @@ public class DataSource {
 
         Log.v(TAG, "fakeDataTest() called");
 
-        poi1 = new POI(1, "Glendale Galleria", "Social", 0, "100 W Broadway", "Glendale", "CA",
-                0.00f, 0.00f, "A very well known mall in the city. Across from Americana.",
-                false, 2.3f);
+        poi1 = new POI(1, "Glendale Galleria", "Social", UIUtils.generateRandomColor(BASE_COLOR),
+                "100 W Broadway", "Glendale", "CA", 0.00f, 0.00f, "A very well known mall in the " +
+                "city. Across from Americana.", false, 2.3f);
 
-        poi2 = new POI(2, "Boba 7", "Alcohol", 0, "518 7th St", "Los Angeles", "CA", 0.00f, 0.00f,
-                "This place serves alcoholic boba. What an interesting place!", true, 9.3f);
+        poi2 = new POI(2, "Boba 7", "Alcohol", UIUtils.generateRandomColor(BASE_COLOR), "518 7th St",
+                "Los Angeles", "CA", 0.00f, 0.00f, "This place serves alcoholic boba. What an " +
+                "interesting place!", true, 9.3f);
 
-        poi3 = new POI(3, "Perch", "Nightclub", 0, "448 S Hill St", "Los Angeles", "CA", 0.00f, 0.00f,
-                "A night club out in downtown Los Angeles. Beautiful view of downtown when at the top!"
-                , false, 9.6f);
+        poi3 = new POI(3, "Perch", "Nightclub", UIUtils.generateRandomColor(BASE_COLOR), "448 S " +
+                "Hill St", "Los Angeles", "CA", 0.00f, 0.00f, "A night club out in downtown Los " +
+                "Angeles. Beautiful view of downtown when at the top!", false, 9.6f);
 
-        poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment", 0, "111 S Grand Avenue", "Los Angeles", "CA",
+        poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment",
+                UIUtils.generateRandomColor(BASE_COLOR), "111 S Grand Avenue", "Los Angeles", "CA",
                 0.00f, 0.00f, "I never knew what this building was. Oddly shaped but I found out it's " +
                 "related to Disney! D:", false, 8.7f);
 
-        poi5 = new POI(5, "DogHaus", "Food", 0, "3817 W Olive Ave", "Burbank", "CA", 0.00f, 0.00f,
-                "I heard this place has crazy hot dogs! Not like those typical dodger dogs!"
-                , false, 5.0f);
+        poi5 = new POI(5, "DogHaus", "Food", UIUtils.generateRandomColor(BASE_COLOR), "3817 W Olive" +
+                " Ave", "Burbank", "CA", 0.00f, 0.00f, "I heard this place has crazy hot dogs! Not " +
+                "like those typical dodger dogs!", false, 5.0f);
 
         Handler handler = new Handler();
 
@@ -107,28 +111,35 @@ public class DataSource {
 
                 Log.v(TAG, "POI object addition successful.");
 
-                insertPOIToDB(poi1);
-                insertPOIToDB(poi2);
-                insertPOIToDB(poi3);
-                insertPOIToDB(poi4);
-                insertPOIToDB(poi5);
+                insertPOIToDatabase(poi1);
+                insertPOIToDatabase(poi2);
+                insertPOIToDatabase(poi3);
+                insertPOIToDatabase(poi4);
+                insertPOIToDatabase(poi5);
 
                 Log.v(TAG, "Database insertion successful.");
 
-                categoryArrayList.add(new Category(poi1.getCategoryName(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi2.getCategoryName(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi3.getCategoryName(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi4.getCategoryName(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
-                categoryArrayList.add(new Category(poi5.getCategoryName(),
-                        UIUtils.generateRandomColor(android.R.color.white)));
+                addToCategoryArrayList(poi1);
+                addToCategoryArrayList(poi2);
+                addToCategoryArrayList(poi3);
+                addToCategoryArrayList(poi4);
+                addToCategoryArrayList(poi5);
+
+                Log.v(TAG, "POI1 - " + "Name: " + poi1.getCategoryName() + " | " + "Color: " + poi1.getCategoryColor());
+                Log.v(TAG, "POI2 - " + "Name: " + poi2.getCategoryName() + " | " + "Color: " + poi2.getCategoryColor());
+                Log.v(TAG, "POI3 - " + "Name: " + poi3.getCategoryName() + " | " + "Color: " + poi3.getCategoryColor());
+                Log.v(TAG, "POI4 - " + "Name: " + poi4.getCategoryName() + " | " + "Color: " + poi4.getCategoryColor());
+                Log.v(TAG, "POI5 - " + "Name: " + poi5.getCategoryName() + " | " + "Color: " + poi5.getCategoryColor());
+
+                Log.v(TAG, "Category Map & ArrayList insertion successful.");
 
             }
         });
     }
+
+    // ----- Separate Methods ----- //
+
+        // Getting lists
 
     public ArrayList<POI> getPoiArrayList() {
         Log.v(TAG, "getPOIArrayList() called");
@@ -139,20 +150,62 @@ public class DataSource {
         return categoryArrayList;
     }
 
-    public int getCategoryColor(String categoryName) {
+        // Adding POI objects to lists
 
-        if(catNameColorMap.get(categoryName) == null) {
-            // If there is no mapping, generate a random color
-            return UIUtils.generateRandomColor(Color.WHITE);
+    private void addToCategoryMap(String categoryName) {
+
+        if(catNameColorMap.containsKey(categoryName)) {
+            Log.v(TAG, categoryName + " already has a color.");
+            return;
         }
 
-        return catNameColorMap.get(categoryName);
+        catNameColorMap.put(categoryName, UIUtils.generateRandomColor(Color.WHITE));
+    }
 
+    private void addToCategoryArrayList(POI poi) {
+        categoryArrayList.add(new Category(poi.getCategoryName(), poi.getCategoryColor()));
+
+        // Anything that exists in the array list are added to a map
+        catNameColorMap.put(poi.getCategoryName(), poi.getCategoryColor());
+    }
+
+        // Create new category
+
+    private void addNewCategory(String name) {
+        // Validation has already been taken care of. Just add a new category name and color
+
+        int color = UIUtils.generateRandomColor(BASE_COLOR);
+
+        categoryArrayList.add(new Category(name, color));
+        catNameColorMap.put(name, color);
+    }
+
+    // --------- Database Methods ---------- //
+
+    // POI Table methods
+
+    static POI itemFromCursor(final Cursor cursor) {
+
+        Log.v(TAG, "itemFromCursor() called");
+
+        POI poi = new POI(POITable.getRowId(cursor));
+
+        if (POITable.getColumnHasVisited(cursor) == 1) {
+            poi.setHasVisited(true);
+        }
+        else if (POITable.getColumnHasVisited(cursor) == 0) {
+            poi.setHasVisited(false);
+        }
+
+        return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
+                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
+                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongtitude(cursor),
+                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
 
     // Test method to insert into database
 
-    public long insertPOIToDB(POI poi) {
+    public long insertPOIToDatabase(POI poi) {
 
         Log.v(TAG, "insertPOIToDB() called");
 
@@ -174,7 +227,7 @@ public class DataSource {
         return new POITable.Builder()
                 .setLocationName(poi.getLocationName())
                 .setCategory(poi.getCategoryName())
-                .setCategoryColor(getCategoryColor(poi.getCategoryName()))
+                .setCategoryColor(poi.getCategoryColor())
                 .setAddress(poi.getAddress())
                 .setCity(poi.getCity())
                 .setState(poi.getState())
@@ -185,27 +238,7 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    // --------- Database Methods ---------- //
-
-    static POI itemFromCursor(final Cursor cursor) {
-
-        Log.v(TAG, "itemFromCursor() called");
-
-        POI poi = new POI(POITable.getRowId(cursor));
-
-        if (POITable.getColumnHasVisited(cursor) == 1) {
-            poi.setHasVisited(true);
-        }
-        else if (POITable.getColumnHasVisited(cursor) == 0) {
-            poi.setHasVisited(false);
-        }
-
-        return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
-                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
-                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongtitude(cursor),
-                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
-    }
-
+    // Category Table methods
 
 
 }
