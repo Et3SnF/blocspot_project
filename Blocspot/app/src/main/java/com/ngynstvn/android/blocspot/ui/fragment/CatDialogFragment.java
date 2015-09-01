@@ -96,14 +96,12 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Positive Button Clicked");
-                        Toast.makeText(getActivity(), "Positive Button Clicked", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Negative Button Clicked");
-                        Toast.makeText(getActivity(), "Negative Button Clicked", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNeutralButton("Reset", new DialogInterface.OnClickListener() {

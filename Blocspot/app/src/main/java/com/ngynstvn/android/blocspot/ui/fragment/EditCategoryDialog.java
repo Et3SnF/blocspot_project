@@ -19,7 +19,11 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 
 public class EditCategoryDialog extends DialogFragment {
 
+    // ----- Class Variables ----- //
+
     private static final String TAG = "Test (" + EditCategoryDialog.class.getSimpleName() + "): ";
+
+    // ----- Member Variables ----- //
 
     private AlertDialog.Builder builder;
     private EditText editText;
