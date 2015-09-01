@@ -71,7 +71,7 @@ public class POITable extends Table {
         }
 
         public Builder setCategoryColor(int categoryColor) {
-            values.put(COLUMN_CATEGORY, categoryColor);
+            values.put(COLUMN_CATEGORY_COLOR, categoryColor);
             return this;
         }
 
