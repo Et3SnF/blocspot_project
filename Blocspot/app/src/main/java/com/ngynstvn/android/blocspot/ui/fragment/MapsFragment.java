@@ -25,7 +25,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -266,7 +265,7 @@ public class MapsFragment extends MapFragment implements
     private void addMarkers() {
         for (int i = 0; i < dSpoiArrayList.size(); i++) {
 
-            Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+            MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(dSpoiArrayList.get(i).getLatitudeValue(),
                                     dSpoiArrayList.get(i).getLongitudeValue()))
                             .title(dSpoiArrayList.get(i).getLocationName())
@@ -281,7 +280,6 @@ public class MapsFragment extends MapFragment implements
 
             if (dSpoiArrayList.get(i).isHasVisited()) {
                 geofenceList.remove(i);
-                marker.remove();
             }
 
         }
@@ -344,9 +342,8 @@ public class MapsFragment extends MapFragment implements
         googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(poiLatitude, poiLongitude))
                 .radius(geofenceRadius)
-                .fillColor(getResources().getColor(R.color.red_20))
-                .strokeColor(getResources().getColor(R.color.red_20))
-                .strokeWidth(0.00f));
+                .strokeColor(getResources().getColor(R.color.material_red_dark))
+                .strokeWidth(2.00f));
 
     }
 

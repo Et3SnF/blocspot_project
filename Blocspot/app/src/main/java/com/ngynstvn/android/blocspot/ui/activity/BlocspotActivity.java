@@ -19,7 +19,7 @@ import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
 public class BlocspotActivity extends AppCompatActivity implements
-        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate, CatDialogFragment.CatDialogFragmentDelegate {
+        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate {
 
     // ------ Class variables ----- //
 
