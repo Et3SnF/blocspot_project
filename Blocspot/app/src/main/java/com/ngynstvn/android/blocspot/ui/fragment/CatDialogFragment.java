@@ -20,8 +20,6 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
-import java.lang.ref.WeakReference;
-
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate {
 
     // ----- Class Variables ----- //
@@ -55,34 +53,12 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
     }
 
-    // ---- Interface Material ----- //
-
-    public static interface CatDialogFragmentDelegate {
-
-    }
-
-    private WeakReference<CatDialogFragmentDelegate> catDialogFragmentDelegate;
-
-    public void setCatDialogFragmentDelegate(CatDialogFragmentDelegate catDialogFragmentDelegate) {
-        this.catDialogFragmentDelegate = new WeakReference<CatDialogFragmentDelegate>(catDialogFragmentDelegate);
-    }
-
-    public CatDialogFragmentDelegate getCatDialogFragmentDelegate() {
-
-        if(catDialogFragmentDelegate == null) {
-            return null;
-        }
-
-        return catDialogFragmentDelegate.get();
-    }
-
     // ----- Lifecycle Methods ----- //
 
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "onAttach() called");
         super.onAttach(activity);
-        catDialogFragmentDelegate = new WeakReference<CatDialogFragmentDelegate>((CatDialogFragmentDelegate) activity);
     }
 
     @Override
