@@ -362,6 +362,7 @@ public class DataSource {
                 }
 
                 DataSource.this.poiArrayList.addAll(poiArrayList);
+
                 getDataSourceDelegate().onFetchingComplete(poiArrayList);
             }
 

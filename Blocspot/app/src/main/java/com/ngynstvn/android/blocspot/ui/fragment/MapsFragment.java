@@ -399,25 +399,18 @@ public class MapsFragment extends MapFragment implements
     public void onConnected(Bundle bundle) {
         Log.v(TAG, "onConnected() called");
 
-        Handler handler = new Handler();
+        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-        handler.postAtFrontOfQueue(new Runnable() {
-            @Override
-            public void run() {
-                location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-                if (location != null) {
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                    Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
-                    startUpMap();
-                }
-                else {
-                    Log.v(TAG, "Location is null. Unable to get location");
-                    startUpMap();
-                }
-            }
-        });
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+            startUpMap();
+        }
+        else {
+            Log.v(TAG, "Location is null. Unable to get location");
+            startUpMap();
+        }
     }
 
     @Override
@@ -457,8 +450,9 @@ public class MapsFragment extends MapFragment implements
     public void onFetchingComplete(ArrayList<POI> poiArrayList) {
         Log.v(TAG, "onFetchingComplete() called");
 
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < poiArrayList.size(); i++) {
             addGeofence(poiArrayList.get(i));
         }
+
     }
 }
