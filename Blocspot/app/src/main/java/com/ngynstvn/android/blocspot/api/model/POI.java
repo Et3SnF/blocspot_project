@@ -48,7 +48,7 @@ public class POI extends Model implements Serializable {
     }
 
     public POI(long rowId, String locationName, String categoryName, int categoryColor, String address,
-               String city, String state, double longitudeValue, double latitudeValue,
+               String city, String state, double latitudeValue, double longitudeValue,
                String description, boolean hasVisited, float distanceToPOI) {
         super(rowId);
         this.locationName = locationName;

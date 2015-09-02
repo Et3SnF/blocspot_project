@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 
@@ -37,7 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapsFragment extends MapFragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback,
+        DataSource.DataSourceDelegate {
 
     // Interface for future delegation
 
@@ -120,8 +122,10 @@ public class MapsFragment extends MapFragment implements
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+        BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         buildGoogleApiClient();
         geofenceList = new ArrayList<>();
+
     }
 
     @Override
@@ -342,7 +346,9 @@ public class MapsFragment extends MapFragment implements
     // Method to add a geofence to a location
 
     private void addGeofence(POI poi) {
-        
+
+        Log.v(TAG, "addGeofence() called");
+
         if(poi == null) {
             return;
         }
@@ -362,6 +368,11 @@ public class MapsFragment extends MapFragment implements
                 .build());
 
         // Add the circular fence around each point of interest
+
+        if(googleMap == null) {
+            Log.v(TAG, "googleMap variable null. Unable to add geofence circle");
+            return;
+        }
 
         googleMap.addCircle(new CircleOptions()
                 .center(new LatLng(poiLatitude, poiLongitude))
@@ -427,5 +438,20 @@ public class MapsFragment extends MapFragment implements
     @Override
     public void onResult(Result result) {
 
+    }
+
+    /**
+     *
+     * DataSource DataSourceDelegate Implemented Methods
+     *
+     */
+
+    @Override
+    public void onFetchingComplete(ArrayList<POI> poiArrayList) {
+        Log.v(TAG, "onFetchingComplete() called");
+
+        for(int i = 0; i < 2; i++) {
+            addGeofence(poiArrayList.get(i));
+        }
     }
 }

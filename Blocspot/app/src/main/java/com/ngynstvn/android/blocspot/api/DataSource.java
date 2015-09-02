@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
@@ -14,11 +16,11 @@ import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class DataSource {
 
@@ -26,11 +28,18 @@ public class DataSource {
 
     private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
 
-    // Callback interface..let's see what happens
+    public static interface DataSourceDelegate {
+        public void onFetchingComplete(ArrayList<POI> poiArrayList);
+    }
 
-    public static interface Callback<Result> {
-        public void onComplete(Result result);
-        public void onFailure(String message);
+    private WeakReference<DataSourceDelegate> dataSourceDelegate;
+
+    public void setDataSourceDelegate(DataSourceDelegate dataSourceDelegate) {
+        this.dataSourceDelegate = new WeakReference<DataSourceDelegate>(dataSourceDelegate);
+    }
+
+    public DataSourceDelegate getDataSourceDelegate() {
+        return dataSourceDelegate.get();
     }
 
     // ---- ----- //
@@ -59,15 +68,11 @@ public class DataSource {
 
         Log.v(TAG, "DataSource instantiated");
 
+        context.deleteDatabase("blocspot_db");
+
         poiTable = new POITable();
-
-        new Handler().postAtFrontOfQueue(new Runnable() {
-            @Override
-            public void run() {
-                databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
-            }
-        });
-
+        databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
+        fetchPOIsFromDB();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
@@ -93,6 +98,8 @@ public class DataSource {
 
     public void dbFakeData() {
 
+        Log.v(TAG, "dbFakeData() called");
+
         SQLiteDatabase writableDatabase = databaseOpenHelper.getWritableDatabase();
 
         new POITable.Builder()
@@ -102,11 +109,73 @@ public class DataSource {
                 .setAddress("100 W Broadway")
                 .setCity("Glendale")
                 .setState("CA")
-                .setLatitude(34.05)
-                .setLongitude(-118.25)
-                .setDescription("Testing 1 2 3 Testing")
+                .setLatitude(34.1460872)
+                .setLongitude(-118.2561726)
+                .setDescription("A very well known mall in the city. Across from Americana.")
                 .setHasVisited(0)
                 .insert(writableDatabase);
+
+        Log.v(TAG, "dbFakeData Location 1 added");
+
+        new POITable.Builder()
+                .setLocationName("Boba 7")
+                .setCategory("Alcohol")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("518 7th St")
+                .setCity("Los Angeles")
+                .setState("CA")
+                .setLatitude(34.0410142)
+                .setLongitude(-118.2472838)
+                .setDescription("This place serves alcoholic boba. What an interesting place!")
+                .setHasVisited(1)
+                .insert(writableDatabase);
+
+        Log.v(TAG, "dbFakeData Location 2 added");
+
+        new POITable.Builder()
+                .setLocationName("Perch")
+                .setCategory("Nightclub")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("448 S Hill St")
+                .setCity("Los Angeles")
+                .setState("CA")
+                .setLatitude(34.0488342)
+                .setLongitude(-118.2513587)
+                .setDescription("A night club out in downtown Los Angeles. Beautiful view of downtown when at the top! ")
+                .setHasVisited(0)
+                .insert(writableDatabase);
+
+        Log.v(TAG, "dbFakeData Location 3 added");
+
+        new POITable.Builder()
+                .setLocationName("Walt Disney Concert Hall")
+                .setCategory("Entertainment")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("111 S Grand Avenue")
+                .setCity("os Angeles")
+                .setState("CA")
+                .setLatitude(34.0554362)
+                .setLongitude(-118.24994)
+                .setDescription("I never knew what this building was until I found out it was related to Disney!")
+                .setHasVisited(0)
+                .insert(writableDatabase);
+
+        Log.v(TAG, "dbFakeData Location 4 added");
+
+        new POITable.Builder()
+                .setLocationName("DogHaus")
+                .setCategory("Food")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("3817 W Olive Ave")
+                .setCity("Burbank")
+                .setState("CA")
+                .setLatitude(34.15087)
+                .setLongitude(-118.340852)
+                .setDescription("I heard this place has crazy hot dogs! Not like those typical dodger dogs!")
+                .setHasVisited(0)
+                .insert(writableDatabase);
+
+        Log.v(TAG, "dbFakeData Location 5 added");
     }
 
     public void fakeDataTest() {
@@ -186,16 +255,6 @@ public class DataSource {
 
     // ----- Separate Methods ----- //
 
-    // Asynchronous Task method
-
-    void submitTask(Runnable task) {
-        if(executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-
-        executorService.submit(task);
-    }
-
         // Getting lists
 
     public ArrayList<POI> getPoiArrayList() {
@@ -274,23 +333,68 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public void fetchAllPOIs() {
+    public void fetchPOIsFromDB() {
 
         Log.v(TAG, "fetchAllPOIs() called");
 
-        final ArrayList<POI> poiArrayList = new ArrayList<>();
-        Cursor cursor = POITable.fetchAllPOIs(databaseOpenHelper.getReadableDatabase());
+        // Perform AsyncTask at startup
 
-        if(cursor.moveToFirst()) {
+        new AsyncTask<Void, Void, ArrayList<POI>>() {
 
-            while(cursor.moveToNext()) {
-                poiArrayList.add(itemFromCursor(cursor));
+            @Override
+            protected void onPreExecute() {
+                Log.v(TAG, "onPreExecute() performing in " + Thread.currentThread().getName());
+                dbFakeData();
             }
 
-            cursor.close();
-        }
-    }
+            @Override
+            protected ArrayList<POI> doInBackground(Void... params) {
 
+                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
+
+                ArrayList<POI> poiArrayList = new ArrayList<>();
+
+                Cursor cursor = POITable.fetchAllPOIs(databaseOpenHelper.getReadableDatabase());
+
+                if(cursor == null || databaseOpenHelper == null) {
+
+                    Log.v(TAG, "Null encountered");
+
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Null encountered",
+                            Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+
+                if(cursor.moveToFirst()) {
+                    while(cursor.moveToNext()) {
+                        poiArrayList.add(itemFromCursor(cursor));
+                    }
+                }
+
+                return poiArrayList;
+
+            }
+
+            // Runs on UI Thread
+
+            @Override
+            protected void onPostExecute(ArrayList<POI> poiArrayList) {
+
+                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
+                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
+
+                if(dataSourceDelegate == null) {
+                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
+                    return;
+                }
+
+                DataSource.this.poiArrayList.addAll(poiArrayList);
+                getDataSourceDelegate().onFetchingComplete(poiArrayList);
+            }
+
+        }.execute();
+
+    }
 
     public void filterByCategory(final Cursor cursor) {
 
@@ -315,9 +419,8 @@ public class DataSource {
                 POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
 
-    // Category Table methods
-
-    // Null values use the nullcolumnhack parameter for insert statement
+    // Null column hack - If you want everything in a row to be null, make one of the items null by
+    // specifying it in the nullColumnHack parameter
 
 
 
