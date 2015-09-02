@@ -77,25 +77,6 @@ public class DataSource {
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
 
-    public void testForInsertion() {
-
-        Log.v(TAG, "poiArrayList size: " + poiArrayList.size());
-
-        for(int i = 0; i < poiArrayList.size(); i++) {
-            Log.v(TAG, poiArrayList.get(i).getLocationName());
-            Log.v(TAG, poiArrayList.get(i).getCategoryName());
-            Log.v(TAG, poiArrayList.get(i).getCategoryColor() + "");
-            Log.v(TAG, poiArrayList.get(i).getAddress());
-            Log.v(TAG, poiArrayList.get(i).getCity());
-            Log.v(TAG, poiArrayList.get(i).getState());
-            Log.v(TAG, poiArrayList.get(i).getLatitudeValue() + "");
-            Log.v(TAG, poiArrayList.get(i).getLongitudeValue() + "");
-            Log.v(TAG, poiArrayList.get(i).getDescription());
-            Log.v(TAG, poiArrayList.get(i).getDistanceToPOI() + "");
-        }
-
-    }
-
     public void dbFakeData() {
 
         Log.v(TAG, "dbFakeData() called");
@@ -115,8 +96,6 @@ public class DataSource {
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
-        Log.v(TAG, "dbFakeData Location 1 added");
-
         new POITable.Builder()
                 .setLocationName("Boba 7")
                 .setCategory("Alcohol")
@@ -129,8 +108,6 @@ public class DataSource {
                 .setDescription("This place serves alcoholic boba. What an interesting place!")
                 .setHasVisited(1)
                 .insert(writableDatabase);
-
-        Log.v(TAG, "dbFakeData Location 2 added");
 
         new POITable.Builder()
                 .setLocationName("Perch")
@@ -145,8 +122,6 @@ public class DataSource {
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
-        Log.v(TAG, "dbFakeData Location 3 added");
-
         new POITable.Builder()
                 .setLocationName("Walt Disney Concert Hall")
                 .setCategory("Entertainment")
@@ -160,8 +135,6 @@ public class DataSource {
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
-        Log.v(TAG, "dbFakeData Location 4 added");
-
         new POITable.Builder()
                 .setLocationName("DogHaus")
                 .setCategory("Food")
@@ -174,8 +147,6 @@ public class DataSource {
                 .setDescription("I heard this place has crazy hot dogs! Not like those typical dodger dogs!")
                 .setHasVisited(0)
                 .insert(writableDatabase);
-
-        Log.v(TAG, "dbFakeData Location 5 added");
     }
 
     public void fakeDataTest() {
@@ -258,7 +229,6 @@ public class DataSource {
         // Getting lists
 
     public ArrayList<POI> getPoiArrayList() {
-        Log.v(TAG, "getPOIArrayList() called");
         return poiArrayList;
     }
 
@@ -366,9 +336,12 @@ public class DataSource {
                 }
 
                 if(cursor.moveToFirst()) {
-                    while(cursor.moveToNext()) {
+
+                    do {
                         poiArrayList.add(itemFromCursor(cursor));
                     }
+                    while(cursor.moveToNext());
+
                 }
 
                 return poiArrayList;

@@ -241,7 +241,7 @@ public class MapsFragment extends MapFragment implements
         // In case parameter is tampered
 
         if(poi == null) {
-            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point " +
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point" +
                     "of interest", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -370,7 +370,7 @@ public class MapsFragment extends MapFragment implements
         // Add the circular fence around each point of interest
 
         if(googleMap == null) {
-            Log.v(TAG, "googleMap variable null. Unable to add geofence circle");
+            Log.v(TAG, "googleMap variable null. Unable to add geofence circle.");
             return;
         }
 
@@ -399,18 +399,25 @@ public class MapsFragment extends MapFragment implements
     public void onConnected(Bundle bundle) {
         Log.v(TAG, "onConnected() called");
 
-        location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        Handler handler = new Handler();
 
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
-            startUpMap();
-        }
-        else {
-            Log.v(TAG, "Location is null. Unable to get location");
-            startUpMap();
-        }
+        handler.postAtFrontOfQueue(new Runnable() {
+            @Override
+            public void run() {
+                location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+                if (location != null) {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                    Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+                    startUpMap();
+                }
+                else {
+                    Log.v(TAG, "Location is null. Unable to get location");
+                    startUpMap();
+                }
+            }
+        });
     }
 
     @Override
