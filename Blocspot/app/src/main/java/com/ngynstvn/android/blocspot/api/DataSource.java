@@ -65,17 +65,9 @@ public class DataSource {
             @Override
             public void run() {
                 databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
-                dbFakeData();
             }
         });
 
-        // Insert fake data here to test database insertion. WILL REMOVE LATER
-//        fakeDataTest();
-
-        // Testing if Database work works
-
-        fetchAllPOIs();
-        testForInsertion();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //

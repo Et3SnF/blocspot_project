@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -233,6 +234,14 @@ public class MapsFragment extends MapFragment implements
 
         Log.v(TAG, "goToPOI() called");
 
+        // In case parameter is tampered
+
+        if(poi == null) {
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point " +
+                    "of interest", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -290,6 +299,10 @@ public class MapsFragment extends MapFragment implements
     private void activateGeofences() {
         Log.v(TAG, "activateGeofences() called");
 
+        if(getGeofencingRequest() == null) {
+            return;
+        }
+
         LocationServices.GeofencingApi.addGeofences(googleApiClient, getGeofencingRequest(),
                 getGeofencePendingIntent()).setResultCallback(this);
 
@@ -302,6 +315,13 @@ public class MapsFragment extends MapFragment implements
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
         builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
         builder.addGeofences(geofenceList);
+
+        // If the list is empty, make this null
+
+        if(geofenceList.isEmpty()) {
+            return null;
+        }
+
         return builder.build();
     }
 
@@ -322,6 +342,10 @@ public class MapsFragment extends MapFragment implements
     // Method to add a geofence to a location
 
     private void addGeofence(POI poi) {
+        
+        if(poi == null) {
+            return;
+        }
 
         double poiLatitude = poi.getLatitudeValue();
         double poiLongitude = poi.getLongitudeValue();
