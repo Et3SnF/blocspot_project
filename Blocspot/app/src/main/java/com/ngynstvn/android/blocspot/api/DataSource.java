@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.api;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +17,8 @@ import com.ngynstvn.android.blocspot.ui.UIUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DataSource {
 
@@ -23,9 +26,20 @@ public class DataSource {
 
     private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
 
+    // Callback interface..let's see what happens
+
+    public static interface Callback<Result> {
+        public void onComplete(Result result);
+        public void onFailure(String message);
+    }
+
+    // ---- ----- //
+
     // Member variables
 
     private final int BASE_COLOR = android.R.color.white;
+
+    private ExecutorService executorService;
 
     private POI poi1;
     private POI poi2;
@@ -51,16 +65,57 @@ public class DataSource {
             @Override
             public void run() {
                 databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
+                dbFakeData();
             }
         });
 
-        context.deleteDatabase("blocspot_db");
-
         // Insert fake data here to test database insertion. WILL REMOVE LATER
-        fakeDataTest();
+//        fakeDataTest();
+
+        // Testing if Database work works
+
+        fetchAllPOIs();
+        testForInsertion();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
+
+    public void testForInsertion() {
+
+        Log.v(TAG, "poiArrayList size: " + poiArrayList.size());
+
+        for(int i = 0; i < poiArrayList.size(); i++) {
+            Log.v(TAG, poiArrayList.get(i).getLocationName());
+            Log.v(TAG, poiArrayList.get(i).getCategoryName());
+            Log.v(TAG, poiArrayList.get(i).getCategoryColor() + "");
+            Log.v(TAG, poiArrayList.get(i).getAddress());
+            Log.v(TAG, poiArrayList.get(i).getCity());
+            Log.v(TAG, poiArrayList.get(i).getState());
+            Log.v(TAG, poiArrayList.get(i).getLatitudeValue() + "");
+            Log.v(TAG, poiArrayList.get(i).getLongitudeValue() + "");
+            Log.v(TAG, poiArrayList.get(i).getDescription());
+            Log.v(TAG, poiArrayList.get(i).getDistanceToPOI() + "");
+        }
+
+    }
+
+    public void dbFakeData() {
+
+        SQLiteDatabase writableDatabase = databaseOpenHelper.getWritableDatabase();
+
+        new POITable.Builder()
+                .setLocationName("Glendale Galleria")
+                .setCategory("Social")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("100 W Broadway")
+                .setCity("Glendale")
+                .setState("CA")
+                .setLatitude(34.05)
+                .setLongitude(-118.25)
+                .setDescription("Testing 1 2 3 Testing")
+                .setHasVisited(0)
+                .insert(writableDatabase);
+    }
 
     public void fakeDataTest() {
 
@@ -111,11 +166,11 @@ public class DataSource {
 
                 Log.v(TAG, "POI object addition successful.");
 
-                insertPOIToDatabase(poi1);
-                insertPOIToDatabase(poi2);
-                insertPOIToDatabase(poi3);
-                insertPOIToDatabase(poi4);
-                insertPOIToDatabase(poi5);
+                insertNewPOI(poi1);
+                insertNewPOI(poi2);
+                insertNewPOI(poi3);
+                insertNewPOI(poi4);
+                insertNewPOI(poi5);
 
                 Log.v(TAG, "Database insertion successful.");
 
@@ -138,6 +193,16 @@ public class DataSource {
     }
 
     // ----- Separate Methods ----- //
+
+    // Asynchronous Task method
+
+    void submitTask(Runnable task) {
+        if(executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
+
+        executorService.submit(task);
+    }
 
         // Getting lists
 
@@ -182,30 +247,9 @@ public class DataSource {
 
     // --------- Database Methods ---------- //
 
-    // POI Table methods
-
-    static POI itemFromCursor(final Cursor cursor) {
-
-        Log.v(TAG, "itemFromCursor() called");
-
-        POI poi = new POI(POITable.getRowId(cursor));
-
-        if (POITable.getColumnHasVisited(cursor) == 1) {
-            poi.setHasVisited(true);
-        }
-        else if (POITable.getColumnHasVisited(cursor) == 0) {
-            poi.setHasVisited(false);
-        }
-
-        return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
-                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
-                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongtitude(cursor),
-                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
-    }
-
     // Test method to insert into database
 
-    public long insertPOIToDatabase(POI poi) {
+    public long insertNewPOI(POI poi) {
 
         Log.v(TAG, "insertPOIToDB() called");
 
@@ -238,7 +282,51 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
+    public void fetchAllPOIs() {
+
+        Log.v(TAG, "fetchAllPOIs() called");
+
+        final ArrayList<POI> poiArrayList = new ArrayList<>();
+        Cursor cursor = POITable.fetchAllPOIs(databaseOpenHelper.getReadableDatabase());
+
+        if(cursor.moveToFirst()) {
+
+            while(cursor.moveToNext()) {
+                poiArrayList.add(itemFromCursor(cursor));
+            }
+
+            cursor.close();
+        }
+    }
+
+
+    public void filterByCategory(final Cursor cursor) {
+
+    }
+
+    static POI itemFromCursor(final Cursor cursor) {
+
+        Log.v(TAG, "itemFromCursor() called");
+
+        POI poi = new POI(POITable.getRowId(cursor));
+
+        if (POITable.getColumnHasVisited(cursor) == 1) {
+            poi.setHasVisited(true);
+        }
+        else if (POITable.getColumnHasVisited(cursor) == 0) {
+            poi.setHasVisited(false);
+        }
+
+        return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
+                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
+                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongitude(cursor),
+                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
+    }
+
     // Category Table methods
+
+    // Null values use the nullcolumnhack parameter for insert statement
+
 
 
 }

@@ -54,6 +54,10 @@ public class POITable extends Table {
                 + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
     }
 
+    public static Cursor fetchAllPOIs(SQLiteDatabase readonlyDatabase) {
+        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY ?", new String[]{COLUMN_HAS_VISITED});
+    }
+
     // Builder Class
 
     public static class Builder implements Table.Builder {
@@ -146,7 +150,7 @@ public class POITable extends Table {
         return getDouble(cursor, COLUMN_LATITUDE);
     }
 
-    public static double getLongtitude(Cursor cursor) {
+    public static double getLongitude(Cursor cursor) {
         return getDouble(cursor, COLUMN_LONGITUDE);
     }
 
