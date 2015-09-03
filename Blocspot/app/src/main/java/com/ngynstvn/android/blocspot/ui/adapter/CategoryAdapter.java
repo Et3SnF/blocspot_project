@@ -108,8 +108,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     // CategoryAdapterViewHolder inner class
 
-    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder
-            implements ItemTouchHelperCallback.ItemTouchHelperViewHolder {
+    class CategoryAdapterViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperCallback.ItemTouchHelperViewHolder {
 
         // ----- Member variables ----- //
 

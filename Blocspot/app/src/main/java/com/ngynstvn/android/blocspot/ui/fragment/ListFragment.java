@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
+import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
 
@@ -53,8 +54,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     private RecyclerView recyclerView;
     private PlaceAdapter placeAdapter;
-    private ItemTouchHelper itemTouchHelper;
-    private ItemTouchHelper.SimpleCallback simpleCallback;
+    private ItemTouchHelper.Callback callback;
+    private ItemTouchHelper touchHelper;
 
     // Keep these here for now. Handle them later.
 
@@ -83,6 +84,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         super.onCreate(savedInstanceState);
         placeAdapter = new PlaceAdapter();
         placeAdapter.setPlaceAdapterDelegate(this);
+        callback = new ItemTouchHelperCallback(placeAdapter);
+        touchHelper = new ItemTouchHelper(callback);
     }
 
     @Nullable
@@ -91,6 +94,10 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onCreateView() called");
         View inflate = inflater.inflate(R.layout.fragment_list, container, false);
         recyclerView = (RecyclerView) inflate.findViewById(R.id.rv_poi_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(placeAdapter);
+        touchHelper.attachToRecyclerView(recyclerView);
         return inflate;
     }
 
@@ -98,10 +105,6 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.e(TAG, "onActivityCreated() called");
         super.onActivityCreated(savedInstanceState);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(placeAdapter);
     }
 
     @Override

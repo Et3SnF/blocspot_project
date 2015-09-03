@@ -8,17 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder> {
+public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder>
+        implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
@@ -70,7 +75,41 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
     }
 
-    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder {
+    /**
+     *
+     * ItemTouchHelperCallback.ItemTouchHelperAdapter
+     *
+     */
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+
+        if(fromPosition < toPosition) {
+            for(int i = fromPosition; i < toPosition; i++) {
+                // allows item to move down
+                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i + 1);
+            }
+        }
+        else {
+            for(int i = fromPosition; i > toPosition; i--) {
+                // allows item to move up
+                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i -1);
+            }
+        }
+
+        notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
+        return true;
+
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        BlocspotApplication.getSharedDataSource().getPoiArrayList().remove(position);
+        notifyItemRemoved(position);
+    }
+
+    class PlaceAdapterViewHolder extends RecyclerView.ViewHolder implements
+            ItemTouchHelperCallback.ItemTouchHelperViewHolder {
 
         CheckBox visitCheckbox;
         TextView poiDistance;
@@ -78,6 +117,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         TextView poiDescription;
 
         POI poi;
+
+        SwipeLayout swipeLayout;
+        Button noteButton;
+        Button assignCatButton;
+        Button deletePOIButton;
 
         // Constructor
 
@@ -90,7 +134,75 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
 
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_poi_item);
+            noteButton = (Button) itemView.findViewById(R.id.btn_poi_note);
+            assignCatButton = (Button) itemView.findViewById(R.id.btn_assign_category);
+            deletePOIButton = (Button) itemView.findViewById(R.id.btn_poi_delete);
+
             // Listeners
+
+            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+                @Override
+                public void onStartOpen(SwipeLayout swipeLayout) {
+
+                }
+
+                @Override
+                public void onOpen(SwipeLayout swipeLayout) {
+
+                }
+
+                @Override
+                public void onStartClose(SwipeLayout swipeLayout) {
+
+                }
+
+                @Override
+                public void onClose(SwipeLayout swipeLayout) {
+
+                }
+
+                @Override
+                public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
+
+                }
+
+                @Override
+                public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
+
+                }
+            });
+
+            noteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    swipeLayout.close();
+                    // Do something here
+                }
+            });
+
+            assignCatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    swipeLayout.close();
+                    // Do something here
+                }
+            });
+
+            deletePOIButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemDismiss(getAdapterPosition());
+                    swipeLayout.close();
+                }
+            });
+
+            visitCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,13 +211,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                         getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
                         Log.v(TAG, "getAdapterDelegate() is not null!");
                     }
-                }
-            });
-
-            visitCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
                 }
             });
 
@@ -122,5 +227,20 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             visitCheckbox.setChecked(poi.isHasVisited());
         }
 
+        /**
+         *
+         * ItemTouchHelperCallback.ItemTouchHelperViewHolder implemented methods
+         *
+         */
+
+        @Override
+        public void onItemSelected() {
+
+        }
+
+        @Override
+        public void onItemClear() {
+
+        }
     }
 }
