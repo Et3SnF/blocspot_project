@@ -54,7 +54,7 @@ public class POITable extends Table {
                 + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
     }
 
-    public static Cursor fetchAllPOIs(SQLiteDatabase readonlyDatabase) {
+    public static Cursor getAllPOIs(SQLiteDatabase readonlyDatabase) {
         return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY ?", new String[]{COLUMN_HAS_VISITED});
     }
 

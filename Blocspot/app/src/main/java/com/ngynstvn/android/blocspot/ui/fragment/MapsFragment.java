@@ -125,7 +125,6 @@ public class MapsFragment extends MapFragment implements
         BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         buildGoogleApiClient();
         geofenceList = new ArrayList<>();
-
     }
 
     @Override
@@ -194,41 +193,30 @@ public class MapsFragment extends MapFragment implements
     private void startUpMap() {
         Log.v(TAG, "startUpMap() called");
 
-        new Handler().post(new Runnable() {
+        getMapAsync(new OnMapReadyCallback() {
             @Override
-            public void run() {
-                getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        MapsFragment.this.googleMap = googleMap;
-                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+            public void onMapReady(GoogleMap googleMap) {
+                MapsFragment.this.googleMap = googleMap;
+                MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                        // Goes to center of LA
+                // Goes to center of LA
 
-                        position = new LatLng(latitude, longitude);
-                        zoom = 16;
+                position = new LatLng(latitude, longitude);
+                zoom = 16;
 
-                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                                .newLatLngZoom(position, zoom));
+                MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+                        .newLatLngZoom(position, zoom));
 
-                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-                    }
-
-                });
-
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        addMarkers();
-                        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
-                        activateGeofences();
-                    }
-                });
             }
         });
+
+//        addMarkers();
+//        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
+//        activateGeofences();
 
     }
 
@@ -448,6 +436,7 @@ public class MapsFragment extends MapFragment implements
 
     @Override
     public void onFetchingComplete(ArrayList<POI> poiArrayList) {
+        startUpMap();
         Log.v(TAG, "onFetchingComplete() called");
 
         for(int i = 0; i < poiArrayList.size(); i++) {

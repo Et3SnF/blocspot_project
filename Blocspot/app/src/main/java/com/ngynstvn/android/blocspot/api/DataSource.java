@@ -72,7 +72,7 @@ public class DataSource {
 
         poiTable = new POITable();
         databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
-        fetchPOIsFromDB();
+        fetchAllPOIs();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
@@ -145,6 +145,19 @@ public class DataSource {
                 .setLatitude(34.15087)
                 .setLongitude(-118.340852)
                 .setDescription("I heard this place has crazy hot dogs! Not like those typical dodger dogs!")
+                .setHasVisited(0)
+                .insert(writableDatabase);
+
+        new POITable.Builder()
+                .setLocationName("DogHaus")
+                .setCategory("Food")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setAddress("7300 Sunset Blvd")
+                .setCity("Los Angeles")
+                .setState("CA")
+                .setLatitude(34.097537)
+                .setLongitude(-118.350048)
+                .setDescription("Located in West Hollywood. I heard this ramen place is good!")
                 .setHasVisited(0)
                 .insert(writableDatabase);
     }
@@ -303,7 +316,7 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public void fetchPOIsFromDB() {
+    public void fetchAllPOIs() {
 
         Log.v(TAG, "fetchAllPOIs() called");
 
@@ -324,7 +337,7 @@ public class DataSource {
 
                 ArrayList<POI> poiArrayList = new ArrayList<>();
 
-                Cursor cursor = POITable.fetchAllPOIs(databaseOpenHelper.getReadableDatabase());
+                Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
 
                 if(cursor == null || databaseOpenHelper == null) {
 
@@ -367,6 +380,10 @@ public class DataSource {
             }
 
         }.execute();
+
+    }
+
+    public void fetchAllCategories() {
 
     }
 
