@@ -152,8 +152,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             case R.id.action_filter:
 
-                showDialog();
-                Log.v(TAG, "BlocspotActivity " + item.getTitle() + " Icon Pressed");
+                Log.v(TAG, item.getTitle() + " Icon Pressed");
+                showCategoryDialog();
                 return true;
 
             default:
@@ -170,7 +170,7 @@ public class BlocspotActivity extends AppCompatActivity implements
     @Override
     public void onListItemClicked(ListFragment listFragment, POI poi) {
 
-        Log.v(TAG, BlocspotActivity.class.getSimpleName() + " onListItemClicked(...) working");
+        Log.v(TAG, "onListItemClicked(...) working");
 
         if (mapsFragment != null) {
 
@@ -183,7 +183,7 @@ public class BlocspotActivity extends AppCompatActivity implements
             mapsFragment.goToPOI(poi);
 
         } else {
-            Log.v(TAG, BlocspotActivity.class.getSimpleName() + " Problem: MapsFragment object is null");
+            Log.v(TAG, " Problem: MapsFragment object is null");
         }
 
     }
@@ -196,10 +196,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     // ----- Separate Methods ----- //
 
-    void showDialog() {
+    void showCategoryDialog() {
         DialogFragment newFragment = CatDialogFragment.newInstance(R.string.alert_dialog_two_button_title);
-
-        // "dialog" will help us find this dialog later if we recall it
         newFragment.show(getFragmentManager(), "dialog");
     }
 
