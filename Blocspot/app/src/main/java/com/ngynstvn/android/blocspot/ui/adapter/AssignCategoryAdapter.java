@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -71,6 +70,7 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
 
         private TextView categoryColor;
         private TextView categoryName;
+        private View dividerLine;
 
         private Category category;
 
@@ -84,6 +84,7 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
 
             categoryColor = (TextView) itemView.findViewById(R.id.tv_category_color);
             categoryName = (TextView) itemView.findViewById(R.id.tv_category_name);
+            dividerLine = itemView.findViewById(R.id.v_assign_category_divider);
 
             // Need this check to check API version otherwise a RunTimeException occurs
 
@@ -102,18 +103,18 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
                 categoryColor.setClipToOutline(true);
             }
 
+            // Remove the divider line if it's the last item
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if(getAssignCategoryDelegate() == null) {
-                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Assign Category " +
-                                "Item #" + (getAdapterPosition()+1) + " clicked", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     getAssignCategoryDelegate().onCategoryAssignmentClicked(getAdapterPosition());
-                    // Do something about this....
+                    // Whoever delegates this will do the necessary actions
                 }
             });
 
@@ -129,6 +130,10 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
 
             categoryName.setText(category.getCategoryName());
             categoryColor.setBackgroundColor(category.getCategoryColor());
+
+            if(getAdapterPosition() == BlocspotApplication.getSharedDataSource().getCategoryArrayList().size()-1) {
+                dividerLine.setVisibility(View.GONE);
+            }
 
         }
 

@@ -11,12 +11,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Toast;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.AssignCategoryAdapter;
 
-public class AssignCategoryDialog extends DialogFragment {
+public class AssignCategoryDialog extends DialogFragment implements AssignCategoryAdapter.AssignCategoryAdapterDelegate {
 
     private static final String TAG = "Test: (" + AssignCategoryDialog.class.getSimpleName() + "): ";
 
@@ -53,6 +54,7 @@ public class AssignCategoryDialog extends DialogFragment {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
         assignCategoryAdapter = new AssignCategoryAdapter();
+        assignCategoryAdapter.setCategoryAdapterDelegate(this);
     }
 
     @Override
@@ -68,17 +70,9 @@ public class AssignCategoryDialog extends DialogFragment {
 
         builder = new AlertDialog.Builder(getActivity(), R.style.MaterialAlertDialogStyle)
                 .setView(view)
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.v(TAG, "Save Button clicked");
-                        // Being overridden somewhere else
-                    }
-                })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.v(TAG, "Cancel Button clicked");
                         dismiss();
                     }
                 });
@@ -96,22 +90,6 @@ public class AssignCategoryDialog extends DialogFragment {
     public void onStart() {
         Log.v(TAG, "onStart() called");
         super.onStart();
-
-        alertDialog = (AlertDialog)getDialog();
-
-        Button saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-
-        if(alertDialog != null) {
-            saveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                    // If user attempts to assign the current category, tell them that and return
-                    // Do input validation if you can
-                    // Needs to compare current array lists
-                }
-            });
-        }
     }
 
     @Override
@@ -158,4 +136,16 @@ public class AssignCategoryDialog extends DialogFragment {
 
     // ------------------------------------------- //
 
+    /**
+     *
+     * AssignCategoryAdapter.AssignCategoryAdapterDelegate implemented methods
+     *
+     */
+
+    @Override
+    public void onCategoryAssignmentClicked(int position) {
+        dismiss();
+        Toast.makeText(BlocspotApplication.getSharedInstance(), "Assign Category " +
+                "Item #" + (position+1) + " was clicked", Toast.LENGTH_SHORT).show();
+    }
 }

@@ -161,6 +161,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     @Override
     public void onAssignCatButtonClicked(PlaceAdapter placeAdapter, int position) {
         showAssignCategoryDialog(position);
+        // Work whatever necessary in the AssignCategoryDialog
     }
 
     @Override
