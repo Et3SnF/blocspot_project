@@ -1,7 +1,14 @@
 <resources>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="category_item_height">52dp</dimen>
+    <dimen name="category_button_side">65dp</dimen>
+    <dimen name="category_icon_side">24dp</dimen>
     <dimen name="category_lr_padding">24dp</dimen>
+    <dimen name="poi_swipe_icon_side">28dp</dimen>
+    <dimen name="poi_swipe_button_side">72dp</dimen>
+    <dimen name="poi_swipelayout_slide_length">216dp</dimen>
+
 </resources>

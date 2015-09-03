@@ -1,65 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<com.daimajia.swipe.SwipeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:id="@+id/sl_poi_item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@drawable/click_effect">
+    android:layout_height="wrap_content">
 
-    <!-- Convert this to an individual relativelayout tomorrow -->
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_poi_bottom_view"
+        android:layout_width="@dimen/poi_swipelayout_slide_length"
         android:layout_height="match_parent"
-        android:layout_marginRight="8dp">
+        android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/cb_has_visited"
+        <FrameLayout
+            android:id="@+id/fl_poi_note_button"
+            android:layout_width="@dimen/poi_swipe_button_side"
+            android:layout_height="match_parent"
+            android:background="@color/material_indigo_500"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_poi_note_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_note_add_white_24dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_poi_note"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_poi_delete_button"
+            android:layout_width="@dimen/poi_swipe_button_side"
+            android:layout_height="match_parent"
+            android:background="@color/material_teal_500"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_poi_delete_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_beenhere_white_24dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_poi_delete"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_poi_assign_category_button"
+            android:layout_width="@dimen/poi_swipe_button_side"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_red_dark"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_assign_category_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_delete_white_24dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_assign_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_poi_user_view"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/click_effect">
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/material_red_dark"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:layout_marginTop="8dp"/>
+            android:layout_height="match_parent"
+            android:layout_marginRight="8dp">
 
-        <TextView
-            android:id="@+id/tv_dist_to_poi"
-            style = "@style/POI_distance"
+            <CheckBox
+                android:id="@+id/cb_has_visited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/material_red_dark"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_dist_to_poi"
+                style = "@style/POI_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/cb_has_visited"
+                android:layout_alignParentLeft="true"
+                android:text="@string/text_dummy_distance" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_below="@+id/cb_has_visited"
-            android:layout_alignParentLeft="true"
-            android:text="@string/text_dummy_distance" />
+            android:layout_height="match_parent">
 
-    </RelativeLayout>
+            <TextView
+                style="@style/POI_name"
+                android:id="@+id/tv_poi_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/tv_poi_description"
+                android:text="@string/text_poi_name"/>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+            <TextView
+                style="@style/POI_description"
+                android:id="@+id/tv_poi_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_poi_name"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/text_dummy_comment"/>
 
-        <TextView
-            style="@style/POI_name"
-            android:id="@+id/tv_poi_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/tv_poi_description"
-            android:text="@string/text_poi_name"/>
+        </RelativeLayout>
 
-        <TextView
-            style="@style/POI_description"
-            android:id="@+id/tv_poi_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_poi_name"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/text_dummy_comment"/>
+    </LinearLayout>
 
-    </RelativeLayout>
-
-</LinearLayout>
+</com.daimajia.swipe.SwipeLayout>

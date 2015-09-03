@@ -266,13 +266,13 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                new Handler().post(new Runnable() {
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         addMarkers();
                         activateGeofences();
                     }
-                });
+                }, 1000);
 
             }
 

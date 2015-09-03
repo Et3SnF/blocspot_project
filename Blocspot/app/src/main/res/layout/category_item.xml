@@ -12,37 +12,49 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/rl_edit_button_bg"
-            android:layout_width="65dp"
+        <FrameLayout
+            android:id="@+id/fl_category_edit_button"
+            android:layout_width="@dimen/category_button_side"
             android:layout_height="match_parent"
-            android:background="@color/material_blue">
+            android:background="@color/material_blue"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_edit_button_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_mode_edit_white_24dp"
+                android:layout_gravity="center"/>
 
             <Button
                 android:id="@+id/btn_edit_category"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:padding="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_mode_edit_white_24dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
 
-        </RelativeLayout>
+        </FrameLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_delete_button_bg"
-            android:layout_width="65dp"
+        <FrameLayout
+            android:id="@+id/fl_category_delete_button"
+            android:layout_width="@dimen/category_button_side"
             android:layout_height="match_parent"
-            android:background="@color/material_red">
+            android:background="@color/material_red"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/rl_delete_button_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_delete_white_24dp"
+                android:layout_gravity="center"/>
 
             <Button
                 android:id="@+id/btn_delete_category"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:padding="30dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_delete_white_24dp"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"/>
 
-        </RelativeLayout>
+        </FrameLayout>
 
     </LinearLayout>
 
