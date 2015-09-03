@@ -219,11 +219,11 @@ public class DataSource {
 
                 Log.v(TAG, "Database insertion successful.");
 
-                addToCategoryArrayList(poi1);
-                addToCategoryArrayList(poi2);
-                addToCategoryArrayList(poi3);
-                addToCategoryArrayList(poi4);
-                addToCategoryArrayList(poi5);
+//                addToCategoryArrayList(poi1);
+//                addToCategoryArrayList(poi2);
+//                addToCategoryArrayList(poi3);
+//                addToCategoryArrayList(poi4);
+//                addToCategoryArrayList(poi5);
 
                 Log.v(TAG, "POI1 - " + "Name: " + poi1.getCategoryName() + " | " + "Color: " + poi1.getCategoryColor());
                 Log.v(TAG, "POI2 - " + "Name: " + poi2.getCategoryName() + " | " + "Color: " + poi2.getCategoryColor());
@@ -261,23 +261,23 @@ public class DataSource {
         catNameColorMap.put(categoryName, UIUtils.generateRandomColor(Color.WHITE));
     }
 
-    private void addToCategoryArrayList(POI poi) {
-        categoryArrayList.add(new Category(poi.getCategoryName(), poi.getCategoryColor()));
-
-        // Anything that exists in the array list are added to a map
-        catNameColorMap.put(poi.getCategoryName(), poi.getCategoryColor());
-    }
-
-        // Create new category
-
-    private void addNewCategory(String name) {
-        // Validation has already been taken care of. Just add a new category name and color
-
-        int color = UIUtils.generateRandomColor(BASE_COLOR);
-
-        categoryArrayList.add(new Category(name, color));
-        catNameColorMap.put(name, color);
-    }
+//    private void addToCategoryArrayList(POI poi) {
+//        categoryArrayList.add(new Category(1, poi.getCategoryName(), poi.getCategoryColor()));
+//
+//        // Anything that exists in the array list are added to a map
+//        catNameColorMap.put(poi.getCategoryName(), poi.getCategoryColor());
+//    }
+//
+//        // Create new category
+//
+//    private void addNewCategory(String name) {
+//        // Validation has already been taken care of. Just add a new category name and color
+//
+//        int color = UIUtils.generateRandomColor(BASE_COLOR);
+//
+//        categoryArrayList.add(new Category(1, name, color));
+//        catNameColorMap.put(name, color);
+//    }
 
     // --------- Database Methods ---------- //
 

@@ -1,6 +1,6 @@
 package com.ngynstvn.android.blocspot.api.model;
 
-public class Category {
+public class Category extends Model{
 
     // ----- Class Variables ----- //
 
@@ -13,18 +13,19 @@ public class Category {
 
     // Constructors
 
-    public Category() {
+    public Category(long rowId) {
+        super(rowId);
         this.categoryName = "";
         this.categoryColor = 0;
     }
 
-    public Category(String categoryName, int categoryColor) {
+    public Category(long rowId, String categoryName, int categoryColor) {
+        super(rowId);
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
     }
 
     // Setters and Getters
-
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;

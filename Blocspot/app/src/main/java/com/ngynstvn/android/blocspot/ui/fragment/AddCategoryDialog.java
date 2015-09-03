@@ -140,7 +140,7 @@ public class AddCategoryDialog extends DialogFragment {
                     }
 
                     BlocspotApplication.getSharedDataSource().getCategoryArrayList()
-                            .add(new Category(value, UIUtils.generateRandomColor(android.R.color.white)));
+                            .add(new Category(1, value, UIUtils.generateRandomColor(android.R.color.white)));
                     closeDialog = true;
 
                     if(closeDialog) {
