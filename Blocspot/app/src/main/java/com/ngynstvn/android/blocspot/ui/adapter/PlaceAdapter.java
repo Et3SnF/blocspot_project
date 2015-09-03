@@ -29,6 +29,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
     public static interface PlaceAdapterDelegate {
         public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
+        public void onAssignCatButtonClicked(PlaceAdapter placeAdapter, int position);
+        public void onAddNoteButtonClicked(PlaceAdapter placeAdapter, int position);
     }
 
     // Setter and getter for delegate
@@ -176,6 +178,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             noteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if(getAdapterDelegate() != null) {
+                        getAdapterDelegate().onAddNoteButtonClicked(PlaceAdapter.this, getAdapterPosition());
+                    }
+
                     swipeLayout.close();
                     // Do something here
                 }
@@ -184,8 +191,12 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             assignCatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if(getAdapterDelegate() != null) {
+                        getAdapterDelegate().onAssignCatButtonClicked(PlaceAdapter.this, getAdapterPosition());
+                    }
+
                     swipeLayout.close();
-                    // Do something here
                 }
             });
 
@@ -242,5 +253,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         public void onItemClear() {
 
         }
+
     }
 }

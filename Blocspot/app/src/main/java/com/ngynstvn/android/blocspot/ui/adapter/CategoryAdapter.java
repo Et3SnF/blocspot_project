@@ -35,6 +35,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private WeakReference<CategoryAdapterDelegate> categoryAdapterDelegate;
 
     public CategoryAdapterDelegate getCategoryAdapterDelegate() {
+
+        if(categoryAdapterDelegate == null) {
+            return null;
+        }
+
         return categoryAdapterDelegate.get();
     }
 

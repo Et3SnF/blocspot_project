@@ -13,7 +13,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
@@ -33,8 +32,6 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     private CategoryAdapter categoryAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
-
-    private EditText editText;
 
     // Important single instantiation of this class
 
@@ -79,7 +76,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.MaterialAlertDialogStyle);
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_layout, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.category_dialog_layout, null);
 
         // Inflate anything specifically in this lifecycle method
 
@@ -185,6 +182,12 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     }
 
     // ---------------- //
+
+    /**
+     *
+     *  CategoryAdapter.CategoryAdapterDelegate implemented methods
+     *
+     */
 
     @Override
     public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position) {

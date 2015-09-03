@@ -158,4 +158,21 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     }
 
+    @Override
+    public void onAssignCatButtonClicked(PlaceAdapter placeAdapter, int position) {
+        showAssignCategoryDialog(position);
+    }
+
+    @Override
+    public void onAddNoteButtonClicked(PlaceAdapter placeAdapter, int position) {
+        // show the add note popup dialog
+    }
+
+    // ----- Separate Methods ----- //
+
+    private void showAssignCategoryDialog(int position) {
+        AssignCategoryDialog assignCategoryDialog = AssignCategoryDialog.newInstance(position);
+        assignCategoryDialog.show(getFragmentManager(), "assign_category");
+    }
+
 }
