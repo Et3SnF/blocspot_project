@@ -71,7 +71,7 @@ public class MapsFragment extends MapFragment implements
 
     // ----- Member variables ----- //
 
-        // DataSource's ArrayList access
+    // DataSource's ArrayList access
 
     private ArrayList<POI> dSpoiArrayList = BlocspotApplication.getSharedDataSource().getPoiArrayList();
 
@@ -79,22 +79,22 @@ public class MapsFragment extends MapFragment implements
     private LatLng position;
     private float zoom;
 
-        // GoogleApiClient variables
+    // GoogleApiClient variables
 
     private GoogleApiClient googleApiClient;
     private Location location;
 
-        // Defaulted to center of Los Angeles
+    // Defaulted to center of Los Angeles
 
     private double latitude = 34.05;
     private double longitude = -118.25;
 
-        // Geofence Variables
+    // Geofence Variables
 
     private List<Geofence> geofenceList;
     private PendingIntent geofencePendingIntent;
 
-        // Notification Variables
+    // Notification Variables
 
     private NotificationManager notificationManager;
     private int notificationId;
@@ -125,6 +125,7 @@ public class MapsFragment extends MapFragment implements
         BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         buildGoogleApiClient();
         geofenceList = new ArrayList<>();
+
     }
 
     @Override
@@ -193,30 +194,41 @@ public class MapsFragment extends MapFragment implements
     private void startUpMap() {
         Log.v(TAG, "startUpMap() called");
 
-        getMapAsync(new OnMapReadyCallback() {
+        new Handler().post(new Runnable() {
             @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsFragment.this.googleMap = googleMap;
-                MapsFragment.this.googleMap.setMyLocationEnabled(true);
-                MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
-                MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
+            public void run() {
+                getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        MapsFragment.this.googleMap = googleMap;
+                        MapsFragment.this.googleMap.setMyLocationEnabled(true);
+                        MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
+                        MapsFragment.this.googleMap.getUiSettings().setZoomControlsEnabled(true);
 
-                // Goes to center of LA
+                        // Goes to center of LA
 
-                position = new LatLng(latitude, longitude);
-                zoom = 16;
+                        position = new LatLng(latitude, longitude);
+                        zoom = 16;
 
-                MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                        .newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+                                .newLatLngZoom(position, zoom));
 
-                MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+                    }
+
+                });
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        addMarkers();
+                        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
+                        activateGeofences();
+                    }
+                });
             }
         });
-
-//        addMarkers();
-//        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
-//        activateGeofences();
 
     }
 
@@ -229,12 +241,12 @@ public class MapsFragment extends MapFragment implements
         // In case parameter is tampered
 
         if(poi == null) {
-            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point" +
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point " +
                     "of interest", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 getMapAsync(new OnMapReadyCallback() {
@@ -254,11 +266,17 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                addMarkers();
-                activateGeofences();
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        addMarkers();
+                        activateGeofences();
+                    }
+                });
+
             }
 
-        }, 100);
+        });
     }
 
     // Add Markers to Map
@@ -358,7 +376,7 @@ public class MapsFragment extends MapFragment implements
         // Add the circular fence around each point of interest
 
         if(googleMap == null) {
-            Log.v(TAG, "googleMap variable null. Unable to add geofence circle.");
+            Log.v(TAG, "googleMap variable null. Unable to add geofence circle");
             return;
         }
 
@@ -436,12 +454,12 @@ public class MapsFragment extends MapFragment implements
 
     @Override
     public void onFetchingComplete(ArrayList<POI> poiArrayList) {
-        startUpMap();
         Log.v(TAG, "onFetchingComplete() called");
+        dSpoiArrayList = poiArrayList;
 
-        for(int i = 0; i < poiArrayList.size(); i++) {
-            addGeofence(poiArrayList.get(i));
-        }
-
+        // Once this is done, onConnected() is called, which will first find current location
+        // and then it will startUpMap. startUpMap() will use the ArrayList to display markers
+        // geofences, and activate them!
     }
 }
+
