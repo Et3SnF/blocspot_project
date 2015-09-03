@@ -55,8 +55,9 @@ public class POITable extends Table {
     }
 
     public static Cursor getAllPOIs(SQLiteDatabase readonlyDatabase) {
-        // Select * FROM poi_table order has_visited desc;
-        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY ?", new String[]{COLUMN_HAS_VISITED});
+        // Select * FROM poi_table order has_visited;
+        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY " + COLUMN_HAS_VISITED
+                , null);
     }
 
     // Builder Class

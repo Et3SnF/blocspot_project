@@ -149,7 +149,7 @@ public class DataSource {
                 .insert(writableDatabase);
 
         new POITable.Builder()
-                .setLocationName("DogHaus")
+                .setLocationName("Urban Ramen")
                 .setCategory("Food")
                 .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
                 .setAddress("7300 Sunset Blvd")
