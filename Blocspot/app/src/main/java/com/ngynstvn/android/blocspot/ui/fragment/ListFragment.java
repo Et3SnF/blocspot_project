@@ -155,28 +155,4 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     }
 
-    // ----- Separate Methods ------ //
-
-    private void activateSwipeToAction(RecyclerView recyclerView) {
-
-        simpleCallback =
-                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.ACTION_STATE_IDLE,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder
-                            viewHolder, RecyclerView.ViewHolder target) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                    }
-                };
-
-        itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-    }
 }

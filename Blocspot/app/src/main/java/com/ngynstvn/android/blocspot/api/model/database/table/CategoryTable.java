@@ -36,9 +36,9 @@ public class CategoryTable extends Table {
 
     public static Cursor getAllCategories(SQLiteDatabase readonlyDatabase) {
         // select * from category_table order by category_color;
-        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY ?", new String[]{COLUMN_CATEGORY_COLOR});
+        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY " +
+                COLUMN_CATEGORY_COLOR + ";", null);
     }
-
 
     // Builder class
 

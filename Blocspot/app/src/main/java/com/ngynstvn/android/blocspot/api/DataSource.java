@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +12,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
+import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
 
@@ -20,7 +20,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 public class DataSource {
 
@@ -48,16 +47,10 @@ public class DataSource {
 
     private final int BASE_COLOR = android.R.color.white;
 
-    private ExecutorService executorService;
-
-    private POI poi1;
-    private POI poi2;
-    private POI poi3;
-    private POI poi4;
-    private POI poi5;
-
-    private POITable poiTable;
     private DatabaseOpenHelper databaseOpenHelper;
+    private POITable poiTable;
+    private CategoryTable categoryTable;
+
     private ArrayList<POI> poiArrayList = new ArrayList<>();
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
@@ -71,13 +64,18 @@ public class DataSource {
         context.deleteDatabase("blocspot_db");
 
         poiTable = new POITable();
-        databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(), poiTable);
+        categoryTable = new CategoryTable();
+
+        databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
+                poiTable, categoryTable);
+
         fetchAllPOIs();
+        fetchAllCategories();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
 
-    public void dbFakeData() {
+    private void dbFakeData() {
 
         Log.v(TAG, "dbFakeData() called");
 
@@ -127,7 +125,7 @@ public class DataSource {
                 .setCategory("Entertainment")
                 .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
                 .setAddress("111 S Grand Avenue")
-                .setCity("os Angeles")
+                .setCity("Los Angeles")
                 .setState("CA")
                 .setLatitude(34.0554362)
                 .setLongitude(-118.24994)
@@ -160,81 +158,39 @@ public class DataSource {
                 .setDescription("Located in West Hollywood. I heard this ramen place is good!")
                 .setHasVisited(0)
                 .insert(writableDatabase);
+
     }
 
-    public void fakeDataTest() {
+    private void dbFakeCategoryData() {
 
-        Log.v(TAG, "fakeDataTest() called");
+        Log.v(TAG, "dbFakeCategoryData() called");
 
-        poi1 = new POI(1, "Glendale Galleria", "Social", UIUtils.generateRandomColor(BASE_COLOR),
-                "100 W Broadway", "Glendale", "CA", 0.00f, 0.00f, "A very well known mall in the " +
-                "city. Across from Americana.", false, 2.3f);
+        SQLiteDatabase writableDatabase = databaseOpenHelper.getWritableDatabase();
 
-        poi2 = new POI(2, "Boba 7", "Alcohol", UIUtils.generateRandomColor(BASE_COLOR), "518 7th St",
-                "Los Angeles", "CA", 0.00f, 0.00f, "This place serves alcoholic boba. What an " +
-                "interesting place!", true, 9.3f);
+        new CategoryTable.Builder()
+                .setCategoryName("Restaurants")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .insert(writableDatabase);
 
-        poi3 = new POI(3, "Perch", "Nightclub", UIUtils.generateRandomColor(BASE_COLOR), "448 S " +
-                "Hill St", "Los Angeles", "CA", 0.00f, 0.00f, "A night club out in downtown Los " +
-                "Angeles. Beautiful view of downtown when at the top!", false, 9.6f);
+        new CategoryTable.Builder()
+                .setCategoryName("Entertainment")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .insert(writableDatabase);
 
-        poi4 = new POI(4, "Walt Disney Concert Hall", "Entertainment",
-                UIUtils.generateRandomColor(BASE_COLOR), "111 S Grand Avenue", "Los Angeles", "CA",
-                0.00f, 0.00f, "I never knew what this building was. Oddly shaped but I found out it's " +
-                "related to Disney! D:", false, 8.7f);
+        new CategoryTable.Builder()
+                .setCategoryName("Night Life")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .insert(writableDatabase);
 
-        poi5 = new POI(5, "DogHaus", "Food", UIUtils.generateRandomColor(BASE_COLOR), "3817 W Olive" +
-                " Ave", "Burbank", "CA", 0.00f, 0.00f, "I heard this place has crazy hot dogs! Not " +
-                "like those typical dodger dogs!", false, 5.0f);
+        new CategoryTable.Builder()
+                .setCategoryName("Museums")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .insert(writableDatabase);
 
-        Handler handler = new Handler();
-
-        // post and post-delayed
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                poi1.setLatLngValue();
-                poi2.setLatLngValue();
-                poi3.setLatLngValue();
-                poi4.setLatLngValue();
-                poi5.setLatLngValue();
-
-                Log.v(TAG, "LatLng conversion successful.");
-
-                poiArrayList.add(poi1);
-                poiArrayList.add(poi2);
-                poiArrayList.add(poi3);
-                poiArrayList.add(poi4);
-                poiArrayList.add(poi5);
-
-                Log.v(TAG, "POI object addition successful.");
-
-                insertNewPOI(poi1);
-                insertNewPOI(poi2);
-                insertNewPOI(poi3);
-                insertNewPOI(poi4);
-                insertNewPOI(poi5);
-
-                Log.v(TAG, "Database insertion successful.");
-
-//                addToCategoryArrayList(poi1);
-//                addToCategoryArrayList(poi2);
-//                addToCategoryArrayList(poi3);
-//                addToCategoryArrayList(poi4);
-//                addToCategoryArrayList(poi5);
-
-                Log.v(TAG, "POI1 - " + "Name: " + poi1.getCategoryName() + " | " + "Color: " + poi1.getCategoryColor());
-                Log.v(TAG, "POI2 - " + "Name: " + poi2.getCategoryName() + " | " + "Color: " + poi2.getCategoryColor());
-                Log.v(TAG, "POI3 - " + "Name: " + poi3.getCategoryName() + " | " + "Color: " + poi3.getCategoryColor());
-                Log.v(TAG, "POI4 - " + "Name: " + poi4.getCategoryName() + " | " + "Color: " + poi4.getCategoryColor());
-                Log.v(TAG, "POI5 - " + "Name: " + poi5.getCategoryName() + " | " + "Color: " + poi5.getCategoryColor());
-
-                Log.v(TAG, "Category Map & ArrayList insertion successful.");
-
-            }
-        });
+        new CategoryTable.Builder()
+                .setCategoryName("Theme Parks")
+                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .insert(writableDatabase);
     }
 
     // ----- Separate Methods ----- //
@@ -261,29 +217,18 @@ public class DataSource {
         catNameColorMap.put(categoryName, UIUtils.generateRandomColor(Color.WHITE));
     }
 
-//    private void addToCategoryArrayList(POI poi) {
-//        categoryArrayList.add(new Category(1, poi.getCategoryName(), poi.getCategoryColor()));
-//
-//        // Anything that exists in the array list are added to a map
-//        catNameColorMap.put(poi.getCategoryName(), poi.getCategoryColor());
-//    }
-//
-//        // Create new category
-//
-//    private void addNewCategory(String name) {
-//        // Validation has already been taken care of. Just add a new category name and color
-//
-//        int color = UIUtils.generateRandomColor(BASE_COLOR);
-//
-//        categoryArrayList.add(new Category(1, name, color));
-//        catNameColorMap.put(name, color);
-//    }
+    /**
+     *
+     * Update POI arrayList after something is updated in database (Category assignment, etc.)
+     * Update the category array list if necessary when the category table is changed
+     *
+     */
 
     // --------- Database Methods ---------- //
 
-    // Test method to insert into database
+        // PUSHING to DB methods
 
-    public long insertNewPOI(POI poi) {
+    public long addNewPOI(POI poi) {
 
         Log.v(TAG, "insertPOIToDB() called");
 
@@ -315,6 +260,22 @@ public class DataSource {
                 .setHasVisited(boolInt)
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
+
+    public long addNewCategory(Category category) {
+
+        Log.v(TAG, "addNewCategory() called");
+
+        if (category == null) {
+            return -1L;
+        }
+
+        return new CategoryTable.Builder()
+                .setCategoryName(category.getCategoryName())
+                .setCategoryColor(category.getCategoryColor())
+                .insert(databaseOpenHelper.getWritableDatabase());
+    }
+
+        // PULLING methods
 
     public void fetchAllPOIs() {
 
@@ -351,7 +312,7 @@ public class DataSource {
                 if(cursor.moveToFirst()) {
 
                     do {
-                        poiArrayList.add(itemFromCursor(cursor));
+                        poiArrayList.add(poiFromCursor(cursor));
                     }
                     while(cursor.moveToNext());
 
@@ -374,8 +335,7 @@ public class DataSource {
                     return;
                 }
 
-                DataSource.this.poiArrayList.addAll(poiArrayList);
-
+                DataSource.this.poiArrayList = poiArrayList;
                 getDataSourceDelegate().onFetchingComplete(poiArrayList);
             }
 
@@ -385,15 +345,69 @@ public class DataSource {
 
     public void fetchAllCategories() {
 
+        new AsyncTask<Void, Void, ArrayList<Category>>() {
+
+            @Override
+            protected void onPreExecute() {
+                dbFakeCategoryData();
+            }
+
+            @Override
+            protected ArrayList<Category> doInBackground(Void... params) {
+
+                ArrayList<Category> categoryArrayList = new ArrayList<>();
+                Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
+
+                if(cursor == null || databaseOpenHelper == null) {
+                    Log.v(TAG, "Null encountered");
+
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Null encountered",
+                            Toast.LENGTH_SHORT).show();
+                    return null;
+                }
+
+                if(cursor.moveToFirst()) {
+                    do {
+                        categoryArrayList.add(catFromCursor(cursor));
+                    }
+                    while(cursor.moveToNext());
+                }
+
+                return categoryArrayList;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Category> categoryArrayList) {
+
+                if (categoryArrayList.isEmpty()) {
+                    // If the category list is empty, do the following if the places have categories in them
+
+                    for (POI poi : DataSource.this.poiArrayList) {
+                        DataSource.this.categoryArrayList.add(new Category(poi.getRowId(), poi.getCategoryName(), poi.getCategoryColor()));
+                    }
+
+                    return;
+                }
+
+                DataSource.this.categoryArrayList = categoryArrayList;
+            }
+
+        }.execute();
+
     }
 
     public void filterByCategory(final Cursor cursor) {
 
     }
 
-    static POI itemFromCursor(final Cursor cursor) {
+        // Pulling table row methods
 
-        Log.v(TAG, "itemFromCursor() called");
+    static POI poiFromCursor(final Cursor cursor) {
+
+        Log.v(TAG, "poiFromCursor() called");
+
+        // This is for boolean purposes. Gets specific row# to get 0 or 1 values
+        // to convert it into a boolean for the model
 
         POI poi = new POI(POITable.getRowId(cursor));
 
@@ -410,9 +424,15 @@ public class DataSource {
                 POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
     }
 
+    static Category catFromCursor(final Cursor cursor) {
+
+        Log.v(TAG, "poiFromCursor() called");
+
+        return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
+                CategoryTable.getCategoryColor(cursor));
+    }
+
     // Null column hack - If you want everything in a row to be null, make one of the items null by
     // specifying it in the nullColumnHack parameter
-
-
 
 }
