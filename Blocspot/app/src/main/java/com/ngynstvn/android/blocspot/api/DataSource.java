@@ -46,6 +46,7 @@ public class DataSource {
     // Member variables
 
     private final int BASE_COLOR = android.R.color.white;
+    private final String DB_NAME = "blocspot_db";
 
     private DatabaseOpenHelper databaseOpenHelper;
     private POITable poiTable;
@@ -61,7 +62,7 @@ public class DataSource {
 
         Log.v(TAG, "DataSource instantiated");
 
-        context.deleteDatabase("blocspot_db");
+        context.deleteDatabase(DB_NAME);
 
         poiTable = new POITable();
         categoryTable = new CategoryTable();
@@ -83,8 +84,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("Glendale Galleria")
-                .setCategory("Social")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("100 W Broadway")
                 .setCity("Glendale")
                 .setState("CA")
@@ -96,8 +97,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("Boba 7")
-                .setCategory("Alcohol")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("518 7th St")
                 .setCity("Los Angeles")
                 .setState("CA")
@@ -109,8 +110,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("Perch")
-                .setCategory("Nightclub")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("448 S Hill St")
                 .setCity("Los Angeles")
                 .setState("CA")
@@ -122,8 +123,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("Walt Disney Concert Hall")
-                .setCategory("Entertainment")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("111 S Grand Avenue")
                 .setCity("Los Angeles")
                 .setState("CA")
@@ -135,8 +136,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("DogHaus")
-                .setCategory("Food")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("3817 W Olive Ave")
                 .setCity("Burbank")
                 .setState("CA")
@@ -148,8 +149,8 @@ public class DataSource {
 
         new POITable.Builder()
                 .setLocationName("Urban Ramen")
-                .setCategory("Food")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategory("")
+                .setCategoryColor(0)
                 .setAddress("7300 Sunset Blvd")
                 .setCity("Los Angeles")
                 .setState("CA")
@@ -203,6 +204,10 @@ public class DataSource {
 
     public ArrayList<Category> getCategoryArrayList() {
         return categoryArrayList;
+    }
+
+    public Map<String, Integer> getCategoryMap() {
+        return catNameColorMap;
     }
 
         // Adding POI objects to lists
@@ -275,6 +280,31 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
+    private void updateDBFromList() {
+
+        Log.v(TAG, "udpateDBFromList() called");
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+
+        }.execute();
+
+    }
+
         // PULLING methods
 
     public void fetchAllPOIs() {
@@ -317,6 +347,8 @@ public class DataSource {
                     while(cursor.moveToNext());
 
                 }
+
+                databaseOpenHelper.close();
 
                 return poiArrayList;
 

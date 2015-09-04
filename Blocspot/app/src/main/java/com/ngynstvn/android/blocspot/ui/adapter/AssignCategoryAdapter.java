@@ -22,7 +22,7 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
     // ----- INTERFACE ----- //
 
     public static interface AssignCategoryAdapterDelegate {
-        public void onCategoryAssignmentClicked(int position);
+        public void onCategoryAssignmentClicked(int catItemPosition);
     }
 
     private WeakReference<AssignCategoryAdapterDelegate> assignCategoryDelegate;

@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.ui.adapter;
 
 import android.annotation.TargetApi;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,8 +30,8 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
     public static interface PlaceAdapterDelegate {
         public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
-        public void onAssignCatButtonClicked(PlaceAdapter placeAdapter, int position);
-        public void onAddNoteButtonClicked(PlaceAdapter placeAdapter, int position);
+        public void onItemAssigned(PlaceAdapter placeAdapter, int position);
+        public void onNoteAdded(PlaceAdapter placeAdapter, int position);
     }
 
     // Setter and getter for delegate
@@ -180,11 +181,11 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 public void onClick(View v) {
 
                     if(getAdapterDelegate() != null) {
-                        getAdapterDelegate().onAddNoteButtonClicked(PlaceAdapter.this, getAdapterPosition());
+                        getAdapterDelegate().onNoteAdded(PlaceAdapter.this, getAdapterPosition());
                     }
 
+                    notifyDataSetChanged();
                     swipeLayout.close();
-                    // Do something here
                 }
             });
 
@@ -193,10 +194,10 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 public void onClick(View v) {
 
                     if(getAdapterDelegate() != null) {
-                        getAdapterDelegate().onAssignCatButtonClicked(PlaceAdapter.this, getAdapterPosition());
+                        getAdapterDelegate().onItemAssigned(PlaceAdapter.this, getAdapterPosition());
                     }
 
-                    swipeLayout.close();
+                    swipeLayout.close(true, true);
                 }
             });
 
@@ -229,12 +230,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         void updateViewHolder(POI poi) {
-//            Log.v(TAG, "updateViewHolder() called");
+            Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
-            visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
+
+            if(poi.getCategoryColor() == 0) {
+                visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+            }
+            else {
+                visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
+            }
+
             visitCheckbox.setChecked(poi.isHasVisited());
         }
 

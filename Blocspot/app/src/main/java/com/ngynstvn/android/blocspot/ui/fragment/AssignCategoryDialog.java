@@ -15,7 +15,11 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.model.Category;
+import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.adapter.AssignCategoryAdapter;
+
+import java.util.ArrayList;
 
 public class AssignCategoryDialog extends DialogFragment implements AssignCategoryAdapter.AssignCategoryAdapterDelegate {
 
@@ -25,6 +29,9 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     private AlertDialog.Builder builder;
     private RecyclerView recyclerView;
     private AssignCategoryAdapter assignCategoryAdapter;
+
+    private ArrayList<Category> categoryArrayList = BlocspotApplication.getSharedDataSource().getCategoryArrayList();
+    private ArrayList<POI> poiArrayList = BlocspotApplication.getSharedDataSource().getPoiArrayList();
 
     public static AssignCategoryDialog newInstance(int position) {
 
@@ -143,9 +150,30 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
      */
 
     @Override
-    public void onCategoryAssignmentClicked(int position) {
+    public void onCategoryAssignmentClicked(int catItemPosition) {
+
+        Log.v(TAG, "onCategoryAssignmentClicked() called");
+
+        String categoryName = categoryArrayList.get(catItemPosition).getCategoryName();
+        int categoryColor = categoryArrayList.get(catItemPosition).getCategoryColor();
+
+        // Input validation
+
+        if(categoryName.equalsIgnoreCase(poiArrayList.get(getArguments().getInt("position")).getCategoryName())) {
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of Interest is already " +
+                    "assigned this!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Set the category of POI item as categoryName
+
+        poiArrayList.get(getArguments().getInt("position")).setCategoryName(categoryName);
+        poiArrayList.get(getArguments().getInt("position")).setCategoryColor(categoryColor);
+
+        Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of interest was assigned to "
+                + categoryName, Toast.LENGTH_SHORT).show();
+
         dismiss();
-        Toast.makeText(BlocspotApplication.getSharedInstance(), "Assign Category " +
-                "Item #" + (position+1) + " was clicked", Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -12,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
@@ -159,19 +161,21 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     }
 
     @Override
-    public void onAssignCatButtonClicked(PlaceAdapter placeAdapter, int position) {
+    public void onItemAssigned(PlaceAdapter placeAdapter, int position) {
         showAssignCategoryDialog(position);
         // Work whatever necessary in the AssignCategoryDialog
     }
 
     @Override
-    public void onAddNoteButtonClicked(PlaceAdapter placeAdapter, int position) {
+    public void onNoteAdded(PlaceAdapter placeAdapter, int position) {
         // show the add note popup dialog
+        Toast.makeText(BlocspotApplication.getSharedInstance(), "Functionality coming soon...",
+                Toast.LENGTH_SHORT).show();
     }
 
     // ----- Separate Methods ----- //
 
-    private void showAssignCategoryDialog(int position) {
+    private void showAssignCategoryDialog(final int position) {
         AssignCategoryDialog assignCategoryDialog = AssignCategoryDialog.newInstance(position);
         assignCategoryDialog.show(getFragmentManager(), "assign_category");
     }
