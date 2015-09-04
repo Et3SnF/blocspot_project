@@ -211,7 +211,7 @@ public class MapsFragment extends MapFragment implements
                         zoom = 16;
 
                         MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                                .newLatLngZoom(position, zoom));
+                                .newLatLngZoom(position, zoom), 1500, null);
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -240,13 +240,13 @@ public class MapsFragment extends MapFragment implements
 
         // In case parameter is tampered
 
-        if(poi == null) {
-            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point " +
+        if (poi == null) {
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point" +
                     "of interest", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        new Handler().post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 getMapAsync(new OnMapReadyCallback() {
@@ -266,17 +266,11 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        addMarkers();
-                        activateGeofences();
-                    }
-                }, 1000);
-
+                addMarkers();
+                activateGeofences();
             }
 
-        });
+        }, 100);
     }
 
     // Add Markers to Map

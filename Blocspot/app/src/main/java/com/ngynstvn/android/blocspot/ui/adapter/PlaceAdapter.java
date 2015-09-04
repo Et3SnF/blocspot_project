@@ -175,19 +175,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
                 }
             });
-//
-//            swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    // MUST USE this over itemView.setOnClickListener()!
-//
-//                    if (getAdapterDelegate() != null) {
-//                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
-//                        Log.v(TAG, "getAdapterDelegate() is not null!");
-//                    }
-//                }
-//            });
+
+            swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // MUST USE this over itemView.setOnClickListener()!
+
+                    if (getAdapterDelegate() != null) {
+                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
+                        Log.v(TAG, "getAdapterDelegate() is not null!");
+                    }
+                }
+            });
 
             noteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
