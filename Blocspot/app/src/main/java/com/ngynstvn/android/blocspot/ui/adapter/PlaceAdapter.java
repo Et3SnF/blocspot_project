@@ -176,6 +176,19 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 }
             });
 
+            swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    // MUST USE this over itemView.setOnClickListener()!
+
+                    if (getAdapterDelegate() != null) {
+                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
+                        Log.v(TAG, "getAdapterDelegate() is not null!");
+                    }
+                }
+            });
+
             noteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -213,16 +226,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
-                }
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getAdapterDelegate() != null) {
-                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
-                        Log.v(TAG, "getAdapterDelegate() is not null!");
-                    }
                 }
             });
 
