@@ -121,7 +121,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         POI poi;
 
-        SwipeLayout swipeLayout;
+        private SwipeLayout swipeLayout;
         Button noteButton;
         Button assignCatButton;
         Button deletePOIButton;
@@ -143,6 +143,9 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
             deletePOIButton = (Button) itemView.findViewById(R.id.btn_poi_delete);
 
             // Listeners
+
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+            swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewById(R.id.ll_poi_bottom_view));
 
             swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
                 @Override
