@@ -530,8 +530,8 @@ public class DataSource {
 
     }
 
-    public void filterByCategory(final Cursor cursor) {
-
+    public void filterByCategory(final Cursor cursor, String... strings) {
+        // Select * from poi_table where category = "blah1" or category="pigeons" or ...;
     }
 
     // Pulling table row methods
