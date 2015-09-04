@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -58,9 +57,7 @@ public class DataSource {
     private ArrayList<POI> poiArrayList = new ArrayList<>();
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
-
-    private Handler handler;
-
+    
     // Constructor
 
     public DataSource(Context context) {
@@ -80,15 +77,6 @@ public class DataSource {
 
         fetchAllPOIs();
         fetchAllCategories();
-
-        handler = new Handler();
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updatePOIsToDB();
-            }
-        }, 10000);
 
     }
 
