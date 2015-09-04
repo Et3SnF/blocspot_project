@@ -1,5 +1,6 @@
 package com.ngynstvn.android.blocspot.api;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,6 +27,8 @@ public class DataSource {
     // For log messaging
 
     private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
+    private static final String POI_TABLE = "poi_table";
+    private static final String CATEGORY_TABLE = "category_table";
 
     public static interface DataSourceDelegate {
         public void onFetchingComplete(ArrayList<POI> poiArrayList);
@@ -49,7 +52,7 @@ public class DataSource {
     private final String DB_NAME = "blocspot_db";
 
     private DatabaseOpenHelper databaseOpenHelper;
-    private POITable poiTable;
+    private POITable category;
     private CategoryTable categoryTable;
 
     private ArrayList<POI> poiArrayList = new ArrayList<>();
@@ -64,11 +67,11 @@ public class DataSource {
 
         context.deleteDatabase(DB_NAME);
 
-        poiTable = new POITable();
+        category = new POITable();
         categoryTable = new CategoryTable();
 
         databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                poiTable, categoryTable);
+                category, categoryTable);
 
         fetchAllPOIs();
         fetchAllCategories();
@@ -280,25 +283,95 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    private void updateDBFromList() {
+    public void updatePOIsToDB() {
 
-        Log.v(TAG, "udpateDBFromList() called");
+        Log.v(TAG, "updatePOIsToDB() called");
+
+        databaseOpenHelper.getReadableDatabase();
 
         new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected void onPreExecute() {
-                super.onPreExecute();
+                Log.v(TAG, "updatePOIsToDB() starting");
             }
 
             @Override
             protected Void doInBackground(Void... params) {
+
+                int hasVisited = 0;
+
+                for(POI poi : BlocspotApplication.getSharedDataSource().getPoiArrayList()) {
+
+                    ContentValues newValues = new ContentValues();
+
+                    if(poi.isHasVisited()) {
+                        hasVisited = 1;
+                    }
+                    else {
+                        hasVisited = 0;
+                    }
+
+                    newValues.put("location_name", poi.getLocationName());
+                    newValues.put("category", poi.getCategoryName());
+                    newValues.put("category_color", poi.getCategoryColor());
+                    newValues.put("address", poi.getAddress());
+                    newValues.put("city", poi.getCity());
+                    newValues.put("state", poi.getState());
+                    newValues.put("latitude", poi.getLatitudeValue());
+                    newValues.put("longitude", poi.getLongitudeValue());
+                    newValues.put("description", poi.getDescription());
+                    newValues.put("has_visited", hasVisited);
+
+                    databaseOpenHelper.getWritableDatabase().update(POI_TABLE, newValues, "id = ?",
+                            new String[]{String.valueOf(poi.getRowId())});
+                }
+
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
+                Log.v(TAG, "updatePOIsToDB() finished");
+                updateCategoriesToDB();
+            }
+
+        }.execute();
+
+    }
+
+    public void updateCategoriesToDB() {
+
+        Log.v(TAG, "updateCategoriesToDB() called");
+
+        databaseOpenHelper.getReadableDatabase();
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+                Log.v(TAG, "updateCategoriesToDB() starting");
+            }
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
+
+                    ContentValues newValues = new ContentValues();
+
+                    newValues.put("category", category.getCategoryName());
+                    newValues.put("category_color", category.getCategoryColor());
+
+                    databaseOpenHelper.getWritableDatabase().update(CATEGORY_TABLE, newValues, "id = ?",
+                            new String[]{String.valueOf(category.getRowId())});
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                Log.v(TAG, "updateCategoriesToDB() finished");
             }
 
         }.execute();
