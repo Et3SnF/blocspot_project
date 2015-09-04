@@ -54,10 +54,34 @@ public class POITable extends Table {
                 + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
     }
 
+    // NOTE rawquery() method: sql method must not end in ';'
+
     public static Cursor getAllPOIs(SQLiteDatabase readonlyDatabase) {
         // Select * FROM poi_table order has_visited;
-        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY " + COLUMN_HAS_VISITED +
-                ";", null);
+        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY " + COLUMN_HAS_VISITED, null);
+    }
+
+    // Getting filtered table data BY CATEGORY
+
+    public static Cursor getFilteredPOIs(SQLiteDatabase readOnlyDatabase, String... strings) {
+        // Select * from poi_table where category = "blah1" or category="pigeons" or ...;
+
+        String conditions = "";
+
+        if(strings.length == 0) {
+            return readOnlyDatabase.rawQuery("Select * from " + NAME, null);
+        }
+        else if(strings.length == 1) {
+            conditions += "category = " + "'" + strings[strings.length-1] + "'";
+        }
+
+        for(int i = 0; i < strings.length-1; i++) {
+            conditions += "category = " + "'" + strings[i] + "'" + " or ";
+        }
+
+        conditions += "category = " + "'" + strings[strings.length-1] + "'";
+
+        return readOnlyDatabase.rawQuery("Select * from " + NAME + " where " + conditions, null);
     }
 
     // Builder Class

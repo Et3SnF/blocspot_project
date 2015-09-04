@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
@@ -90,6 +89,7 @@ public class DataSource {
                 updatePOIsToDB();
             }
         }, 10000);
+
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
@@ -389,7 +389,7 @@ public class DataSource {
 
     }
 
-        // PULLING methods
+        // ------ Pulling Methods ------ //
 
     public void fetchAllPOIs() {
 
@@ -420,15 +420,6 @@ public class DataSource {
                 }
 
                 Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
-
-                if(cursor == null || databaseOpenHelper == null) {
-
-                    Log.v(TAG, "Null encountered");
-
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Null encountered",
-                            Toast.LENGTH_SHORT).show();
-                    return null;
-                }
 
                 if(cursor.moveToFirst()) {
 
@@ -473,7 +464,7 @@ public class DataSource {
             @Override
             protected void onPreExecute() {
 
-                if(!categoryArrayList.isEmpty()) {
+                if (!categoryArrayList.isEmpty()) {
                     categoryArrayList.clear();
                 }
 
@@ -484,25 +475,17 @@ public class DataSource {
 
                 ArrayList<Category> categoryArrayList = new ArrayList<>();
 
-                if(!categoryArrayList.isEmpty()) {
+                if (!categoryArrayList.isEmpty()) {
                     categoryArrayList.clear();
                 }
 
                 Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
 
-                if(cursor == null || databaseOpenHelper == null) {
-                    Log.v(TAG, "Null encountered");
-
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Null encountered",
-                            Toast.LENGTH_SHORT).show();
-                    return null;
-                }
-
-                if(cursor.moveToFirst()) {
+                if (cursor.moveToFirst()) {
                     do {
                         categoryArrayList.add(catFromCursor(cursor));
                     }
-                    while(cursor.moveToNext());
+                    while (cursor.moveToNext());
 
                     cursor.close();
                 }
@@ -513,13 +496,15 @@ public class DataSource {
             @Override
             protected void onPostExecute(ArrayList<Category> categoryArrayList) {
 
+                // In case something went wrong in category_table, do something about it
+
                 if (categoryArrayList.isEmpty()) {
-                    // If the category list is empty, do the following if the places have categories in them
 
                     for (POI poi : DataSource.this.poiArrayList) {
                         DataSource.this.categoryArrayList.add(new Category(poi.getRowId(), poi.getCategoryName(), poi.getCategoryColor()));
                     }
 
+                    updateCategoriesToDB();
                     return;
                 }
 
@@ -527,14 +512,73 @@ public class DataSource {
             }
 
         }.execute();
+    }
+
+    public void fetchFilteredPOIs(final String... categories) {
+
+        Log.v(TAG, "fetchFilteredPOIs() called");
+
+        // Perform AsyncTask at startup
+
+        new AsyncTask<Void, Void, ArrayList<POI>>() {
+
+            @Override
+            protected void onPreExecute() {
+                if(!poiArrayList.isEmpty()) {
+                    poiArrayList.clear();
+                }
+            }
+
+            @Override
+            protected ArrayList<POI> doInBackground(Void... params) {
+
+                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
+
+                ArrayList<POI> poiArrayList = new ArrayList<>();
+
+                if(!poiArrayList.isEmpty()) {
+                    poiArrayList.clear();
+                }
+
+                Cursor cursor = POITable.getFilteredPOIs(databaseOpenHelper.getReadableDatabase(), categories);
+
+                if(cursor.moveToFirst()) {
+
+                    do {
+                        poiArrayList.add(poiFromCursor(cursor));
+                    }
+                    while(cursor.moveToNext());
+
+                    cursor.close();
+
+                }
+
+                return poiArrayList;
+
+            }
+
+            // Runs on UI Thread
+
+            @Override
+            protected void onPostExecute(ArrayList<POI> poiArrayList) {
+
+                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
+                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
+
+                if(dataSourceDelegate == null) {
+                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
+                    return;
+                }
+
+                DataSource.this.poiArrayList = poiArrayList;
+                getDataSourceDelegate().onFetchingComplete(poiArrayList);
+            }
+
+        }.execute();
 
     }
 
-    public void filterByCategory(final Cursor cursor, String... strings) {
-        // Select * from poi_table where category = "blah1" or category="pigeons" or ...;
-    }
-
-    // Pulling table row methods
+    // Convenient Methods that get DB material and convert to objects
 
     static POI poiFromCursor(final Cursor cursor) {
 
