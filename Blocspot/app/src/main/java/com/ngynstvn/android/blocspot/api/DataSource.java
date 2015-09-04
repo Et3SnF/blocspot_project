@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -59,6 +60,8 @@ public class DataSource {
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
 
+    private Handler handler;
+
     // Constructor
 
     public DataSource(Context context) {
@@ -73,8 +76,20 @@ public class DataSource {
         databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
                 category, categoryTable);
 
+        dbFakeData();
+        dbFakeCategoryData();
+
         fetchAllPOIs();
         fetchAllCategories();
+
+        handler = new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updatePOIsToDB();
+            }
+        }, 10000);
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
@@ -292,11 +307,6 @@ public class DataSource {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected void onPreExecute() {
-                Log.v(TAG, "updatePOIsToDB() starting");
-            }
-
-            @Override
             protected Void doInBackground(Void... params) {
 
                 int hasVisited = 0;
@@ -332,7 +342,6 @@ public class DataSource {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                Log.v(TAG, "updatePOIsToDB() finished");
                 updateCategoriesToDB();
             }
 
@@ -350,11 +359,12 @@ public class DataSource {
 
             @Override
             protected void onPreExecute() {
-                Log.v(TAG, "updateCategoriesToDB() starting");
+
             }
 
             @Override
             protected Void doInBackground(Void... params) {
+
                 for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
 
                     ContentValues newValues = new ContentValues();
@@ -371,7 +381,8 @@ public class DataSource {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                Log.v(TAG, "updateCategoriesToDB() finished");
+                fetchAllPOIs();
+                fetchAllCategories();
             }
 
         }.execute();
@@ -391,7 +402,10 @@ public class DataSource {
             @Override
             protected void onPreExecute() {
                 Log.v(TAG, "onPreExecute() performing in " + Thread.currentThread().getName());
-                dbFakeData();
+
+                if(!poiArrayList.isEmpty()) {
+                    poiArrayList.clear();
+                }
             }
 
             @Override
@@ -400,6 +414,10 @@ public class DataSource {
                 Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
 
                 ArrayList<POI> poiArrayList = new ArrayList<>();
+
+                if(!poiArrayList.isEmpty()) {
+                    poiArrayList.clear();
+                }
 
                 Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
 
@@ -420,8 +438,6 @@ public class DataSource {
                     while(cursor.moveToNext());
 
                 }
-
-                databaseOpenHelper.close();
 
                 return poiArrayList;
 
@@ -454,13 +470,22 @@ public class DataSource {
 
             @Override
             protected void onPreExecute() {
-                dbFakeCategoryData();
+
+                if(!categoryArrayList.isEmpty()) {
+                    categoryArrayList.clear();
+                }
+
             }
 
             @Override
             protected ArrayList<Category> doInBackground(Void... params) {
 
                 ArrayList<Category> categoryArrayList = new ArrayList<>();
+
+                if(!categoryArrayList.isEmpty()) {
+                    categoryArrayList.clear();
+                }
+
                 Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
 
                 if(cursor == null || databaseOpenHelper == null) {
@@ -505,14 +530,11 @@ public class DataSource {
 
     }
 
-        // Pulling table row methods
+    // Pulling table row methods
 
     static POI poiFromCursor(final Cursor cursor) {
 
-        Log.v(TAG, "poiFromCursor() called");
-
-        // This is for boolean purposes. Gets specific row# to get 0 or 1 values
-        // to convert it into a boolean for the model
+//        Log.v(TAG, "poiFromCursor() called");
 
         POI poi = new POI(POITable.getRowId(cursor));
 
@@ -531,13 +553,10 @@ public class DataSource {
 
     static Category catFromCursor(final Cursor cursor) {
 
-        Log.v(TAG, "poiFromCursor() called");
+//        Log.v(TAG, "catFromCursor() called");
 
         return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
                 CategoryTable.getCategoryColor(cursor));
     }
-
-    // Null column hack - If you want everything in a row to be null, make one of the items null by
-    // specifying it in the nullColumnHack parameter
 
 }

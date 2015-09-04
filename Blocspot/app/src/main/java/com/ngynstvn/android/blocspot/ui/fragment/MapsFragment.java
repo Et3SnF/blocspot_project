@@ -223,7 +223,7 @@ public class MapsFragment extends MapFragment implements
                     @Override
                     public void run() {
                         addMarkers();
-                        Log.v(TAG, geofenceList.size() + ""); // Check to see if activateGeofences will work.
+                        Log.v(TAG, "Number of active geofences: " + geofenceList.size() + "");
                         activateGeofences();
                     }
                 });

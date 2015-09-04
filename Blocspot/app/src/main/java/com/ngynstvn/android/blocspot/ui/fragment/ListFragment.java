@@ -151,6 +151,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     @Override
     public void onItemClicked(PlaceAdapter placeAdapter, POI poi) {
 
+        Log.v(TAG, "POI Item Clicked");
+
         if(getListFragDelegate() == null) {
             Log.v(TAG, "PROBLEM: getListFragmentDelegate() is null");
             return;
@@ -163,7 +165,6 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     @Override
     public void onItemAssigned(PlaceAdapter placeAdapter, int position) {
         showAssignCategoryDialog(position);
-        // Work whatever necessary in the AssignCategoryDialog
     }
 
     @Override
