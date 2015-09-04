@@ -57,7 +57,7 @@ public class DataSource {
     private ArrayList<POI> poiArrayList = new ArrayList<>();
     private ArrayList<Category> categoryArrayList = new ArrayList<>();
     private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
-    
+
     // Constructor
 
     public DataSource(Context context) {
