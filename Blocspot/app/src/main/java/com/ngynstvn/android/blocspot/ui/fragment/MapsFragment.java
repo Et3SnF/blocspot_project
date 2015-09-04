@@ -267,10 +267,11 @@ public class MapsFragment extends MapFragment implements
                 });
 
                 addMarkers();
-                activateGeofences();
             }
 
         }, 100);
+
+        activateGeofences();
     }
 
     // Add Markers to Map

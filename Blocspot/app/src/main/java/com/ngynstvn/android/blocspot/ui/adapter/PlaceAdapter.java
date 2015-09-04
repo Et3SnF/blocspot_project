@@ -184,7 +184,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
                     if (getAdapterDelegate() != null) {
                         getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
-                        Log.v(TAG, "getAdapterDelegate() is not null!");
                     }
                 }
             });
