@@ -437,6 +437,8 @@ public class DataSource {
                     }
                     while(cursor.moveToNext());
 
+                    cursor.close();
+
                 }
 
                 return poiArrayList;
@@ -501,6 +503,8 @@ public class DataSource {
                         categoryArrayList.add(catFromCursor(cursor));
                     }
                     while(cursor.moveToNext());
+
+                    cursor.close();
                 }
 
                 return categoryArrayList;
