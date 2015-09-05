@@ -99,7 +99,7 @@
                 android:id="@+id/cb_filter_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/black_26"
+                android:buttonTint="@color/black_60"
                 android:layout_marginLeft="16dp"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
