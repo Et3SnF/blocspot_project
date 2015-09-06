@@ -69,11 +69,16 @@ public class BlocspotActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStart() {
+        Log.e(TAG, "onStart() called");
+        super.onStart();
+    }
+
+    @Override
     protected void onResume() {
         Log.e(TAG, "onResume() called");
         super.onResume();
     }
-
 
     @Override
     protected void onPause() {
@@ -83,8 +88,15 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     @Override
     protected void onStop() {
-        Log.e(TAG, "onPause() called");
+        Log.e(TAG, "onStop() called");
         super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.e(TAG, "onRestart() called");
+        // Only called whenever app comes back from a stop
+        super.onRestart();
     }
 
     @Override
