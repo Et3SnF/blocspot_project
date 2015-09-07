@@ -1,10 +1,12 @@
 package com.ngynstvn.android.blocspot.api.model;
 
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
+import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -169,5 +171,25 @@ public class POI extends Model implements Serializable {
 
     public void setDistanceToPOI(float distanceToPOI) {
         this.distanceToPOI = distanceToPOI;
+    }
+
+    // Important Method to retrieve data from database
+
+    public static POI fromCursor(Cursor cursor) {
+
+        POI poi = new POI(POITable.getRowId(cursor));
+
+        if(POITable.getColumnHasVisited(cursor) == 1) {
+            poi.setHasVisited(true);
+        }
+        else if(POITable.getColumnHasVisited(cursor) == 0) {
+            poi.setHasVisited(false);
+        }
+
+        return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
+                POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
+                POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongitude(cursor),
+                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
+
     }
 }

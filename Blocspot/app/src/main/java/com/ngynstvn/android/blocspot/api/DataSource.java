@@ -51,7 +51,7 @@ public class DataSource {
     private final String DB_NAME = "blocspot_db";
 
     private DatabaseOpenHelper databaseOpenHelper;
-    private POITable category;
+    private POITable poi_table;
     private CategoryTable categoryTable;
 
     private ArrayList<POI> poiArrayList = new ArrayList<>();
@@ -66,11 +66,11 @@ public class DataSource {
 
         context.deleteDatabase(DB_NAME);
 
-        category = new POITable();
+        poi_table = new POITable();
         categoryTable = new CategoryTable();
 
         databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                category, categoryTable);
+                poi_table, categoryTable);
 
         dbFakeData();
         dbFakeCategoryData();

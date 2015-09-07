@@ -1,7 +1,9 @@
 package com.ngynstvn.android.blocspot.ui.adapter;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +25,40 @@ import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapterViewHolder>
+public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
+
+    // Class variables
+
+    private static final String TAG = "Test (" + PlaceAdapter.class.getSimpleName() + ")";
+
+    // Member variables
+
+    public PlaceAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
+    }
+
+    @Override
+    public void onBindViewHolder(PlaceAdapterViewHolder viewHolder, Cursor cursor) {
+        POI poi = POI.fromCursor(cursor);
+        viewHolder.updateViewHolder(poi);
+    }
+
+    @Override
+    public PlaceAdapter.PlaceAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Log.v(TAG, "onCreateViewHolder() called");
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.poi_item, parent, false);
+        return new PlaceAdapterViewHolder(inflate);
+    }
+
+
+//    // Without database route
+//
+//    @Override
+//    public void onBindViewHolder(PlaceAdapter.PlaceAdapterViewHolder holder, int position) {
+//        // Log.v(TAG, "onBindViewHolder() called");
+//        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
+//    }
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
@@ -49,33 +83,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
         }
 
         return adapterDelegate.get();
-    }
-
-    // ----- Class Variables ----- //
-
-    private static final String TAG = "Test (" + PlaceAdapter.class.getSimpleName() + ")";
-
-    // ----- Member variables ----- //
-
-    // ----- PlaceAdapter methods ----- //
-
-    @Override
-    public int getItemCount() {
-        // Log.v(TAG, "getItemCount() called");
-        return BlocspotApplication.getSharedDataSource().getPoiArrayList().size();
-    }
-
-    @Override
-    public PlaceAdapter.PlaceAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Log.v(TAG, "onCreateViewHolder() called");
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.poi_item, parent, false);
-        return new PlaceAdapterViewHolder(inflate);
-    }
-
-    @Override
-    public void onBindViewHolder(PlaceAdapter.PlaceAdapterViewHolder holder, int position) {
-        // Log.v(TAG, "onBindViewHolder() called");
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
     }
 
     /**
@@ -128,7 +135,7 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceAdapter
 
         // Constructor
 
-        public PlaceAdapterViewHolder(final View itemView) {
+        public PlaceAdapterViewHolder(View itemView) {
 
             super(itemView);
             Log.v(TAG, "PlaceAdapterViewHolder() instantiated");

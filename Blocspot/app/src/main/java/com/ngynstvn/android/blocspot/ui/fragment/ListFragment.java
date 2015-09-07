@@ -2,6 +2,8 @@ package com.ngynstvn.android.blocspot.ui.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +19,8 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
+import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -51,6 +55,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     private static final String BUNDLE_LIST_MODE = ListFragment.class.getCanonicalName().concat(".LIST_MODE");
     private static final String TAG = "Test (" + ListFragment.class.getSimpleName() + ")";
+    private static final String POI_TABLE = "poi_table";
 
     // ----- Member variables ------ //
 
@@ -58,6 +63,13 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     private PlaceAdapter placeAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
+
+        // Database Material
+
+    private DatabaseOpenHelper databaseOpenHelper;
+    private SQLiteDatabase database;
+    private Cursor cursor;
+    POITable poi_table;
 
     // Keep these here for now. Handle them later.
 
@@ -84,7 +96,13 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        placeAdapter = new PlaceAdapter();
+
+        poi_table = new POITable();
+        databaseOpenHelper = new DatabaseOpenHelper(getActivity(), poi_table);
+        database = databaseOpenHelper.getWritableDatabase();
+        cursor = database.rawQuery("Select * from " + POI_TABLE, null);
+
+        placeAdapter = new PlaceAdapter(BlocspotApplication.getSharedInstance(), cursor);
         placeAdapter.setPlaceAdapterDelegate(this);
         callback = new ItemTouchHelperCallback(placeAdapter);
         touchHelper = new ItemTouchHelper(callback);
