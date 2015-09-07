@@ -242,7 +242,7 @@ public class MapsFragment extends MapFragment implements
 
         if (poi == null) {
             Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to go to desired point" +
-                    "of interest", Toast.LENGTH_SHORT).show();
+                    " of interest", Toast.LENGTH_SHORT).show();
             return;
         }
 
