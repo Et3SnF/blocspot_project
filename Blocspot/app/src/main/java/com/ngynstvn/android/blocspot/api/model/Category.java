@@ -1,5 +1,9 @@
 package com.ngynstvn.android.blocspot.api.model;
 
+import android.database.Cursor;
+
+import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
+
 public class Category extends Model{
 
     // ----- Class Variables ----- //
@@ -41,5 +45,12 @@ public class Category extends Model{
 
     public int getCategoryColor() {
         return categoryColor;
+    }
+
+    // Cursor method for retrieving data from database
+
+    public static Category fromCursor(Cursor cursor) {
+        return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
+                CategoryTable.getCategoryColor(cursor));
     }
 }

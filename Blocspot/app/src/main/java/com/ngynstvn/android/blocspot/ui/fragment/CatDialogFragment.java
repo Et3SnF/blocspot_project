@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
@@ -24,6 +27,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     // ----- Class Variables ----- //
 
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
+    private static final String CATEGORY_TABLE = "category_table";
 
     // ----- Member Variables ----- //
 
@@ -32,6 +36,10 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     private CategoryAdapter categoryAdapter;
     private ItemTouchHelper.Callback callback;
     private ItemTouchHelper touchHelper;
+
+    private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
+            .getDatabaseOpenHelper().getWritableDatabase();
+    private Cursor cursor;
 
     // Important single instantiation of this class
 
@@ -62,7 +70,9 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        categoryAdapter = new CategoryAdapter();
+
+        cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, "category_color", null);
+        categoryAdapter = new CategoryAdapter(BlocspotApplication.getSharedInstance(), cursor);
         categoryAdapter.setCategoryAdapterDelegate(this);
         callback = new ItemTouchHelperCallback(categoryAdapter);
         touchHelper = new ItemTouchHelper(callback);

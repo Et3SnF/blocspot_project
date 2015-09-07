@@ -19,8 +19,6 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
-import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -66,10 +64,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
         // Database Material
 
-    private DatabaseOpenHelper databaseOpenHelper;
-    private SQLiteDatabase database;
+    private SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
-    POITable poi_table;
 
     // Keep these here for now. Handle them later.
 
@@ -97,11 +93,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
 
-        poi_table = new POITable();
-        databaseOpenHelper = new DatabaseOpenHelper(getActivity(), poi_table);
-        database = databaseOpenHelper.getWritableDatabase();
-        cursor = database.rawQuery("Select * from " + POI_TABLE, null);
-
+        cursor = database.query(true, POI_TABLE, null, null, null, null, null, "has_visited", null);
         placeAdapter = new PlaceAdapter(BlocspotApplication.getSharedInstance(), cursor);
         placeAdapter.setPlaceAdapterDelegate(this);
         callback = new ItemTouchHelperCallback(placeAdapter);

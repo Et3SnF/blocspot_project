@@ -5,33 +5,33 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.Category;
-import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.adapter.AssignCategoryAdapter;
-
-import java.util.ArrayList;
 
 public class AssignCategoryDialog extends DialogFragment implements AssignCategoryAdapter.AssignCategoryAdapterDelegate {
 
     private static final String TAG = "Test: (" + AssignCategoryDialog.class.getSimpleName() + "): ";
+    private static final String CATEGORY_TABLE = "category_table";
 
-    private AlertDialog alertDialog;
     private AlertDialog.Builder builder;
     private RecyclerView recyclerView;
     private AssignCategoryAdapter assignCategoryAdapter;
 
-    private ArrayList<Category> categoryArrayList = BlocspotApplication.getSharedDataSource().getCategoryArrayList();
-    private ArrayList<POI> poiArrayList = BlocspotApplication.getSharedDataSource().getPoiArrayList();
+    private Category category;
+    private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
+            .getDatabaseOpenHelper().getWritableDatabase();
+    private Cursor cursor;
 
     public static AssignCategoryDialog newInstance(int position) {
 
@@ -60,7 +60,8 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        assignCategoryAdapter = new AssignCategoryAdapter();
+        cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, "category_color", null);
+        assignCategoryAdapter = new AssignCategoryAdapter(BlocspotApplication.getSharedInstance(), cursor);
         assignCategoryAdapter.setCategoryAdapterDelegate(this);
     }
 
@@ -153,26 +154,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onCategoryAssignmentClicked(int catItemPosition) {
 
         Log.v(TAG, "onCategoryAssignmentClicked() called");
-
-        String categoryName = categoryArrayList.get(catItemPosition).getCategoryName();
-        int categoryColor = categoryArrayList.get(catItemPosition).getCategoryColor();
-
-        // Input validation
-
-        if(categoryName.equalsIgnoreCase(poiArrayList.get(getArguments().getInt("position")).getCategoryName())) {
-            Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of Interest is already " +
-                    "assigned this!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Set the category of POI item as categoryName
-
-        poiArrayList.get(getArguments().getInt("position")).setCategoryName(categoryName);
-        poiArrayList.get(getArguments().getInt("position")).setCategoryColor(categoryColor);
-
-        Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of interest was assigned to "
-                + categoryName, Toast.LENGTH_SHORT).show();
-
+        
         dismiss();
 
     }

@@ -51,15 +51,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         return new PlaceAdapterViewHolder(inflate);
     }
 
-
-//    // Without database route
-//
-//    @Override
-//    public void onBindViewHolder(PlaceAdapter.PlaceAdapterViewHolder holder, int position) {
-//        // Log.v(TAG, "onBindViewHolder() called");
-//        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getPoiArrayList().get(position));
-//    }
-
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
     public static interface PlaceAdapterDelegate {

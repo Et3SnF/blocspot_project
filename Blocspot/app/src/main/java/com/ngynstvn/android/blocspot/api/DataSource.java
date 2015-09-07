@@ -29,20 +29,6 @@ public class DataSource {
     private static final String POI_TABLE = "poi_table";
     private static final String CATEGORY_TABLE = "category_table";
 
-    public static interface DataSourceDelegate {
-        public void onFetchingComplete(ArrayList<POI> poiArrayList);
-    }
-
-    private WeakReference<DataSourceDelegate> dataSourceDelegate;
-
-    public void setDataSourceDelegate(DataSourceDelegate dataSourceDelegate) {
-        this.dataSourceDelegate = new WeakReference<DataSourceDelegate>(dataSourceDelegate);
-    }
-
-    public DataSourceDelegate getDataSourceDelegate() {
-        return dataSourceDelegate.get();
-    }
-
     // ---- ----- //
 
     // Member variables
@@ -78,6 +64,22 @@ public class DataSource {
         fetchAllPOIs();
         fetchAllCategories();
 
+    }
+
+    // ----- Interface Delegation material ----- //
+
+    public static interface DataSourceDelegate {
+        public void onFetchingComplete(ArrayList<POI> poiArrayList);
+    }
+
+    private WeakReference<DataSourceDelegate> dataSourceDelegate;
+
+    public void setDataSourceDelegate(DataSourceDelegate dataSourceDelegate) {
+        this.dataSourceDelegate = new WeakReference<DataSourceDelegate>(dataSourceDelegate);
+    }
+
+    public DataSourceDelegate getDataSourceDelegate() {
+        return dataSourceDelegate.get();
     }
 
     // ---- Test insertion with fake data.... Will remove later! ---- //
@@ -214,6 +216,12 @@ public class DataSource {
 
     public Map<String, Integer> getCategoryMap() {
         return catNameColorMap;
+    }
+
+        // Getting database opener
+
+    public DatabaseOpenHelper getDatabaseOpenHelper() {
+        return databaseOpenHelper;
     }
 
         // Adding POI objects to lists

@@ -1,6 +1,8 @@
 package com.ngynstvn.android.blocspot.ui.adapter;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Outline;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +19,7 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 
 import java.lang.ref.WeakReference;
 
-public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAdapter.AssignCategoryAdapterViewHolder> {
+public class AssignCategoryAdapter extends CursorRecyclerViewAdapter<AssignCategoryAdapter.AssignCategoryAdapterViewHolder> {
 
     // ----- INTERFACE ----- //
 
@@ -42,13 +44,9 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
 
     private static final String TAG = "Test (" + AssignCategoryAdapter.class.getSimpleName() + "): ";
 
-    public AssignCategoryAdapter() {
+    public AssignCategoryAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
         Log.v(TAG, "CategoryAdapter object instantiated");
-    }
-
-    @Override
-    public int getItemCount() {
-        return BlocspotApplication.getSharedDataSource().getCategoryArrayList().size();
     }
 
     @Override
@@ -58,8 +56,9 @@ public class AssignCategoryAdapter extends RecyclerView.Adapter<AssignCategoryAd
     }
 
     @Override
-    public void onBindViewHolder(AssignCategoryAdapterViewHolder holder, int position) {
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position));
+    public void onBindViewHolder(AssignCategoryAdapterViewHolder viewHolder, Cursor cursor) {
+        Category category = Category.fromCursor(cursor);
+        viewHolder.updateViewHolder(category);
     }
 
     // CategoryAdapterViewHolder inner class

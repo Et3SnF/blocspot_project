@@ -1,6 +1,8 @@
 package com.ngynstvn.android.blocspot.ui.adapter;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Outline;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -23,10 +25,37 @@ import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryAdapterViewHolder>
+public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.CategoryAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
-    // ----- INTERFACE ----- //
+    private static final String TAG = "Test (" + CategoryAdapter.class.getSimpleName() + "): ";
+
+    // ----- Constructor ----- //
+
+    public CategoryAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
+        Log.v(TAG, "CategoryAdapter object instantiated");
+    }
+
+    // ----- CategoryAdapter Methods ----- //
+
+    /*
+     * Only use getItemCount() whenever you have a list.
+     */
+
+    @Override
+    public CategoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false);
+        return new CategoryAdapterViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(CategoryAdapterViewHolder viewHolder, Cursor cursor) {
+        Category category = Category.fromCursor(cursor);
+        viewHolder.updateViewHolder(category);
+    }
+
+    // ----- Delegation Interface Material ----- //
 
     public static interface CategoryAdapterDelegate {
         public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position);
@@ -45,37 +74,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public void setCategoryAdapterDelegate(CategoryAdapterDelegate categoryAdapterDelegate) {
         this.categoryAdapterDelegate = new WeakReference<CategoryAdapterDelegate>(categoryAdapterDelegate);
-    }
-
-    // ----- Class Variables ----- //
-
-    private static final String TAG = "Test (" + CategoryAdapter.class.getSimpleName() + "): ";
-
-    // ----- Member Variables ----- //
-
-
-    // ----- Constructor ----- //
-
-    public CategoryAdapter() {
-        Log.v(TAG, "CategoryAdapter object instantiated");
-    }
-
-    // ----- CategoryAdapter Methods ----- //
-
-    @Override
-    public int getItemCount() {
-        return BlocspotApplication.getSharedDataSource().getCategoryArrayList().size();
-    }
-
-    @Override
-    public CategoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_item, parent, false);
-        return new CategoryAdapterViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(CategoryAdapterViewHolder holder, int position) {
-        holder.updateViewHolder(BlocspotApplication.getSharedDataSource().getCategoryArrayList().get(position));
     }
 
     /**
@@ -266,7 +264,5 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         }
 
     }
-
-
 
 }
