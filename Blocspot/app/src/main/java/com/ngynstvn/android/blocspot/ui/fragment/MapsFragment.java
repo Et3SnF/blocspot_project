@@ -281,9 +281,7 @@ public class MapsFragment extends MapFragment implements
 
         if(cursor.moveToFirst()) {
             do {
-
                 POI poi = DataSource.poiFromCursor(cursor);
-
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
@@ -299,6 +297,8 @@ public class MapsFragment extends MapFragment implements
             }
             while(cursor.moveToNext());
         }
+
+        cursor.close();
     }
 
     // Activate geofences
