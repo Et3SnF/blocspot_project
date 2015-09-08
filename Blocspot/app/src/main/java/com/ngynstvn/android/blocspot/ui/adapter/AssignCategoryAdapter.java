@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.Category;
 
 import java.lang.ref.WeakReference;
@@ -57,7 +58,7 @@ public class AssignCategoryAdapter extends CursorRecyclerViewAdapter<AssignCateg
 
     @Override
     public void onBindViewHolder(AssignCategoryAdapterViewHolder viewHolder, Cursor cursor) {
-        Category category = Category.fromCursor(cursor);
+        Category category = DataSource.catFromCursor(cursor);
         viewHolder.updateViewHolder(category);
     }
 
