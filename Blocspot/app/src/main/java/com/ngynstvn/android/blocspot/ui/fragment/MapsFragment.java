@@ -40,8 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapsFragment extends MapFragment implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback,
-        DataSource.DataSourceDelegate {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback {
 
     // Interface for future delegation
 
@@ -120,7 +119,6 @@ public class MapsFragment extends MapFragment implements
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         buildGoogleApiClient();
         geofenceList = new ArrayList<>();
 
@@ -443,15 +441,5 @@ public class MapsFragment extends MapFragment implements
 
     }
 
-    /**
-     *
-     * DataSource DataSourceDelegate Implemented Methods
-     *
-     */
-
-    @Override
-    public void onFetchingComplete(ArrayList<POI> poiArrayList) {
-        Log.v(TAG, "onFetchingComplete() called");
-    }
 }
 

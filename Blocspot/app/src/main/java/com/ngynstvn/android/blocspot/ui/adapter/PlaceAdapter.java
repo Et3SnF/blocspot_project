@@ -24,7 +24,6 @@ import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 
 public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
@@ -90,13 +89,13 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         if(fromPosition < toPosition) {
             for(int i = fromPosition; i < toPosition; i++) {
                 // allows item to move down
-                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i + 1);
+//                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i + 1);
             }
         }
         else {
             for(int i = fromPosition; i > toPosition; i--) {
                 // allows item to move up
-                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i -1);
+//                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i -1);
             }
         }
 
@@ -107,7 +106,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
     @Override
     public void onItemDismiss(int position) {
-        BlocspotApplication.getSharedDataSource().getPoiArrayList().remove(position);
+        BlocspotApplication.getSharedDataSource().removePOIFromDB(position);
         notifyItemRemoved(position);
     }
 

@@ -24,7 +24,6 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
-import java.util.Collections;
 
 public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.CategoryAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
@@ -86,13 +85,13 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
         if(fromPosition < toPosition) {
             for(int i = fromPosition; i < toPosition; i++) {
                 // allows item to move down
-                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i + 1);
+//                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i + 1);
             }
         }
         else {
             for(int i = fromPosition; i > toPosition; i--) {
                 // allows item to move up
-                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i -1);
+//                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i -1);
             }
         }
 

@@ -20,13 +20,14 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
 
-public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterDelegate {
+public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterDelegate, DataSource.DataSourceDelegate {
 
     // Interface for future delegation
 
@@ -99,6 +100,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         cursor = database.query(true, POI_TABLE, null, null, null, null, null, null, null);
         placeAdapter = new PlaceAdapter(BlocspotApplication.getSharedInstance(), cursor);
         placeAdapter.setPlaceAdapterDelegate(this);
+        BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         callback = new ItemTouchHelperCallback(placeAdapter);
         touchHelper = new ItemTouchHelper(callback);
     }
@@ -201,7 +203,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                database.update("poi_table", values, "id = " + (position + 1), null);
+                database.update("poi_table", values, "_id = " + (position + 1), null);
             }
         });
     }
@@ -213,4 +215,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         assignCategoryDialog.show(getFragmentManager(), "assign_category");
     }
 
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+        placeAdapter.swapCursor(cursor);
+    }
 }

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.TextView;
 
-import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.Category;
@@ -131,9 +130,9 @@ public class AssignCategoryAdapter extends CursorRecyclerViewAdapter<AssignCateg
             categoryName.setText(category.getCategoryName());
             categoryColor.setBackgroundColor(category.getCategoryColor());
 
-            if(getAdapterPosition() == BlocspotApplication.getSharedDataSource().getCategoryArrayList().size()-1) {
-                dividerLine.setVisibility(View.GONE);
-            }
+//            if(getAdapterPosition() == BlocspotApplication.getSharedDataSource().getCategoryArrayList().size()-1) {
+//                dividerLine.setVisibility(View.GONE);
+//            }
 
         }
 

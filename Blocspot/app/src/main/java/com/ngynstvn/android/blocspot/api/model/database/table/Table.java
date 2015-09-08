@@ -13,7 +13,7 @@ public abstract class Table {
 
     // Class variable
 
-    protected static final String COLUMN_ID = "id";
+    protected static final String COLUMN_ID = "_id";
 
     // Abstract methods..will create them myself
 

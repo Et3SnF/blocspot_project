@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
@@ -59,13 +58,6 @@ public class DataSource {
 
             dbFakeData();
             dbFakeCategoryData();
-
-            removePOIFromDB(2, new PostTask() {
-                @Override
-                public void onFetchingComplete() {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Did I work?", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         Log.v(TAG, "Instantiation counter: " + counter);
@@ -78,7 +70,7 @@ public class DataSource {
     }
 
     public static interface DataSourceDelegate {
-
+        public void onQueryComplete(Cursor cursor);
     }
 
     private WeakReference<DataSourceDelegate> dataSourceDelegate;
@@ -443,21 +435,45 @@ public class DataSource {
 
     }
 
-    public void removePOIFromDB(final int item_position, final PostTask postTask) {
+    public void removePOIFromDB(final int item_position)  {
 
         Log.v(TAG, "removePOIFromDB() called");
 
         new AsyncTask<Void, Void, Void>() {
+
             @Override
             protected Void doInBackground(Void... params) {
-                getDatabaseOpenHelper().getWritableDatabase().delete(POI_TABLE, "id = " + (item_position + 1), null);
+                getDatabaseOpenHelper().getWritableDatabase().delete(POI_TABLE, "_id = " + item_position, null);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                postTask.onFetchingComplete();
+                requeryDB();
             }
+
+        }.execute();
+    }
+    
+    public void requeryDB() {
+
+        Log.v(TAG, "reQueryDB() called");
+
+        new AsyncTask<Void, Void, Cursor>() {
+            @Override
+            protected Cursor doInBackground(Void... params) {
+
+                Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                        .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
+
+                return cursor;
+            }
+
+            @Override
+            protected void onPostExecute(Cursor cursor) {
+                getDataSourceDelegate().onQueryComplete(cursor);
+            }
+
         }.execute();
     }
 
