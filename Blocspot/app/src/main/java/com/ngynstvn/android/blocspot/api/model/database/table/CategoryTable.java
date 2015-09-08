@@ -14,6 +14,7 @@ public class CategoryTable extends Table {
     private static final String NAME = "category_table";
     private static final String COLUMN_CATEGORY_NAME = "category";
     private static final String COLUMN_CATEGORY_COLOR = "category_color";
+    private static final String COLUMN_CATEGORY_CHECKED = "is_cat_checked";
 
     // Getters
 
@@ -29,7 +30,8 @@ public class CategoryTable extends Table {
         return "CREATE TABLE " + getName() + " ("
                 + COLUMN_ID + " INTEGER PRIMARY KEY, "
                 + COLUMN_CATEGORY_NAME + " TEXT, "
-                + COLUMN_CATEGORY_COLOR + " INTEGER);";
+                + COLUMN_CATEGORY_COLOR + " INTEGER, "
+                + COLUMN_CATEGORY_CHECKED + " INTEGER);";
     }
 
     // Get category table
@@ -56,6 +58,11 @@ public class CategoryTable extends Table {
             return this;
         }
 
+        public Builder setHasChecked(int is_cat_visited) {
+            values.put(COLUMN_CATEGORY_CHECKED, is_cat_visited);
+            return this;
+        }
+
         // Insert statement
 
         @Override
@@ -76,4 +83,7 @@ public class CategoryTable extends Table {
         return getInteger(cursor, COLUMN_CATEGORY_COLOR);
     }
 
+    public static int getHasChecked(Cursor cursor) {
+        return getInteger(cursor, COLUMN_CATEGORY_CHECKED);
+    }
 }

@@ -1,9 +1,5 @@
 package com.ngynstvn.android.blocspot.api.model;
 
-import android.database.Cursor;
-
-import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
-
 public class Category extends Model{
 
     // ----- Class Variables ----- //
@@ -14,6 +10,7 @@ public class Category extends Model{
 
     private String categoryName = "";
     private int categoryColor = 0;
+    private boolean isCatChecked = false;
 
     // Constructors
 
@@ -21,15 +18,17 @@ public class Category extends Model{
         super(rowId);
         this.categoryName = "";
         this.categoryColor = 0;
+        isCatChecked = false;
     }
 
-    public Category(long rowId, String categoryName, int categoryColor) {
+    public Category(long rowId, String categoryName, int categoryColor, boolean isCatChecked) {
         super(rowId);
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
+        this.isCatChecked = isCatChecked;
     }
 
-    // Setters and Getters
+// Setters and Getters
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
@@ -47,10 +46,12 @@ public class Category extends Model{
         return categoryColor;
     }
 
-    // Cursor method for retrieving data from database
-
-    public static Category fromCursor(Cursor cursor) {
-        return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
-                CategoryTable.getCategoryColor(cursor));
+    public void setIsCatChecked(boolean isCatChecked) {
+        this.isCatChecked = isCatChecked;
     }
+
+    public boolean getIsCatChecked() {
+        return isCatChecked;
+    }
+
 }

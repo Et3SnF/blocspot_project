@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -51,7 +52,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
     @Override
     public void onBindViewHolder(CategoryAdapterViewHolder viewHolder, Cursor cursor) {
-        Category category = Category.fromCursor(cursor);
+        Category category = DataSource.catFromCursor(cursor);
         viewHolder.updateViewHolder(category);
     }
 

@@ -502,7 +502,6 @@ public class DataSource {
                 if (categoryArrayList.isEmpty()) {
 
                     for (POI poi : DataSource.this.poiArrayList) {
-                        DataSource.this.categoryArrayList.add(new Category(poi.getRowId(), poi.getCategoryName(), poi.getCategoryColor()));
                     }
 
                     updateCategoriesToDB();
@@ -579,18 +578,22 @@ public class DataSource {
 
     }
 
-    // Convenient Methods that get DB material and convert to objects
+    /*
+     *
+     *  Convenience methods to retrieve data from database
+     *
+     */
 
-    static POI poiFromCursor(final Cursor cursor) {
+    // Important Method to retrieve data from database
 
-//        Log.v(TAG, "poiFromCursor() called");
+    public static POI poiFromCursor(Cursor cursor) {
 
         POI poi = new POI(POITable.getRowId(cursor));
 
-        if (POITable.getColumnHasVisited(cursor) == 1) {
+        if(POITable.getColumnHasVisited(cursor) == 1) {
             poi.setHasVisited(true);
         }
-        else if (POITable.getColumnHasVisited(cursor) == 0) {
+        else if(POITable.getColumnHasVisited(cursor) == 0) {
             poi.setHasVisited(false);
         }
 
@@ -598,14 +601,22 @@ public class DataSource {
                 POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
                 POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongitude(cursor),
                 POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
+
     }
 
-    static Category catFromCursor(final Cursor cursor) {
+    public static Category catFromCursor(Cursor cursor) {
 
-//        Log.v(TAG, "catFromCursor() called");
+        Category category = new Category(CategoryTable.getRowId(cursor));
+
+        if(POITable.getColumnHasVisited(cursor) == 1) {
+            category.setIsCatChecked(true);
+        }
+        else if(POITable.getColumnHasVisited(cursor) == 0) {
+            category.setIsCatChecked(false);
+        }
 
         return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
-                CategoryTable.getCategoryColor(cursor));
+                CategoryTable.getCategoryColor(cursor), category.getIsCatChecked());
     }
 
 }

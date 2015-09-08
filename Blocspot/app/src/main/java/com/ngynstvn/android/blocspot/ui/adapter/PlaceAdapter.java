@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -47,7 +48,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
     @Override
     public void onBindViewHolder(PlaceAdapterViewHolder viewHolder, Cursor cursor) {
-        POI poi = POI.fromCursor(cursor);
+        POI poi = DataSource.poiFromCursor(cursor);
         viewHolder.updateViewHolder(poi);
     }
 
@@ -242,7 +243,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         void updateViewHolder(POI poi) {
             Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
-            poi = POI.fromCursor(getCursor());
+            poi = DataSource.poiFromCursor(getCursor());
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
