@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -132,7 +133,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onSaveInstanceState() called");
         super.onSaveInstanceState(outState);
     }
-    
+
     @Override
     public void onPause() {
         Log.e(TAG, "onPause() called");
@@ -186,7 +187,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     }
 
     @Override
-    public void onVisitClicked(PlaceAdapter placeAdapter, int position, boolean isChecked) {
+    public void onVisitClicked(PlaceAdapter placeAdapter, final int position, boolean isChecked) {
 
         int dbValue = 0;
 
@@ -194,10 +195,15 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
             dbValue = 1;
         }
 
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put("has_visited", dbValue);
-        database.update("poi_table", values, "id = " + (position + 1), null);
 
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                database.update("poi_table", values, "id = " + (position + 1), null);
+            }
+        });
     }
 
     // ----- Separate Methods ----- //

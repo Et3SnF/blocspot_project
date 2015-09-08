@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -175,11 +176,17 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
         cursor.close();
 
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put("category", catItemName);
         values.put("category_color", catItemColor);
 
-        database.update("poi_table", values, "id = " + (getArguments().getInt("position") + 1), null);
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                database.update("poi_table", values, "id = " + (getArguments().getInt("position")
+                        + 1), null);
+            }
+        });
 
         Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of interest has been assigned to: "
                 + catItemName, Toast.LENGTH_SHORT).show();
