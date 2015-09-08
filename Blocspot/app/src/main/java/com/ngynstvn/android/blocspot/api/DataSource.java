@@ -578,6 +578,20 @@ public class DataSource {
 
     }
 
+    public boolean checkIfItemIsInDB(String dbName, String dbField, String value) {
+
+        SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
+        Cursor cursor = database.rawQuery("Select * from " + dbName + " where " + dbField +
+                " like '" + value + "';", null);
+
+        if(cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+
+        return true;
+    }
+
     /*
      *
      *  Convenience methods to retrieve data from database

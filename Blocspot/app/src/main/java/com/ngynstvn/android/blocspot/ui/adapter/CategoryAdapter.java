@@ -30,6 +30,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
 
     private static final String TAG = "Test (" + CategoryAdapter.class.getSimpleName() + "): ";
+    private static final String CAT_TABLE = "category_table";
 
     // ----- Constructor ----- //
 
@@ -39,10 +40,6 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
     }
 
     // ----- CategoryAdapter Methods ----- //
-
-    /*
-     * Only use getItemCount() whenever you have a list.
-     */
 
     @Override
     public CategoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -106,7 +103,8 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
     @Override
     public void onItemDismiss(int position) {
-        BlocspotApplication.getSharedDataSource().getCategoryArrayList().remove(position);
+        BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getWritableDatabase().delete(CAT_TABLE, "id = " + position, null);
         notifyItemRemoved(position);
     }
 

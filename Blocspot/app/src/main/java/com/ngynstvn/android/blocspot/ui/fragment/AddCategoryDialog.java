@@ -14,7 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 public class AddCategoryDialog extends DialogFragment {
 
@@ -122,26 +125,27 @@ public class AddCategoryDialog extends DialogFragment {
 
                     String value = editText.getText().toString();
 
-                    // Modify this to be database stuff later
+                    boolean isAlreadyInDB = BlocspotApplication.getSharedDataSource()
+                            .checkIfItemIsInDB("category_table", "category", value);
 
                     if(value.equalsIgnoreCase("")) {
-                        Toast.makeText(getActivity(), "Invalid entry. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Invalid entry. Please try again.",
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-//                    for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
-//                        if(value.equalsIgnoreCase(category.getCategoryName())) {
-//                            Toast.makeText(getActivity(), value + " is already a category", Toast.LENGTH_SHORT).show();
-//                            return;
-//                        }
-//                    }
-//
-//                    BlocspotApplication.getSharedDataSource().getCategoryArrayList()
-//                            .add(new Category(1, value, UIUtils.generateRandomColor(android.R.color.white), 0);
+                    if(isAlreadyInDB) {
+                        Toast.makeText(BlocspotApplication.getSharedInstance(), value + " is already " +
+                                "a category", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                    Log.v(TAG, "The value from the edittext was: " + value);
-
-                    // Refactor to update to database
+                    new CategoryTable.Builder()
+                            .setCategoryName(value)
+                            .setCategoryColor(UIUtils.generateRandomColor(android.R.color.white))
+                            .setHasChecked(0)
+                            .insert(BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                                    .getWritableDatabase());
 
                     closeDialog = true;
 
