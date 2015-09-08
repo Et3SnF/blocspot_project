@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -70,10 +72,6 @@ public class MapsFragment extends MapFragment implements
     private static final String BUNDLE_MAP_MODE = MapsFragment.class.getCanonicalName().concat(".MAP_MODE");
 
     // ----- Member variables ----- //
-
-    // DataSource's ArrayList access
-
-    private ArrayList<POI> dSpoiArrayList = BlocspotApplication.getSharedDataSource().getPoiArrayList();
 
     private GoogleMap googleMap;
     private LatLng position;
@@ -277,25 +275,29 @@ public class MapsFragment extends MapFragment implements
     // Add Markers to Map
 
     private void addMarkers() {
-        for (int i = 0; i < dSpoiArrayList.size(); i++) {
 
-            MapsFragment.this.googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(dSpoiArrayList.get(i).getLatitudeValue(),
-                                    dSpoiArrayList.get(i).getLongitudeValue()))
-                            .title(dSpoiArrayList.get(i).getLocationName())
-                            .snippet(dSpoiArrayList.get(i).getAddress() + " ("
-                                    + dSpoiArrayList.get(i).getCity() + ","
-                                    + dSpoiArrayList.get(i).getState() + ")")
-            );
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, "poi_table", null, null, null, null, null, null, null);
 
-            addGeofence(dSpoiArrayList.get(i));
+        if(cursor.moveToFirst()) {
+            do {
 
-            // Not the best algorithm out there...but will probably do the job...
+                POI poi = DataSource.poiFromCursor(cursor);
 
-            if (dSpoiArrayList.get(i).isHasVisited()) {
-                geofenceList.remove(i);
+                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                        .title(poi.getLocationName())
+                        .snippet(poi.getAddress() + " ("
+                                + poi.getCity() + ","
+                                + poi.getState() + ")"));
+
+                addGeofence(poi);
+
+                if (POITable.getColumnHasVisited(cursor) == 0) {
+                    geofenceList.remove(poi);
+                }
             }
-
+            while(cursor.moveToNext());
         }
     }
 
@@ -450,11 +452,6 @@ public class MapsFragment extends MapFragment implements
     @Override
     public void onFetchingComplete(ArrayList<POI> poiArrayList) {
         Log.v(TAG, "onFetchingComplete() called");
-        dSpoiArrayList = poiArrayList;
-
-        // Once this is done, onConnected() is called, which will first find current location
-        // and then it will startUpMap. startUpMap() will use the ArrayList to display markers
-        // geofences, and activate them!
     }
 }
 
