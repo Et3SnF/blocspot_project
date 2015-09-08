@@ -203,6 +203,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position) {
         dismiss();
         showEditCategoryDialog(position);
+        categoryAdapter.notifyItemChanged(position);
     }
 
     // ---- Separate Methods ----- //

@@ -158,7 +158,6 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
                     if(categoryAdapterDelegate != null) {
                         getCategoryAdapterDelegate().onEditButtonClicked(CategoryAdapter.this, getAdapterPosition());
-                        notifyDataSetChanged();
                     }
 
                     swipeLayout.close();

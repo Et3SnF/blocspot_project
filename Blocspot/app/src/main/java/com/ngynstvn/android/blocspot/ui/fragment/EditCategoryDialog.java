@@ -3,8 +3,10 @@ package com.ngynstvn.android.blocspot.ui.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +17,6 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
-import com.ngynstvn.android.blocspot.api.model.Category;
 
 public class EditCategoryDialog extends DialogFragment {
 
@@ -102,27 +103,37 @@ public class EditCategoryDialog extends DialogFragment {
 
                     String value = editText.getText().toString();
 
+                    boolean isAlreadyInDB = BlocspotApplication.getSharedDataSource()
+                            .checkIfItemIsInDB("category_table", "category", value);
+
                     if (value.equalsIgnoreCase("")) {
                         Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
                                 "try again.", Toast.LENGTH_LONG).show();
                         return;
                     }
 
-                    // Check to see if there are duplicates
-
-                    for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
-                        if(value.equalsIgnoreCase(category.getCategoryName())) {
-                            Toast.makeText(BlocspotApplication.getSharedInstance(), value + " " +
-                                    "is already a category. Enter a different name or cancel.",
-                                    Toast.LENGTH_LONG).show();
-                            return;
-                        }
+                    if(isAlreadyInDB) {
+                        Toast.makeText(BlocspotApplication.getSharedInstance(), value + " is already " +
+                                "a category. Enter a different name.", Toast.LENGTH_SHORT).show();
+                        return;
                     }
 
-                    // Major note - Get arguments.getInt to pass around information around fragments!
+                    // Update the item
 
-                    BlocspotApplication.getSharedDataSource().getCategoryArrayList()
-                            .get(getArguments().getInt("position")).setCategoryName(value);
+                    final ContentValues values = new ContentValues();
+                    values.put("category", value);
+
+                    Log.v(TAG, "Value of position: " + getArguments().getInt("position"));
+
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                                    .getWritableDatabase().update("category_table", values, "id = "
+                                    + (getArguments().getInt("position") + 1), null);
+                        }
+                    });
+
                     closeDialog = true;
 
                     if (closeDialog) {
