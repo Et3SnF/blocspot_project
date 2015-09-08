@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,10 +14,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
-import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.ui.adapter.AssignCategoryAdapter;
 
 public class AssignCategoryDialog extends DialogFragment implements AssignCategoryAdapter.AssignCategoryAdapterDelegate {
@@ -28,7 +29,8 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     private RecyclerView recyclerView;
     private AssignCategoryAdapter assignCategoryAdapter;
 
-    private Category category;
+    private PostTask task;
+
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
             .getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
@@ -48,6 +50,10 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
     }
 
+    public static interface PostTask {
+        public void onComplete(int poi_position);
+    }
+
     // ----- Lifecycle Methods ----- //
 
     @Override
@@ -60,7 +66,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, "category_color", null);
+        cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, null, null);
         assignCategoryAdapter = new AssignCategoryAdapter(BlocspotApplication.getSharedInstance(), cursor);
         assignCategoryAdapter.setCategoryAdapterDelegate(this);
     }
@@ -92,6 +98,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.v(TAG, "onActivityCreated() called");
         super.onActivityCreated(savedInstanceState);
+        task = (PostTask) getActivity();
     }
 
     @Override
@@ -134,6 +141,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onDestroyView() {
         Log.v(TAG, "onDestroyView() called");
         super.onDestroyView();
+        cursor.close();
     }
 
     @Override
@@ -152,10 +160,35 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
     @Override
     public void onCategoryAssignmentClicked(int catItemPosition) {
-
         Log.v(TAG, "onCategoryAssignmentClicked() called");
-        
-        dismiss();
 
+        final Cursor cursor = database.query(true, CATEGORY_TABLE, new String[]{"category", "category_color"},
+                "id = " + (catItemPosition + 1), null, null, null, null, null);
+
+        String catItemName = "";
+        int catItemColor = 0;
+
+        if(cursor.moveToFirst()) {
+            catItemName = cursor.getString(0);
+            catItemColor = cursor.getInt(1);
+        }
+
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put("category", catItemName);
+        values.put("category_color", catItemColor);
+
+        database.update("poi_table", values, "id = " + (getArguments().getInt("position") + 1), null);
+
+        Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of interest has been assigned to: "
+                + catItemName, Toast.LENGTH_SHORT).show();
+
+        Log.v(TAG, "Item ID: " + (catItemPosition + 1) + " | " + "Item Name: " + catItemName
+                + " | " + "Color: " + catItemColor);
+
+        task.onComplete(getArguments().getInt("position"));
+
+        dismiss();
     }
 }

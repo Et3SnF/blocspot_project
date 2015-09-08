@@ -14,12 +14,13 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
 public class BlocspotActivity extends AppCompatActivity implements
-        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate {
+        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate, AssignCategoryDialog.PostTask {
 
     // ------ Class variables ----- //
 
@@ -213,4 +214,15 @@ public class BlocspotActivity extends AppCompatActivity implements
         newFragment.show(getFragmentManager(), "dialog");
     }
 
+    /**
+     *
+     *  AssignCategoryDialog.PostTask Implemented Methods
+     *
+     */
+
+    @Override
+    public void onComplete(int poi_position) {
+        getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                ListFragment.newInstance(poi_position)).commit();
+    }
 }

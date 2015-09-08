@@ -28,6 +28,7 @@ public class DataSource {
     private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
     private static final String POI_TABLE = "poi_table";
     private static final String CATEGORY_TABLE = "category_table";
+    private static int counter;
 
     // ---- ----- //
 
@@ -50,23 +51,27 @@ public class DataSource {
 
         Log.v(TAG, "DataSource instantiated");
 
-        context.deleteDatabase(DB_NAME);
+        counter++;
 
-        poi_table = new POITable();
-        categoryTable = new CategoryTable();
+        if(counter == 1) {
+            context.deleteDatabase(DB_NAME);
+            poi_table = new POITable();
+            categoryTable = new CategoryTable();
 
-        databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                poi_table, categoryTable);
+            databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
+                    poi_table, categoryTable);
 
-        dbFakeData();
-        dbFakeCategoryData();
+            dbFakeData();
+            dbFakeCategoryData();
 
-        fetchAllPOIs();
-        fetchAllCategories();
+            fetchAllPOIs();
+            fetchAllCategories();
+        }
 
+        Log.v(TAG, "Instantiation counter: " + counter);
     }
 
-    // ----- Interface Delegation material ----- //
+    // ----- Interface and Interface Delegation material ----- //
 
     public static interface DataSourceDelegate {
         public void onFetchingComplete(ArrayList<POI> poiArrayList);

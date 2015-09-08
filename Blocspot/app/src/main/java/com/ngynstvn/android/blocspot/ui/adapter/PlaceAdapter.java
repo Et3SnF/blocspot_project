@@ -39,16 +39,16 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
     }
 
     @Override
-    public void onBindViewHolder(PlaceAdapterViewHolder viewHolder, Cursor cursor) {
-        POI poi = POI.fromCursor(cursor);
-        viewHolder.updateViewHolder(poi);
-    }
-
-    @Override
     public PlaceAdapter.PlaceAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Log.v(TAG, "onCreateViewHolder() called");
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.poi_item, parent, false);
         return new PlaceAdapterViewHolder(inflate);
+    }
+
+    @Override
+    public void onBindViewHolder(PlaceAdapterViewHolder viewHolder, Cursor cursor) {
+        POI poi = POI.fromCursor(cursor);
+        viewHolder.updateViewHolder(poi);
     }
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
@@ -57,6 +57,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
         public void onItemAssigned(PlaceAdapter placeAdapter, int position);
         public void onNoteAdded(PlaceAdapter placeAdapter, int position);
+        public void onVisitClicked(PlaceAdapter placeAdapter, int position, boolean isChecked);
     }
 
     // Setter and getter for delegate
@@ -196,8 +197,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                     if(getAdapterDelegate() != null) {
                         getAdapterDelegate().onNoteAdded(PlaceAdapter.this, getAdapterPosition());
                     }
+                    notifyItemChanged(getAdapterPosition());
 
-                    notifyDataSetChanged();
                     swipeLayout.close();
                 }
             });
@@ -209,6 +210,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                     if(getAdapterDelegate() != null) {
                         getAdapterDelegate().onItemAssigned(PlaceAdapter.this, getAdapterPosition());
                     }
+                    notifyItemChanged(getAdapterPosition());
 
                     swipeLayout.close(true, true);
                 }
@@ -226,6 +228,11 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
+
+                    if (getAdapterDelegate() != null) {
+                        getAdapterDelegate().onVisitClicked(PlaceAdapter.this, getAdapterPosition(),
+                                isChecked);
+                    }
                 }
             });
 
@@ -235,6 +242,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         void updateViewHolder(POI poi) {
             Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
+            poi = POI.fromCursor(getCursor());
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
             poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");

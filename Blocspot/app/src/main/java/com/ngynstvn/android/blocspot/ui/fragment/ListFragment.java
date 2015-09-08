@@ -2,6 +2,7 @@ package com.ngynstvn.android.blocspot.ui.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -49,9 +50,20 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         return listFragDelegate.get();
     }
 
+    // newInstance() method for fragment
+
+    public static ListFragment newInstance(int value) {
+
+        ListFragment listFragment = new ListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("value", value);
+        listFragment.setArguments(bundle);
+
+        return listFragment;
+    }
+
     // ----- Class variables ----- //
 
-    private static final String BUNDLE_LIST_MODE = ListFragment.class.getCanonicalName().concat(".LIST_MODE");
     private static final String TAG = "Test (" + ListFragment.class.getSimpleName() + ")";
     private static final String POI_TABLE = "poi_table";
 
@@ -66,16 +78,6 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
-
-    // Keep these here for now. Handle them later.
-
-    public static ListFragment listFragmentForPOI(POI poi) {
-        Bundle bundle = new Bundle();
-        bundle.putLong(BUNDLE_LIST_MODE, poi.getRowId());
-        ListFragment listFragment = new ListFragment();
-        listFragment.setArguments(bundle);
-        return listFragment;
-    }
 
     // ----- Lifecycle Methods ----- //
 
@@ -93,7 +95,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
 
-        cursor = database.query(true, POI_TABLE, null, null, null, null, null, "has_visited", null);
+        cursor = database.query(true, POI_TABLE, null, null, null, null, null, null, null);
         placeAdapter = new PlaceAdapter(BlocspotApplication.getSharedInstance(), cursor);
         placeAdapter.setPlaceAdapterDelegate(this);
         callback = new ItemTouchHelperCallback(placeAdapter);
@@ -130,11 +132,10 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onSaveInstanceState() called");
         super.onSaveInstanceState(outState);
     }
-
+    
     @Override
     public void onPause() {
         Log.e(TAG, "onPause() called");
-        Log.e(TAG, getClass().getSimpleName() + " onPause called");
         super.onPause();
     }
 
@@ -182,6 +183,21 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         // show the add note popup dialog
         Toast.makeText(BlocspotApplication.getSharedInstance(), "Functionality coming soon...",
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onVisitClicked(PlaceAdapter placeAdapter, int position, boolean isChecked) {
+
+        int dbValue = 0;
+
+        if(isChecked) {
+            dbValue = 1;
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("has_visited", dbValue);
+        database.update("poi_table", values, "id = " + (position + 1), null);
+
     }
 
     // ----- Separate Methods ----- //
