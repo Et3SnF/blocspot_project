@@ -1,12 +1,11 @@
 package com.ngynstvn.android.blocspot.api;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
@@ -17,9 +16,6 @@ import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DataSource {
 
@@ -41,9 +37,9 @@ public class DataSource {
     private POITable poi_table;
     private CategoryTable categoryTable;
 
-    private ArrayList<POI> poiArrayList = new ArrayList<>();
-    private ArrayList<Category> categoryArrayList = new ArrayList<>();
-    private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
+//    private ArrayList<POI> poiArrayList = new ArrayList<>();
+//    private ArrayList<Category> categoryArrayList = new ArrayList<>();
+//    private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
 
     // Constructor
 
@@ -64,8 +60,12 @@ public class DataSource {
             dbFakeData();
             dbFakeCategoryData();
 
-            fetchAllPOIs();
-            fetchAllCategories();
+            removePOIFromDB(2, new PostTask() {
+                @Override
+                public void onFetchingComplete() {
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Did I work?", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         Log.v(TAG, "Instantiation counter: " + counter);
@@ -73,8 +73,12 @@ public class DataSource {
 
     // ----- Interface and Interface Delegation material ----- //
 
+    public static interface PostTask {
+        public void onFetchingComplete();
+    }
+
     public static interface DataSourceDelegate {
-        public void onFetchingComplete(ArrayList<POI> poiArrayList);
+
     }
 
     private WeakReference<DataSourceDelegate> dataSourceDelegate;
@@ -211,34 +215,10 @@ public class DataSource {
 
         // Getting lists
 
-    public ArrayList<POI> getPoiArrayList() {
-        return poiArrayList;
-    }
-
-    public ArrayList<Category> getCategoryArrayList() {
-        return categoryArrayList;
-    }
-
-    public Map<String, Integer> getCategoryMap() {
-        return catNameColorMap;
-    }
-
-        // Getting database opener
+    // Getting database opener
 
     public DatabaseOpenHelper getDatabaseOpenHelper() {
         return databaseOpenHelper;
-    }
-
-        // Adding POI objects to lists
-
-    private void addToCategoryMap(String categoryName) {
-
-        if(catNameColorMap.containsKey(categoryName)) {
-            Log.v(TAG, categoryName + " already has a color.");
-            return;
-        }
-
-        catNameColorMap.put(categoryName, UIUtils.generateRandomColor(Color.WHITE));
     }
 
     /**
@@ -299,253 +279,150 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public void updatePOIsToDB() {
-
-        Log.v(TAG, "updatePOIsToDB() called");
-
-        databaseOpenHelper.getReadableDatabase();
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                int hasVisited = 0;
-
-                for(POI poi : BlocspotApplication.getSharedDataSource().getPoiArrayList()) {
-
-                    ContentValues newValues = new ContentValues();
-
-                    if(poi.isHasVisited()) {
-                        hasVisited = 1;
-                    }
-                    else {
-                        hasVisited = 0;
-                    }
-
-                    newValues.put("location_name", poi.getLocationName());
-                    newValues.put("category", poi.getCategoryName());
-                    newValues.put("category_color", poi.getCategoryColor());
-                    newValues.put("address", poi.getAddress());
-                    newValues.put("city", poi.getCity());
-                    newValues.put("state", poi.getState());
-                    newValues.put("latitude", poi.getLatitudeValue());
-                    newValues.put("longitude", poi.getLongitudeValue());
-                    newValues.put("description", poi.getDescription());
-                    newValues.put("has_visited", hasVisited);
-
-                    databaseOpenHelper.getWritableDatabase().update(POI_TABLE, newValues, "id = ?",
-                            new String[]{String.valueOf(poi.getRowId())});
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                updateCategoriesToDB();
-            }
-
-        }.execute();
-
-    }
-
-    public void updateCategoriesToDB() {
-
-        Log.v(TAG, "updateCategoriesToDB() called");
-
-        databaseOpenHelper.getReadableDatabase();
-
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected void onPreExecute() {
-
-            }
-
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                for(Category category : BlocspotApplication.getSharedDataSource().getCategoryArrayList()) {
-
-                    ContentValues newValues = new ContentValues();
-
-                    newValues.put("category", category.getCategoryName());
-                    newValues.put("category_color", category.getCategoryColor());
-
-                    databaseOpenHelper.getWritableDatabase().update(CATEGORY_TABLE, newValues, "id = ?",
-                            new String[]{String.valueOf(category.getRowId())});
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                fetchAllPOIs();
-                fetchAllCategories();
-            }
-
-        }.execute();
-
-    }
-
-        // ------ Pulling Methods ------ //
-
-    public void fetchAllPOIs() {
-
-        Log.v(TAG, "fetchAllPOIs() called");
-
-        // Perform AsyncTask at startup
-
-        new AsyncTask<Void, Void, ArrayList<POI>>() {
-
-            @Override
-            protected void onPreExecute() {
-                Log.v(TAG, "onPreExecute() performing in " + Thread.currentThread().getName());
-
-                if(!poiArrayList.isEmpty()) {
-                    poiArrayList.clear();
-                }
-            }
-
-            @Override
-            protected ArrayList<POI> doInBackground(Void... params) {
-
-                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
-
-                ArrayList<POI> poiArrayList = new ArrayList<>();
-
-                if(!poiArrayList.isEmpty()) {
-                    poiArrayList.clear();
-                }
-
-                Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
-
-                if(cursor.moveToFirst()) {
-
-                    do {
-                        poiArrayList.add(poiFromCursor(cursor));
-                    }
-                    while(cursor.moveToNext());
-
-                    cursor.close();
-
-                }
-
-                return poiArrayList;
-
-            }
-
-            // Runs on UI Thread
-
-            @Override
-            protected void onPostExecute(ArrayList<POI> poiArrayList) {
-
-                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
-                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
-
-                if(dataSourceDelegate == null) {
-                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
-                    return;
-                }
-
-                DataSource.this.poiArrayList = poiArrayList;
-                getDataSourceDelegate().onFetchingComplete(poiArrayList);
-            }
-
-        }.execute();
-
-    }
-
-    public void fetchAllCategories() {
-
-        new AsyncTask<Void, Void, ArrayList<Category>>() {
-
-            @Override
-            protected void onPreExecute() {
-
-                if (!categoryArrayList.isEmpty()) {
-                    categoryArrayList.clear();
-                }
-
-            }
-
-            @Override
-            protected ArrayList<Category> doInBackground(Void... params) {
-
-                ArrayList<Category> categoryArrayList = new ArrayList<>();
-
-                if (!categoryArrayList.isEmpty()) {
-                    categoryArrayList.clear();
-                }
-
-                Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
-
-                if (cursor.moveToFirst()) {
-                    do {
-                        categoryArrayList.add(catFromCursor(cursor));
-                    }
-                    while (cursor.moveToNext());
-
-                    cursor.close();
-                }
-
-                return categoryArrayList;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<Category> categoryArrayList) {
-
-                // In case something went wrong in category_table, do something about it
-
-                if (categoryArrayList.isEmpty()) {
-
-                    for (POI poi : DataSource.this.poiArrayList) {
-                    }
-
-                    updateCategoriesToDB();
-                    return;
-                }
-
-                DataSource.this.categoryArrayList = categoryArrayList;
-            }
-
-        }.execute();
-    }
-
-    public void fetchFilteredPOIs(final String... categories) {
+      // ------ Pulling Methods ------ //
+//
+//    public void fetchAllPOIs() {
+//
+//        Log.v(TAG, "fetchAllPOIs() called");
+//
+//        // Perform AsyncTask at startup
+//
+//        new AsyncTask<Void, Void, ArrayList<POI>>() {
+//
+//            @Override
+//            protected void onPreExecute() {
+//                Log.v(TAG, "onPreExecute() performing in " + Thread.currentThread().getName());
+//
+//                if(!poiArrayList.isEmpty()) {
+//                    poiArrayList.clear();
+//                }
+//            }
+//
+//            @Override
+//            protected ArrayList<POI> doInBackground(Void... params) {
+//
+//                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
+//
+//                ArrayList<POI> poiArrayList = new ArrayList<>();
+//
+//                if(!poiArrayList.isEmpty()) {
+//                    poiArrayList.clear();
+//                }
+//
+//                Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
+//
+//                if(cursor.moveToFirst()) {
+//
+//                    do {
+//                        poiArrayList.add(poiFromCursor(cursor));
+//                    }
+//                    while(cursor.moveToNext());
+//
+//                    cursor.close();
+//
+//                }
+//
+//                return poiArrayList;
+//
+//            }
+//
+//            // Runs on UI Thread
+//
+//            @Override
+//            protected void onPostExecute(ArrayList<POI> poiArrayList) {
+//
+//                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
+//                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
+//
+//                if(dataSourceDelegate == null) {
+//                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
+//                    return;
+//                }
+//
+//                DataSource.this.poiArrayList = poiArrayList;
+//                getDataSourceDelegate().onFetchingComplete(poiArrayList);
+//            }
+//
+//        }.execute();
+//
+//    }
+
+//    public void fetchAllCategories() {
+//
+//        new AsyncTask<Void, Void, ArrayList<Category>>() {
+//
+//            @Override
+//            protected void onPreExecute() {
+//
+//                if (!categoryArrayList.isEmpty()) {
+//                    categoryArrayList.clear();
+//                }
+//
+//            }
+//
+//            @Override
+//            protected ArrayList<Category> doInBackground(Void... params) {
+//
+//                ArrayList<Category> categoryArrayList = new ArrayList<>();
+//
+//                if (!categoryArrayList.isEmpty()) {
+//                    categoryArrayList.clear();
+//                }
+//
+//                Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
+//
+//                if (cursor.moveToFirst()) {
+//                    do {
+//                        categoryArrayList.add(catFromCursor(cursor));
+//                    }
+//                    while (cursor.moveToNext());
+//
+//                    cursor.close();
+//                }
+//
+//                return categoryArrayList;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(ArrayList<Category> categoryArrayList) {
+//
+//                // In case something went wrong in category_table, do something about it
+//
+//                if (categoryArrayList.isEmpty()) {
+//
+//                    for (POI poi : DataSource.this.poiArrayList) {
+//                    }
+//
+//                    updateCategoriesToDB();
+//                    return;
+//                }
+//
+//                DataSource.this.categoryArrayList = categoryArrayList;
+//            }
+//
+//        }.execute();
+//    }
+
+    public void fetchFilteredPOIs(final PostTask postTask, final String... categories) {
 
         Log.v(TAG, "fetchFilteredPOIs() called");
 
         // Perform AsyncTask at startup
 
-        new AsyncTask<Void, Void, ArrayList<POI>>() {
+        new AsyncTask<Void, Void, POI>() {
 
             @Override
-            protected void onPreExecute() {
-                if(!poiArrayList.isEmpty()) {
-                    poiArrayList.clear();
-                }
-            }
-
-            @Override
-            protected ArrayList<POI> doInBackground(Void... params) {
+            protected POI doInBackground(Void... params) {
 
                 Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
 
-                ArrayList<POI> poiArrayList = new ArrayList<>();
-
-                if(!poiArrayList.isEmpty()) {
-                    poiArrayList.clear();
-                }
-
-                Cursor cursor = POITable.getFilteredPOIs(databaseOpenHelper.getReadableDatabase(), categories);
+                Cursor cursor = POITable.getFilteredPOIs(databaseOpenHelper.getWritableDatabase(), categories);
+                POI poi = null;
 
                 if(cursor.moveToFirst()) {
 
                     do {
-                        poiArrayList.add(poiFromCursor(cursor));
+                        poi = poiFromCursor(cursor);
                     }
                     while(cursor.moveToNext());
 
@@ -553,32 +430,40 @@ public class DataSource {
 
                 }
 
-                return poiArrayList;
+                return poi;
 
             }
 
-            // Runs on UI Thread
-
             @Override
-            protected void onPostExecute(ArrayList<POI> poiArrayList) {
-
-                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
-                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
-
-                if(dataSourceDelegate == null) {
-                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
-                    return;
-                }
-
-                DataSource.this.poiArrayList = poiArrayList;
-                getDataSourceDelegate().onFetchingComplete(poiArrayList);
+            protected void onPostExecute(POI poi) {
+                postTask.onFetchingComplete();
             }
 
         }.execute();
 
     }
 
+    public void removePOIFromDB(final int item_position, final PostTask postTask) {
+
+        Log.v(TAG, "removePOIFromDB() called");
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                getDatabaseOpenHelper().getWritableDatabase().delete(POI_TABLE, "id = " + (item_position + 1), null);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                postTask.onFetchingComplete();
+            }
+        }.execute();
+    }
+
     public boolean checkIfItemIsInDB(String dbName, String dbField, String value) {
+
+//        Log.v(TAG, "checkIfItemIsInDB() called");
 
         SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
         Cursor cursor = database.rawQuery("Select * from " + dbName + " where " + dbField +
@@ -602,6 +487,8 @@ public class DataSource {
 
     public static POI poiFromCursor(Cursor cursor) {
 
+//        Log.v(TAG, "poiFromCursor() called");
+
         POI poi = new POI(POITable.getRowId(cursor));
 
         if(POITable.getColumnHasVisited(cursor) == 1) {
@@ -619,6 +506,8 @@ public class DataSource {
     }
 
     public static Category catFromCursor(Cursor cursor) {
+
+//        Log.v(TAG, "catFromCursor() called");
 
         Category category = new Category(CategoryTable.getRowId(cursor));
 
