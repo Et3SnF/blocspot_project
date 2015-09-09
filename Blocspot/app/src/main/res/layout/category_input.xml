@@ -20,6 +20,7 @@
         android:singleLine="true"
         android:hint="Name"
         android:textColor="@android:color/black"
+        android:textColorHint="@color/black_60"
         android:ellipsize="end"/>
 
 </LinearLayout>

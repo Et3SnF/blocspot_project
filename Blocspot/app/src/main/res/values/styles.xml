@@ -12,14 +12,15 @@
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:autoCompleteTextViewStyle">@style/cursorColor</item>
         <item name="searchViewStyle">@style/SearchViewStyle</item>
+        <item name="android:textColorHint">@color/white_60</item>
 
     </style>
 
     <!-- SearchView Icon Color in Toolbar. This only applies to NoActionBar parent usage-->
 
-    <style name ="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+    <style name ="SearchViewStyle" parent="Widget.AppCompat.SearchView.ActionBar">
         <item name="searchIcon">@drawable/menu_search_selector</item>
-        <item name="colorAccent">@android:color/white</item>
+        <item name="closeIcon">@drawable/sview_close_selector</item>
     </style>
 
     <!-- SearchView Cursor Color Change -->
