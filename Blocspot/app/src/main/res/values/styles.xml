@@ -10,7 +10,22 @@
         <item name="colorAccent">@color/black_87</item>
         <item name="colorControlActivated">@color/black_60</item>
         <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:autoCompleteTextViewStyle">@style/cursorColor</item>
+        <item name="searchViewStyle">@style/SearchViewStyle</item>
 
+    </style>
+
+    <!-- SearchView Icon Color in Toolbar. This only applies to NoActionBar parent usage-->
+
+    <style name ="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="searchIcon">@drawable/menu_search_selector</item>
+        <item name="colorAccent">@android:color/white</item>
+    </style>
+
+    <!-- SearchView Cursor Color Change -->
+
+    <style name="cursorColor" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textCursorDrawable">@drawable/cursor</item>
     </style>
 
     <!-- AlertDialog Colors -->
