@@ -87,16 +87,10 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
     public boolean onItemMove(int fromPosition, int toPosition) {
 
         if(fromPosition < toPosition) {
-            for(int i = fromPosition; i < toPosition; i++) {
-                // allows item to move down
-//                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i + 1);
-            }
+
         }
         else {
-            for(int i = fromPosition; i > toPosition; i--) {
-                // allows item to move up
-//                Collections.swap(BlocspotApplication.getSharedDataSource().getPoiArrayList(), i, i -1);
-            }
+
         }
 
         notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
@@ -195,7 +189,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 public void onClick(View v) {
 
                     if(getAdapterDelegate() != null) {
-                        getAdapterDelegate().onNoteAdded(PlaceAdapter.this, getAdapterPosition());
+                        getAdapterDelegate().onNoteAdded(PlaceAdapter.this, (int) PlaceAdapter.
+                                this.getItemId(getAdapterPosition()));
                     }
                     notifyItemChanged(getAdapterPosition());
 
@@ -208,10 +203,10 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 public void onClick(View v) {
 
                     if(getAdapterDelegate() != null) {
-                        getAdapterDelegate().onItemAssigned(PlaceAdapter.this, getAdapterPosition());
+                        getAdapterDelegate().onItemAssigned(PlaceAdapter.this,
+                                (int) PlaceAdapter.this.getItemId(getAdapterPosition()));
                     }
                     notifyItemChanged(getAdapterPosition());
-
                     swipeLayout.close(true, true);
                 }
             });
@@ -219,8 +214,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             deletePOIButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemDismiss(getAdapterPosition());
-                    swipeLayout.close();
+                    onItemDismiss((int) PlaceAdapter.this.getItemId(getAdapterPosition()));
                 }
             });
 
@@ -230,8 +224,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                     Log.v(TAG, PlaceAdapter.class.getSimpleName() + " Visit Checkbox pressed");
 
                     if (getAdapterDelegate() != null) {
-                        getAdapterDelegate().onVisitClicked(PlaceAdapter.this, getAdapterPosition(),
-                                isChecked);
+                        getAdapterDelegate().onVisitClicked(PlaceAdapter.this,
+                                (int) PlaceAdapter.this.getItemId(getAdapterPosition()), isChecked);
                     }
                 }
             });
