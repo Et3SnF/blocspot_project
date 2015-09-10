@@ -30,8 +30,8 @@ public class YelpAPI {
 
     private static final String API_HOST = "api.yelp.com";
     private static final String DEFAULT_TERM = "dinner";
-    private static final String DEFAULT_LOCATION = "San Francisco, CA";
-    private static final int SEARCH_LIMIT = 3;
+    private static final String DEFAULT_LOCATION = "Los Angeles, CA";
+    private static final int SEARCH_LIMIT = 5;
     private static final String SEARCH_PATH = "/v2/search";
     private static final String BUSINESS_PATH = "/v2/business";
 
@@ -39,10 +39,10 @@ public class YelpAPI {
      * Update OAuth credentials below from the Yelp Developers API site:
      * http://www.yelp.com/developers/getting_started/api_access
      */
-    private static final String CONSUMER_KEY = "";
-    private static final String CONSUMER_SECRET = "";
-    private static final String TOKEN = "";
-    private static final String TOKEN_SECRET = "";
+    private static final String CONSUMER_KEY = "Y0Myyxe8h_YEsHjfo-j6yg";
+    private static final String CONSUMER_SECRET = "1qMgDlgy15dRMjh5ImZqjtEAXRg";
+    private static final String TOKEN = "6gp-qC2WHzIw6DKpTu-725G73pXmIxXx";
+    private static final String TOKEN_SECRET = "H7yDe6WlFTMvSYcEi-TIDE0CUZk";
 
     OAuthService service;
     Token accessToken;
