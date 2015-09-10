@@ -65,8 +65,6 @@ public class BlocspotActivity extends AppCompatActivity implements
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();
 
-        // Fetch item from data base
-
     }
 
     @Override
