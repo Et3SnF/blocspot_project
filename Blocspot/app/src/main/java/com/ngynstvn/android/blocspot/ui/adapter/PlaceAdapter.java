@@ -34,6 +34,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
     // Member variables
 
+    // Constructor
+
     public PlaceAdapter(Context context, Cursor cursor) {
         super(context, cursor);
     }

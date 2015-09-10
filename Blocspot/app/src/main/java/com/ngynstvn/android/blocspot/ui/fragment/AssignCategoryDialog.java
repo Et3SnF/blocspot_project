@@ -164,7 +164,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
         Log.v(TAG, "onCategoryAssignmentClicked() called");
 
         final Cursor cursor = database.query(true, CATEGORY_TABLE, new String[]{"category", "category_color"},
-                "id = " + (catItemPosition + 1), null, null, null, null, null);
+                "_id = " + (catItemPosition+1), null, null, null, null, null);
 
         String catItemName = "";
         int catItemColor = 0;
@@ -176,6 +176,14 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
         cursor.close();
 
+        boolean isAlreadyCategory = BlocspotApplication.getSharedDataSource().checkIfItemIsInDB("poi_table", "category", catItemName);
+
+        if(isAlreadyCategory) {
+            Toast.makeText(BlocspotApplication.getSharedInstance(), "The point of interest is already assigned as "
+                    + catItemName, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         final ContentValues values = new ContentValues();
         values.put("category", catItemName);
         values.put("category_color", catItemColor);
@@ -183,16 +191,15 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                database.update("poi_table", values, "id = " + (getArguments().getInt("position")
-                        + 1), null);
+                database.update("poi_table", values, "_id = " + (getArguments().getInt("position")), null);
             }
         });
 
         Toast.makeText(BlocspotApplication.getSharedInstance(), "Point of interest has been assigned to: "
                 + catItemName, Toast.LENGTH_SHORT).show();
 
-        Log.v(TAG, "Item ID: " + (catItemPosition + 1) + " | " + "Item Name: " + catItemName
-                + " | " + "Color: " + catItemColor);
+        Log.v(TAG, "Category ID: " + catItemPosition + " | " + "Cat Name: " + catItemName
+                + " | " + "Cat Color: " + catItemColor);
 
         task.onComplete(getArguments().getInt("position"));
 

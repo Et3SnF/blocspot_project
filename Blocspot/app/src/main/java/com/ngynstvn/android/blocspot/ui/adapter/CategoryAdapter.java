@@ -102,8 +102,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
     @Override
     public void onItemDismiss(int position) {
-        BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                .getWritableDatabase().delete(CAT_TABLE, "id = " + position, null);
+        BlocspotApplication.getSharedDataSource().removeCatFromDB(position);
         notifyItemRemoved(position);
     }
 
@@ -156,7 +155,8 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
                 public void onClick(View v) {
 
                     if(categoryAdapterDelegate != null) {
-                        getCategoryAdapterDelegate().onEditButtonClicked(CategoryAdapter.this, getAdapterPosition());
+                        getCategoryAdapterDelegate().onEditButtonClicked(CategoryAdapter.this,
+                                (int) CategoryAdapter.this.getItemId(getAdapterPosition()));
                     }
 
                     swipeLayout.close();
@@ -166,7 +166,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemDismiss(getAdapterPosition());
+                    onItemDismiss((int) CategoryAdapter.this.getItemId(getAdapterPosition()));
                     swipeLayout.close();
                 }
             });

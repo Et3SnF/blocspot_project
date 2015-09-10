@@ -129,8 +129,8 @@ public class EditCategoryDialog extends DialogFragment {
                         @Override
                         public void run() {
                             BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                                    .getWritableDatabase().update("category_table", values, "id = "
-                                    + (getArguments().getInt("position") + 1), null);
+                                    .getWritableDatabase().update("category_table", values, "_id = "
+                                    + (getArguments().getInt("position")), null);
                         }
                     });
 

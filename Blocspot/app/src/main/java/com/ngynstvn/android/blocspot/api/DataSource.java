@@ -449,13 +449,33 @@ public class DataSource {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                requeryDB();
+                requeryDB(POI_TABLE);
+            }
+
+        }.execute();
+    }
+
+    public void removeCatFromDB(final int item_position)  {
+
+        Log.v(TAG, "removePOIFromDB() called");
+
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                getDatabaseOpenHelper().getWritableDatabase().delete(CATEGORY_TABLE, "_id = " + item_position, null);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                requeryDB(CATEGORY_TABLE);
             }
 
         }.execute();
     }
     
-    public void requeryDB() {
+    public void requeryDB(final String tableName) {
 
         Log.v(TAG, "reQueryDB() called");
 
@@ -464,7 +484,7 @@ public class DataSource {
             protected Cursor doInBackground(Void... params) {
 
                 Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                        .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
+                        .getReadableDatabase().query(true, tableName, null, null, null, null, null, null, null);
 
                 return cursor;
             }

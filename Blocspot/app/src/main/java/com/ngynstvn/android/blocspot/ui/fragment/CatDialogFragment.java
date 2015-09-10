@@ -19,10 +19,12 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
-public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate {
+public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate,
+        DataSource.DataSourceDelegate {
 
     // ----- Class Variables ----- //
 
@@ -74,6 +76,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, "category_color", null);
         categoryAdapter = new CategoryAdapter(BlocspotApplication.getSharedInstance(), cursor);
         categoryAdapter.setCategoryAdapterDelegate(this);
+        BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         callback = new ItemTouchHelperCallback(categoryAdapter);
         touchHelper = new ItemTouchHelper(callback);
     }
@@ -218,5 +221,15 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         editCategoryDialog.show(getFragmentManager(), "edit_category");
     }
 
+    /**
+     *
+     * DataSource.DataSourceDelegate Implemented Methods
+     *
+     */
+
+    @Override
+    public void onQueryComplete(Cursor cursor) {
+        categoryAdapter.swapCursor(cursor);
+    }
 }
 
