@@ -2,6 +2,8 @@ package com.ngynstvn.android.blocspot.ui.activity;
 
 import android.annotation.TargetApi;
 import android.app.DialogFragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.R;
@@ -114,7 +117,12 @@ public class BlocspotActivity extends AppCompatActivity implements
         Log.e(TAG, "onCreateOptionsMenu() called");
         getMenuInflater().inflate(R.menu.menu_items, menu);
         this.menu = menu;
-        return super.onCreateOptionsMenu(menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        return true;
     }
 
     @Override
@@ -159,6 +167,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                 Toast.makeText(this, item.getTitle() + " Icon is pressed", Toast.LENGTH_SHORT).show();
                 Log.v(TAG, "BlocspotActivity " + item.getTitle() + " Icon Pressed");
+                onSearchRequested();
                 return true;
 
             case R.id.action_filter:
