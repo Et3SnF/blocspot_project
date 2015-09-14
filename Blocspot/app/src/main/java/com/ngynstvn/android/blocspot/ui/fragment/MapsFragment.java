@@ -299,6 +299,31 @@ public class MapsFragment extends MapFragment implements
         cursor.close();
     }
 
+    private void addResultMarkers() {
+
+        // Whatever the fts_table path is going to be
+
+        Cursor cursor = null; // for now
+
+//        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+//                .getReadableDatabase().query(true, "poi_table", null, null, null, null, null, null, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                POI poi = DataSource.poiFromCursor(cursor);
+                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                        .title(poi.getLocationName())
+                        .snippet(poi.getAddress() + " ("
+                                + poi.getCity() + ","
+                                + poi.getState() + ")"));
+            }
+            while(cursor.moveToNext());
+        }
+
+        cursor.close();
+    }
+
     // Activate geofences
 
     private void activateGeofences() {

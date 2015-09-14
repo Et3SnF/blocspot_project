@@ -137,7 +137,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:background="@color/blue_50"/>
+            android:background="@color/black_12"/>
 
     </RelativeLayout>
 
