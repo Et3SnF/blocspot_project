@@ -10,6 +10,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
+import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
@@ -23,6 +24,7 @@ public class DataSource {
     private static final String TAG = "Test (" + DataSource.class.getSimpleName() + ")";
     private static final String POI_TABLE = "poi_table";
     private static final String CATEGORY_TABLE = "category_table";
+    private static final String FTS_TABLE = "yelp_search_table";
     private static int counter;
 
     // ---- ----- //
@@ -35,6 +37,7 @@ public class DataSource {
     private DatabaseOpenHelper databaseOpenHelper;
     private POITable poi_table;
     private CategoryTable categoryTable;
+    private FTSTable ftsTable;
 
 //    private ArrayList<POI> poiArrayList = new ArrayList<>();
 //    private ArrayList<Category> categoryArrayList = new ArrayList<>();
@@ -52,9 +55,10 @@ public class DataSource {
             context.deleteDatabase(DB_NAME);
             poi_table = new POITable();
             categoryTable = new CategoryTable();
+            ftsTable = new FTSTable();
 
             databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                    poi_table, categoryTable);
+                    poi_table, categoryTable, ftsTable);
 
             dbFakeData();
             dbFakeCategoryData();
@@ -226,7 +230,7 @@ public class DataSource {
 
     public long addNewPOI(POI poi) {
 
-        Log.v(TAG, "insertPOIToDB() called");
+        Log.v(TAG, "addNewPOI() called");
 
         if (poi == null) {
             return -1L;
@@ -268,6 +272,24 @@ public class DataSource {
         return new CategoryTable.Builder()
                 .setCategoryName(category.getCategoryName())
                 .setCategoryColor(category.getCategoryColor())
+                .insert(databaseOpenHelper.getWritableDatabase());
+    }
+
+    public long addSearchResult(POI poi) {
+
+        Log.v(TAG, "addSearchResult() called");
+
+        if(poi == null) {
+            return -1L;
+        }
+
+        return new FTSTable.Builder()
+                .setLocationName(poi.getLocationName())
+                .setAddress(poi.getAddress())
+                .setCity(poi.getCity())
+                .setState(poi.getState())
+                .setLatitude(poi.getLatitudeValue())
+                .setLongitude(poi.getLongitudeValue())
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 

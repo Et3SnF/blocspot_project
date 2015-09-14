@@ -16,7 +16,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     // Class variables
 
     private static final String dbNAME = "blocspot_db";
-    private static final int VERSION = 1;
+    private static final int DB_VERSION = 1;
 
     // Member variables
 
@@ -25,7 +25,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     // Constructor
 
     public DatabaseOpenHelper(Context context, Table... tables) {
-        super(context, dbNAME, null, VERSION); //SQLiteOpenHelper(Context, CursorFactory, int)
+        super(context, dbNAME, null, DB_VERSION); //SQLiteOpenHelper(Context, CursorFactory, int)
         this.tables = tables;
         Log.v(TAG, "DatabaseOpenHelper class instantiation");
     }
@@ -35,9 +35,11 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.v(TAG, "onCreate() called");
+
         for(int i = 0; i < tables.length; i++) {
             db.execSQL(tables[i].getCreateStatement());
         }
+
     }
 
     // upgrade the tables
@@ -45,6 +47,7 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.v(TAG, "onUpgrade() called");
+
         for(int i = 0; i < tables.length; i++) {
             tables[i].onUpgrade(db, oldVersion, newVersion);
         }

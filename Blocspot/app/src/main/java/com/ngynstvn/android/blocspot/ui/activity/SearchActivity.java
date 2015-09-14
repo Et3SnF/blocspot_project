@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
 import com.ngynstvn.android.blocspot.ui.adapter.SearchAdapter;
 
@@ -21,18 +22,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 public class SearchActivity extends Activity {
 
     private static final String TAG = "Test (" + SearchActivity.class.getSimpleName() + ")";
+    private static final String FTS_TABLE = "yelp_search_table";
 
     private RecyclerView recyclerView;
     private SearchAdapter searchAdapter;
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getReadableDatabase();
     private Cursor cursor;
-
-    private ArrayList<String> resultList = new ArrayList<>();
 
     private static final String CONSUMER_KEY = "Y0Myyxe8h_YEsHjfo-j6yg";
     private static final String CONSUMER_SECRET = "1qMgDlgy15dRMjh5ImZqjtEAXRg";
@@ -40,11 +38,11 @@ public class SearchActivity extends Activity {
     private static final String TOKEN_SECRET = "H7yDe6WlFTMvSYcEi-TIDE0CUZk";
 
     private YelpAPI yelpAPI;
-    private String jsonResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate() called");
         setContentView(R.layout.activity_search);
 
         Intent intent = getIntent();
@@ -53,7 +51,6 @@ public class SearchActivity extends Activity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             runSearch(query, "Los Angeles, CA");
         }
-
     }
 
     private void runSearch(final String term, final String location) {
@@ -110,6 +107,11 @@ public class SearchActivity extends Activity {
 
                 Log.v(TAG, "Place #" + i + ": " + location_name + " | " + address + " | " + city +
                         " | " + state + " | " + latitude + " | " + longitude);
+
+                // Add result to the fts virtual table
+
+                BlocspotApplication.getSharedDataSource().addSearchResult(new POI(0, location_name,
+                        null, 0, address, city, state, latitude, longitude, null, false, 0.00f));
             }
 
             Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());
@@ -120,4 +122,19 @@ public class SearchActivity extends Activity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.v(TAG, "onBackPressed() called");
+        BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                .execSQL("Delete from " + FTS_TABLE + ";");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy() called");
+        BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                .execSQL("Delete from " + FTS_TABLE + ";");
+    }
 }

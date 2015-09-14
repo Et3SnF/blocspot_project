@@ -35,7 +35,7 @@ public class SearchAdapter extends CursorRecyclerViewAdapter<SearchAdapter.Searc
 
         public SearchAdapterViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.tv_search_text);
+            textView = (TextView) itemView.findViewById(R.id.tv_search_result_name);
         }
 
         void update(POI poi) {
