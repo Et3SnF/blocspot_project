@@ -72,7 +72,7 @@ public class SearchActivity extends Activity {
 
             @Override
             protected void onPostExecute(String s) {
-                Log.v(TAG, s);
+                Log.v(TAG, "Raw JSON data: " + s);
                 getResults(s);
             }
 
@@ -82,16 +82,17 @@ public class SearchActivity extends Activity {
 
     private void getResults(String jsonString) {
 
-        parseJSONstring(jsonString);
+        parseJSON(jsonString);
 
         searchAdapter = new SearchAdapter(BlocspotApplication.getSharedInstance(), cursor);
         recyclerView = (RecyclerView) findViewById(R.id.rv_activity_search);
         recyclerView.setLayoutManager(new LinearLayoutManager(BlocspotApplication.getSharedInstance()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(searchAdapter);
+
     }
 
-    private void parseJSONstring(String jsonString) {
+    private void parseJSON(String jsonString) {
 
         // Parse the JSON string here
 
@@ -107,10 +108,11 @@ public class SearchActivity extends Activity {
                 double latitude = jsonArray.optJSONObject(i).optJSONObject("location").optJSONObject("coordinate").getDouble("latitude");
                 double longitude = jsonArray.optJSONObject(i).optJSONObject("location").optJSONObject("coordinate").getDouble("longitude");
 
-                Log.v(TAG, "Place #" + i + ": " + location_name + " | " + address + " | " + city + " | " + state + " | " + latitude + " | " + longitude);
+                Log.v(TAG, "Place #" + i + ": " + location_name + " | " + address + " | " + city +
+                        " | " + state + " | " + latitude + " | " + longitude);
             }
 
-            Log.v(TAG, "Current jsonArray size = " + jsonArray.length());
+            Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());
         }
         catch (JSONException e) {
             e.printStackTrace();
