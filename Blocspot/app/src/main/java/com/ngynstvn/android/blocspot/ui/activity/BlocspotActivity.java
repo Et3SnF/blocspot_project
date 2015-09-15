@@ -261,7 +261,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                 try {
                     JSONObject jsonObject = new JSONObject(jsonString);
-                    JSONArray jsonArray = jsonObject.getJSONArray("businesses");
+                    JSONArray jsonArray = (JSONArray) jsonObject.get("businesses");
 
                     for(int i = 0; i < jsonArray.length(); i++) {
                         String location_name = jsonArray.optJSONObject(i).getString("name");
@@ -290,33 +290,28 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                 }
                 catch (JSONException e) {
-                    e.printStackTrace();
-                    return 0;
+                    return null;
                 }
             }
 
             @Override
             protected void onPostExecute(Integer size) {
 
-                if(size == 0) {
-                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to find places. "
-                            + "Search again.", Toast.LENGTH_SHORT).show();
+                try {
+                    if(size == 0) {
+                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to find places. "
+                                + "Search again.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch (NullPointerException e) {
+                    Log.v(TAG, "Null integer encountered during JSON parsing.");
                 }
 
                 mapsFragment.removeCurSrchMarkers();
                 mapsFragment.addNewResultMarkers();
             }
-        }.execute();
-    }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.v(TAG, "onBackPressed() called");
-        database.execSQL("Delete from " + FTS_TABLE + ";");
-        mapsFragment.removeCurSrchMarkers();
-        searchView.setQuery("", false);
-        searchView.clearFocus();
+        }.execute();
     }
 
     /**
