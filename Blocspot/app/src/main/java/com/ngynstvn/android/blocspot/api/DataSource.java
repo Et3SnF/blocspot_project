@@ -277,7 +277,7 @@ public class DataSource {
 
     public long addSearchResult(POI poi) {
 
-        Log.v(TAG, "addSearchResult() called");
+//        Log.v(TAG, "addSearchResult() called");
 
         if(poi == null) {
             return -1L;
