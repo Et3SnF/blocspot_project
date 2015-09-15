@@ -183,6 +183,9 @@ public class BlocspotActivity extends AppCompatActivity implements
                     getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                             new ListFragment()).commit();
 
+                    searchView.onActionViewCollapsed();
+                    searchView.setQuery("", false);
+
                     Log.v(TAG, "BlocspotActivity List Mode Pressed");
                 } else if (item.getTitle().equals(getResources().getString(R.string.map_mode_text))) {
                     this.item = item;
@@ -192,6 +195,9 @@ public class BlocspotActivity extends AppCompatActivity implements
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fl_activity_blocspot, MapsFragment.returnMapMarkers()).commit();
 
+                    searchView.onActionViewCollapsed();
+                    searchView.setQuery("", false);
+
                     Log.v(TAG, "BlocspotActivity Map Mode Pressed");
                 }
 
@@ -199,7 +205,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             case R.id.action_search:
                 Log.v(TAG, "BlocspotActivity " + item.getTitle() + " Icon Pressed");
-                return true;
+                return false;
 
             case R.id.action_filter:
                 Log.v(TAG, item.getTitle() + " Icon Pressed");
@@ -220,10 +226,10 @@ public class BlocspotActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         Log.v(TAG, "onBackPressed() called");
+        searchView.setQuery("", true);
         mapsFragment.removeCurSrchMarkers();
+        searchView.onActionViewCollapsed();
         database.execSQL("Delete from " + FTS_TABLE + ";");
-        searchView.clearFocus();
-        searchView.setQuery("", false);
     }
 
     @Override
