@@ -144,8 +144,16 @@ public class BlocspotActivity extends AppCompatActivity implements
             searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
             searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        }
 
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    database.execSQL("Delete from " + FTS_TABLE + ";");
+                    searchView.onActionViewCollapsed();
+                    return true;
+                }
+            });
+        }
         return true;
     }
 
@@ -189,7 +197,6 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             case R.id.action_search:
                 Log.v(TAG, "BlocspotActivity " + item.getTitle() + " Icon Pressed");
-                onSearchRequested();
                 return true;
 
             case R.id.action_filter:
@@ -228,6 +235,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             @Override
             protected String doInBackground(Void... params) {
+                // Clear anything that is already there in the table
                 return yelpAPI.searchForBusinessesByLocation(term, location);
             }
 
