@@ -219,7 +219,11 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        // This is having issues with SearchView right now. Will correct later.
+        Log.v(TAG, "onBackPressed() called");
+        mapsFragment.removeCurSrchMarkers();
+        database.execSQL("Delete from " + FTS_TABLE + ";");
+        searchView.clearFocus();
+        searchView.setQuery("", false);
     }
 
     @Override
