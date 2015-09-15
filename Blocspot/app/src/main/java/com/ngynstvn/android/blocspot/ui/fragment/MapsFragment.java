@@ -25,11 +25,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
-import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
@@ -70,11 +70,15 @@ public class MapsFragment extends MapFragment implements
     private static final String TAG = "Test (" + MapsFragment.class.getSimpleName() + ")";
     private static final String BUNDLE_MAP_MODE = MapsFragment.class.getCanonicalName().concat(".MAP_MODE");
 
+    private static final String POI_TABLE = "poi_table";
+    private static final String FTS_TABLE = "yelp_search_table";
+
     // ----- Member variables ----- //
 
     private GoogleMap googleMap;
     private LatLng position;
     private float zoom;
+    private Marker marker;
 
     // GoogleApiClient variables
 
@@ -112,6 +116,7 @@ public class MapsFragment extends MapFragment implements
     public void onAttach(Activity activity) {
         Log.e(TAG, "onAttach() called");
         super.onAttach(activity);
+        buildGoogleApiClient();
         mapFragDelegate = new WeakReference<MapFragDelegate>((MapFragDelegate) activity);
     }
 
@@ -119,7 +124,6 @@ public class MapsFragment extends MapFragment implements
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        buildGoogleApiClient();
         geofenceList = new ArrayList<>();
 
     }
@@ -275,7 +279,7 @@ public class MapsFragment extends MapFragment implements
     private void addMarkers() {
 
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                .getReadableDatabase().query(true, "poi_table", null, null, null, null, null, null, null);
+                .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
 
         if(cursor.moveToFirst()) {
             do {
@@ -283,6 +287,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
                         .snippet(poi.getAddress() + " ("
                                 + poi.getCity() + ","
                                 + poi.getState() + ")"));
@@ -299,24 +304,38 @@ public class MapsFragment extends MapFragment implements
         cursor.close();
     }
 
-    private void addResultMarkers() {
+    public void addResultMarkers() {
 
-        // Whatever the fts_table path is going to be
-
-        Cursor cursor = null; // for now
-
-//        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-//                .getReadableDatabase().query(true, "poi_table", null, null, null, null, null, null, null);
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, FTS_TABLE, null, null, null, null, null, null, null);
 
         if(cursor.moveToFirst()) {
             do {
                 POI poi = DataSource.poiFromCursor(cursor);
-                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .snippet(poi.getAddress() + " ("
                                 + poi.getCity() + ","
                                 + poi.getState() + ")"));
+            }
+            while(cursor.moveToNext());
+        }
+
+        cursor.close();
+    }
+
+    public void removeResultMarkers() {
+
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, FTS_TABLE, null, null, null, null, null, null, null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                if(marker != null) {
+                    marker.remove();
+                }
             }
             while(cursor.moveToNext());
         }
@@ -400,11 +419,11 @@ public class MapsFragment extends MapFragment implements
             return;
         }
 
-        googleMap.addCircle(new CircleOptions()
-                .center(new LatLng(poiLatitude, poiLongitude))
-                .radius(geofenceRadius)
-                .strokeColor(getResources().getColor(R.color.material_red_dark))
-                .strokeWidth(2.00f));
+//        googleMap.addCircle(new CircleOptions()
+//                .center(new LatLng(poiLatitude, poiLongitude))
+//                .radius(geofenceRadius)
+//                .strokeColor(getResources().getColor(R.color.material_red_dark))
+//                .strokeWidth(2.00f));
 
     }
 
@@ -431,10 +450,20 @@ public class MapsFragment extends MapFragment implements
             latitude = location.getLatitude();
             longitude = location.getLongitude();
             Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+
+            if(bundle == null) {
+                Log.v(TAG, "Bundle is null. (Location is not null)");
+            }
+
             startUpMap();
         }
         else {
             Log.v(TAG, "Location is null. Unable to get location");
+
+            if(bundle == null) {
+                Log.v(TAG, "Bundle is null. (Location is not null)");
+            }
+
             startUpMap();
         }
     }

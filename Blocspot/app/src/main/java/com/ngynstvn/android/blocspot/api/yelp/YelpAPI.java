@@ -29,7 +29,7 @@ public class YelpAPI {
     private static final String API_HOST = "api.yelp.com";
     private static final String DEFAULT_TERM = "dinner";
     private static final String DEFAULT_LOCATION = "Los Angeles, CA";
-    private static final int SEARCH_LIMIT = 20;
+    private static final int SEARCH_LIMIT = 15;
     private static final String SEARCH_PATH = "/v2/search";
     private static final String BUSINESS_PATH = "/v2/business";
 
@@ -75,8 +75,8 @@ public class YelpAPI {
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
         request.addQuerystringParameter("limit", String.valueOf(SEARCH_LIMIT));
-        request.addQuerystringParameter("sort", String.valueOf(2));
-        request.addQuerystringParameter("radius_filter", String.valueOf(32000));
+        request.addQuerystringParameter("sort", String.valueOf(0));
+        request.addQuerystringParameter("radius_filter", String.valueOf(8000));
         return sendRequestAndGetResponse(request);
     }
 

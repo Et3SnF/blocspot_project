@@ -148,8 +148,9 @@ public class BlocspotActivity extends AppCompatActivity implements
             searchView.setOnCloseListener(new SearchView.OnCloseListener() {
                 @Override
                 public boolean onClose() {
-                    database.execSQL("Delete from " + FTS_TABLE + ";");
                     searchView.onActionViewCollapsed();
+                    mapsFragment.removeResultMarkers();
+                    database.execSQL("Delete from " + FTS_TABLE + ";");
                     return true;
                 }
             });
@@ -230,6 +231,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             @Override
             protected void onPreExecute() {
+                database.execSQL("Delete from " + FTS_TABLE);
                 yelpAPI = YelpAPI.newInstance();
             }
 
@@ -287,6 +289,11 @@ public class BlocspotActivity extends AppCompatActivity implements
                 }
 
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                mapsFragment.addResultMarkers();
             }
         }.execute();
     }
