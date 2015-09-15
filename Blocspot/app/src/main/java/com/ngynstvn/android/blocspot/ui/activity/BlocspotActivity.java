@@ -218,6 +218,11 @@ public class BlocspotActivity extends AppCompatActivity implements
      */
 
     @Override
+    public void onBackPressed() {
+        // This is having issues with SearchView right now. Will correct later.
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         Log.v(TAG, "onNewIntent() called");
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
