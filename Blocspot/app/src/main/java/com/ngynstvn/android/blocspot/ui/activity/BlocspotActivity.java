@@ -39,6 +39,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     private static final String TAG = "Test (" + BlocspotActivity.class.getSimpleName() + ")";
     private static final String FTS_TABLE = "yelp_search_table";
+    private static int backpress_counter = 0;
 
     private static DataSource dataSource = BlocspotApplication.getSharedDataSource();
     private static SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
@@ -225,11 +226,18 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+        backpress_counter++;
+
         Log.v(TAG, "onBackPressed() called");
         searchView.setQuery("", true);
         mapsFragment.removeCurSrchMarkers();
         searchView.onActionViewCollapsed();
         database.execSQL("Delete from " + FTS_TABLE + ";");
+
+        if(backpress_counter > 2) {
+            finish();
+        }
+
     }
 
     @Override
