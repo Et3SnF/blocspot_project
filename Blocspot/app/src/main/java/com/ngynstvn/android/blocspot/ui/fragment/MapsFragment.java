@@ -27,7 +27,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.DataSource;
@@ -78,7 +77,6 @@ public class MapsFragment extends MapFragment implements
     private GoogleMap googleMap;
     private LatLng position;
     private float zoom;
-    private Marker marker;
 
     // GoogleApiClient variables
 
@@ -304,7 +302,7 @@ public class MapsFragment extends MapFragment implements
         cursor.close();
     }
 
-    public void addResultMarkers() {
+    public void addNewResultMarkers() {
 
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, FTS_TABLE, null, null, null, null, null, null, null);
@@ -312,7 +310,7 @@ public class MapsFragment extends MapFragment implements
         if(cursor.moveToFirst()) {
             do {
                 POI poi = DataSource.poiFromCursor(cursor);
-                marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
@@ -326,21 +324,25 @@ public class MapsFragment extends MapFragment implements
         cursor.close();
     }
 
-    public void removeResultMarkers() {
+    private void removeAllMarkers() {
 
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, FTS_TABLE, null, null, null, null, null, null, null);
 
         if(cursor.moveToFirst()) {
             do {
-                if(marker != null) {
-                    marker.remove();
-                }
+                MapsFragment.this.googleMap.clear();
             }
             while(cursor.moveToNext());
         }
 
+        removeAllGeofences();
         cursor.close();
+    }
+
+    public void removeCurSrchMarkers() {
+        removeAllMarkers();
+        addMarkers();
     }
 
     // Activate geofences
@@ -418,13 +420,6 @@ public class MapsFragment extends MapFragment implements
             Log.v(TAG, "googleMap variable null. Unable to add geofence circle");
             return;
         }
-
-//        googleMap.addCircle(new CircleOptions()
-//                .center(new LatLng(poiLatitude, poiLongitude))
-//                .radius(geofenceRadius)
-//                .strokeColor(getResources().getColor(R.color.material_red_dark))
-//                .strokeWidth(2.00f));
-
     }
 
     // Method to remove geofence
@@ -453,18 +448,22 @@ public class MapsFragment extends MapFragment implements
 
             if(bundle == null) {
                 Log.v(TAG, "Bundle is null. (Location is not null)");
+                startUpMap();
             }
 
-            startUpMap();
+            // return to map at current location on screen
+
         }
         else {
             Log.v(TAG, "Location is null. Unable to get location");
 
             if(bundle == null) {
-                Log.v(TAG, "Bundle is null. (Location is not null)");
+                Log.v(TAG, "Bundle is null. (Location is null)");
+                startUpMap();
             }
 
-            startUpMap();
+            // return to map at current location on screen
+
         }
     }
 

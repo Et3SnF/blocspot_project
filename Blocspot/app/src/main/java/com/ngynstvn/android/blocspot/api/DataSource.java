@@ -282,6 +282,9 @@ public class DataSource {
         if(poi == null) {
             return -1L;
         }
+        else if(poi.getLatitudeValue() == 0 && poi.getLongitudeValue() == 0) {
+            return -1L;
+        }
 
         return new FTSTable.Builder()
                 .setLocationName(poi.getLocationName())

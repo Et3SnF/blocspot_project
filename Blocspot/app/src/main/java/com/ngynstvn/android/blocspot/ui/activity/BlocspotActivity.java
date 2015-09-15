@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -149,7 +150,7 @@ public class BlocspotActivity extends AppCompatActivity implements
                 @Override
                 public boolean onClose() {
                     searchView.onActionViewCollapsed();
-                    mapsFragment.removeResultMarkers();
+                    mapsFragment.removeCurSrchMarkers();
                     database.execSQL("Delete from " + FTS_TABLE + ";");
                     return true;
                 }
@@ -237,7 +238,6 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             @Override
             protected String doInBackground(Void... params) {
-                // Clear anything that is already there in the table
                 return yelpAPI.searchForBusinessesByLocation(term, location);
             }
 
@@ -254,9 +254,11 @@ public class BlocspotActivity extends AppCompatActivity implements
     private void getResults(final String jsonString) {
         // Parse the JSON string here
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Integer>() {
+
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Integer doInBackground(Void... params) {
+
                 try {
                     JSONObject jsonObject = new JSONObject(jsonString);
                     JSONArray jsonArray = jsonObject.getJSONArray("businesses");
@@ -273,27 +275,36 @@ public class BlocspotActivity extends AppCompatActivity implements
                         double longitude = jsonArray.optJSONObject(i).optJSONObject("location")
                                 .optJSONObject("coordinate").getDouble("longitude");
 
-                        Log.v(TAG, "Place #" + (i+1) + ": " + location_name + " | " + address + " | " + city +
-                                " | " + state + " | " + latitude + " | " + longitude);
+                        // To log the search results
+
+//                        Log.v(TAG, "Place #" + (i+1) + ": " + location_name + " | " + address + " | " + city +
+//                                " | " + state + " | " + latitude + " | " + longitude);
 
                         // Add result to the fts virtual table
 
                         dataSource.addSearchResult(new POI(0, location_name,
                                 null, 0, address, city, state, latitude, longitude, null, false, 0.00f));
                     }
-
                     Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());
+                    return jsonArray.length();
+
                 }
                 catch (JSONException e) {
                     e.printStackTrace();
+                    return 0;
                 }
-
-                return null;
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                mapsFragment.addResultMarkers();
+            protected void onPostExecute(Integer size) {
+
+                if(size == 0) {
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), "Unable to find places. "
+                            + "Search again.", Toast.LENGTH_SHORT).show();
+                }
+
+                mapsFragment.removeCurSrchMarkers();
+                mapsFragment.addNewResultMarkers();
             }
         }.execute();
     }
@@ -303,6 +314,9 @@ public class BlocspotActivity extends AppCompatActivity implements
         super.onBackPressed();
         Log.v(TAG, "onBackPressed() called");
         database.execSQL("Delete from " + FTS_TABLE + ";");
+        mapsFragment.removeCurSrchMarkers();
+        searchView.setQuery("", false);
+        searchView.clearFocus();
     }
 
     /**
