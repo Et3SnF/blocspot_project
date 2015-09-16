@@ -9,7 +9,6 @@ import android.util.Log;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.api.model.PlaceResult;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
@@ -106,6 +105,9 @@ public class DataSource {
                 .setLatitude(34.1460872)
                 .setLongitude(-118.2561726)
                 .setDescription("A very well known mall in the city. Across from Americana.")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_3.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
@@ -119,6 +121,9 @@ public class DataSource {
                 .setLatitude(34.0410142)
                 .setLongitude(-118.2472838)
                 .setDescription("This place serves alcoholic boba. What an interesting place!")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_4.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(1)
                 .insert(writableDatabase);
 
@@ -132,6 +137,9 @@ public class DataSource {
                 .setLatitude(34.0488342)
                 .setLongitude(-118.2513587)
                 .setDescription("A night club out in downtown Los Angeles. Beautiful view of downtown when at the top! ")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_2.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
@@ -145,6 +153,9 @@ public class DataSource {
                 .setLatitude(34.0554362)
                 .setLongitude(-118.24994)
                 .setDescription("I never knew what this building was until I found out it was related to Disney!")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_3.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
@@ -158,6 +169,9 @@ public class DataSource {
                 .setLatitude(34.15087)
                 .setLongitude(-118.340852)
                 .setDescription("I heard this place has crazy hot dogs! Not like those typical dodger dogs!")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_4.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
@@ -171,6 +185,9 @@ public class DataSource {
                 .setLatitude(34.097537)
                 .setLongitude(-118.350048)
                 .setDescription("Located in West Hollywood. I heard this ramen place is good!")
+                .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
+                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/f1def11e4e79/ico/stars/v1/stars_5.png")
+                .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
 
@@ -258,6 +275,9 @@ public class DataSource {
                 .setLatitude(poi.getLatitudeValue())
                 .setLongitude(poi.getLongitudeValue())
                 .setDescription(poi.getDescription())
+                .setPlaceURL(poi.getPlaceURL())
+                .setRatingURL(poi.getRatingImgURL())
+                .setLogoURL(poi.getLogoURL())
                 .setHasVisited(boolInt)
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
@@ -276,27 +296,39 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public long addSearchResult(PlaceResult placeResult) {
+    public long addSearchResult(POI poi) {
 
 //        Log.v(TAG, "addSearchResult() called");
 
-        if(placeResult == null) {
+        if(poi == null) {
             return -1L;
         }
-        else if(placeResult.getLatitudeValue() == 0 && placeResult.getLongitudeValue() == 0) {
+        else if(poi.getLatitudeValue() == 0 && poi.getLongitudeValue() == 0) {
             return -1L;
         }
 
+        int boolInt = 0;
+
+        if (poi.isHasVisited()) {
+            boolInt = 1;
+        } else {
+            boolInt = 0;
+        }
+
         return new FTSTable.Builder()
-                .setLocationName(placeResult.getLocationName())
-                .setAddress(placeResult.getAddress())
-                .setCity(placeResult.getCity())
-                .setState(placeResult.getState())
-                .setLatitude(placeResult.getLatitudeValue())
-                .setLongitude(placeResult.getLongitudeValue())
-                .setPlaceURL(placeResult.getPlaceURL())
-                .setRatingURL(placeResult.getRatingImgURL())
-                .setLogoURL(placeResult.getLogoURL())
+                .setLocationName(poi.getLocationName())
+                .setCategory(poi.getCategoryName())
+                .setCategoryColor(poi.getCategoryColor())
+                .setAddress(poi.getAddress())
+                .setCity(poi.getCity())
+                .setState(poi.getState())
+                .setLatitude(poi.getLatitudeValue())
+                .setLongitude(poi.getLongitudeValue())
+                .setDescription(poi.getDescription())
+                .setPlaceURL(poi.getPlaceURL())
+                .setRatingURL(poi.getRatingImgURL())
+                .setLogoURL(poi.getLogoURL())
+                .setHasVisited(boolInt)
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
@@ -442,8 +474,8 @@ public class DataSource {
         return new POI(POITable.getRowId(cursor), POITable.getLocationName(cursor), POITable.getCategory(cursor),
                 POITable.getCategoryColor(cursor), POITable.getAddress(cursor), POITable.getCity(cursor),
                 POITable.getState(cursor), POITable.getLatitude(cursor), POITable.getLongitude(cursor),
-                POITable.getColumnDescription(cursor), poi.isHasVisited(), 0.2f);
-
+                POITable.getColumnDescription(cursor), POITable.getPlaceURL(cursor), POITable.getRatingURL(cursor),
+                POITable.getLogoURL(cursor), poi.isHasVisited());
     }
 
     public static Category catFromCursor(Cursor cursor) {
@@ -461,14 +493,6 @@ public class DataSource {
 
         return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
                 CategoryTable.getCategoryColor(cursor), category.getIsCatChecked());
-    }
-
-    public static PlaceResult placeResultFromCursor(Cursor cursor) {
-
-        return new PlaceResult(FTSTable.getRowId(cursor), FTSTable.getLocationName(cursor),
-                FTSTable.getAddress(cursor), FTSTable.getCity(cursor), FTSTable.getState(cursor),
-                FTSTable.getLatitude(cursor), FTSTable.getLongitude(cursor), FTSTable.getPlaceURL(cursor),
-                FTSTable.getRatingURL(cursor), FTSTable.getLogoURL(cursor));
     }
 
 }

@@ -20,15 +20,16 @@ import android.widget.TextView;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
-import com.ngynstvn.android.blocspot.api.model.PlaceResult;
+import com.ngynstvn.android.blocspot.api.model.POI;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 public class ResultDialog extends DialogFragment {
 
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
     private static final String FTS_TABLE = "yelp_search_table";
 
-    private static PlaceResult placeResult;
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
             .getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
@@ -43,14 +44,16 @@ public class ResultDialog extends DialogFragment {
     private TextView resultCity;
     private TextView resultState;
 
-    public static ResultDialog newInstance(int title) {
+    private POI poi;
+
+    public static ResultDialog newInstance(POI poi) {
 
         ResultDialog resultDialog = new ResultDialog();
 
         // Supply num input as an argument --> for retrieving stuff later
 
         Bundle bundle = new Bundle();
-        bundle.putInt("title", title);
+        bundle.putSerializable("poi", poi);
 
         resultDialog.setArguments(bundle);
 
@@ -77,7 +80,7 @@ public class ResultDialog extends DialogFragment {
 
         Log.v(TAG, "onCreateDialog() called");
 
-        new AsyncTask<Void, Void, PlaceResult>() {
+        new AsyncTask<Void, Void, ArrayList<POI>>() {
 
             @Override
             protected void onPreExecute() {
@@ -85,23 +88,30 @@ public class ResultDialog extends DialogFragment {
             }
 
             @Override
-            protected PlaceResult doInBackground(Void... params) {
+            protected ArrayList<POI> doInBackground(Void... params) {
 
-                if(cursor.moveToFirst()) {
+                ArrayList<POI> poiArrayList = new ArrayList<>();
+
+                if (cursor.moveToFirst()) {
                     do {
-                        placeResult = DataSource.placeResultFromCursor(cursor);
+                        poi = DataSource.poiFromCursor(cursor);
+                        poiArrayList.add(poi);
+                        Log.v(TAG, "The place URL is: " + poi.getPlaceURL());
                     }
                     while (cursor.moveToNext());
                 }
 
-                return placeResult;
+                return poiArrayList;
             }
 
             @Override
-            protected void onPostExecute(PlaceResult placeResult) {
-                loadImages(placeResult);
-                setTextViews(placeResult);
+            protected void onPostExecute(ArrayList<POI> poiArrayList) {
+                for(POI poi : poiArrayList) {
+                    loadImages(poi);
+                    setTextViews(poi);
+                }
             }
+
         }.execute();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
@@ -157,7 +167,7 @@ public class ResultDialog extends DialogFragment {
         visitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(placeResult.getPlaceURL())));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(poi.getPlaceURL())));
             }
         });
 
@@ -208,21 +218,21 @@ public class ResultDialog extends DialogFragment {
 
     // ---------------- //
 
-    private void loadImages(PlaceResult placeResult) {
+    private void loadImages(POI poi) {
         if(resultLogo != null) {
-            Picasso.with(BlocspotApplication.getSharedInstance()).load(placeResult.getLogoURL()).into(resultLogo);
+            Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getLogoURL()).into(resultLogo);
         }
 
         if(resultRating != null) {
-            Picasso.with(BlocspotApplication.getSharedInstance()).load(placeResult.getRatingImgURL()).into(resultRating);
+            Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getRatingImgURL()).into(resultRating);
         }
     }
 
-    private void setTextViews(PlaceResult placeResult) {
-        resultName.setText(placeResult.getLocationName());
-        resultAddress.setText(placeResult.getAddress());
-        resultCity.setText(placeResult.getCity());
-        resultState.setText(placeResult.getState());
+    private void setTextViews(POI poi) {
+        resultName.setText(poi.getLocationName());
+        resultAddress.setText(poi.getAddress());
+        resultCity.setText(poi.getCity());
+        resultState.setText(poi.getState());
     }
 
 }

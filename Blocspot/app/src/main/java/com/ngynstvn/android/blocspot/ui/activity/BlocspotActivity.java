@@ -22,7 +22,6 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.api.model.PlaceResult;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
 import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
@@ -309,8 +308,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                         // Add result to the fts virtual table
 
-                        dataSource.addSearchResult(new PlaceResult(0, location_name, address, city,
-                                state, latitude, longitude, placeURL, ratingURL, logoURL));
+                        dataSource.addSearchResult(new POI(0, location_name, "", 0, address, city,
+                                state, latitude, longitude, "", placeURL, ratingURL, logoURL, false));
                     }
 
                     Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());

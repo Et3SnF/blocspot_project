@@ -21,6 +21,9 @@ public class POITable extends Table {
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
     private static final String COLUMN_DESCRIPTION = "description";
+    private static final String COLUMN_PLACE_URL = "place_url";
+    private static final String COLUMN_RATING_URL = "rating_url";
+    private static final String COLUMN_LOGO_URL = "logo_url";
     private static final String COLUMN_HAS_VISITED = "has_visited";
 
     // Hold off on the distance to POI part for now...
@@ -51,6 +54,9 @@ public class POITable extends Table {
                 + COLUMN_LATITUDE + " DOUBLE,"
                 + COLUMN_LONGITUDE + " DOUBLE,"
                 + COLUMN_DESCRIPTION + " TEXT,"
+                + COLUMN_PLACE_URL + " TEXT,"
+                + COLUMN_RATING_URL + " TEXT,"
+                + COLUMN_LOGO_URL + " TEXT, "
                 + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
     }
 
@@ -135,6 +141,21 @@ public class POITable extends Table {
             return this;
         }
 
+        public Builder setPlaceURL(String placeURL) {
+            values.put(COLUMN_PLACE_URL, placeURL);
+            return this;
+        }
+
+        public Builder setRatingURL(String ratingURL) {
+            values.put(COLUMN_RATING_URL, ratingURL);
+            return this;
+        }
+
+        public Builder setLogoURL(String logoURL) {
+            values.put(COLUMN_LOGO_URL, logoURL);
+            return this;
+        }
+
         public Builder setHasVisited(int hasVisited) {
             values.put(COLUMN_HAS_VISITED, hasVisited);
             return this;
@@ -182,6 +203,18 @@ public class POITable extends Table {
 
     public static String getColumnDescription(Cursor cursor) {
         return getString(cursor, COLUMN_DESCRIPTION);
+    }
+
+    public static String getPlaceURL(Cursor cursor) {
+        return getString(cursor, COLUMN_PLACE_URL);
+    }
+
+    public static String getRatingURL(Cursor cursor) {
+        return getString(cursor, COLUMN_RATING_URL);
+    }
+
+    public static String getLogoURL(Cursor cursor) {
+        return getString(cursor, COLUMN_LOGO_URL);
     }
 
     public static int getColumnHasVisited(Cursor cursor) {

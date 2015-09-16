@@ -27,14 +27,33 @@ public class POI extends Model implements Serializable {
     private double latitudeValue = 0.00d;
     private double longitudeValue = 0.00d;
     private String description = "";
+    private String placeURL = "";
+    private String ratingImgURL = "";
+    private String logoURL = "";
     private boolean hasVisited = false;
-    private float distanceToPOI = 0.00f;
 
     // Constructor
 
+    public POI(long rowId) {
+        super(rowId);
+        String locationName = "";
+        String categoryName = "";
+        int categoryColor = 0;
+        String address = "";
+        String city = "";
+        String state = "";
+        double latitudeValue = 0.00d;
+        double longitudeValue = 0.00d;
+        String description = "";
+        String placeURL = "";
+        String ratingImgURL = "";
+        String logoURL = "";
+        boolean hasVisited = false;
+    }
+
     public POI(long rowId, String locationName, String categoryName, int categoryColor, String address,
-               String city, String state, double latitudeValue, double longitudeValue,
-               String description, boolean hasVisited, float distanceToPOI) {
+               String city, String state, double latitudeValue, double longitudeValue, String description,
+               String placeURL, String ratingImgURL, String logoURL, boolean hasVisited) {
         super(rowId);
         this.locationName = locationName;
         this.categoryName = categoryName;
@@ -45,8 +64,10 @@ public class POI extends Model implements Serializable {
         this.latitudeValue = latitudeValue;
         this.longitudeValue = longitudeValue;
         this.description = description;
+        this.placeURL = placeURL;
+        this.ratingImgURL = ratingImgURL;
+        this.logoURL = logoURL;
         this.hasVisited = hasVisited;
-        this.distanceToPOI = distanceToPOI;
     }
 
     // Setters and Getters
@@ -140,6 +161,30 @@ public class POI extends Model implements Serializable {
         this.description = description;
     }
 
+    public String getPlaceURL() {
+        return placeURL;
+    }
+
+    public void setPlaceURL(String placeURL) {
+        this.placeURL = placeURL;
+    }
+
+    public String getRatingImgURL() {
+        return ratingImgURL;
+    }
+
+    public void setRatingImgURL(String ratingImgURL) {
+        this.ratingImgURL = ratingImgURL;
+    }
+
+    public String getLogoURL() {
+        return logoURL;
+    }
+
+    public void setLogoURL(String logoURL) {
+        this.logoURL = logoURL;
+    }
+
     public boolean isHasVisited() {
         return hasVisited;
     }
@@ -148,11 +193,4 @@ public class POI extends Model implements Serializable {
         this.hasVisited = hasVisited;
     }
 
-    public float getDistanceToPOI() {
-        return distanceToPOI;
-    }
-
-    public void setDistanceToPOI(float distanceToPOI) {
-        this.distanceToPOI = distanceToPOI;
-    }
 }

@@ -110,7 +110,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             ItemTouchHelperCallback.ItemTouchHelperViewHolder {
 
         CheckBox visitCheckbox;
-        TextView poiDistance;
         TextView poiName;
         TextView poiDescription;
 
@@ -128,7 +127,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             super(itemView);
             Log.v(TAG, "PlaceAdapterViewHolder() instantiated");
             visitCheckbox = (CheckBox) itemView.findViewById(R.id.cb_has_visited);
-            poiDistance = (TextView) itemView.findViewById(R.id.tv_dist_to_poi);
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
 
@@ -241,7 +239,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             poi = DataSource.poiFromCursor(getCursor());
             poiName.setText(poi.getLocationName());
             poiDescription.setText(poi.getDescription());
-            poiDistance.setText(String.valueOf(poi.getDistanceToPOI()) + " mi");
 
             if(poi.getCategoryColor() == 0) {
                 visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));

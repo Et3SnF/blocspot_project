@@ -30,7 +30,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
-import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
@@ -225,7 +224,7 @@ public class MapsFragment extends MapFragment implements
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        addMarkers();
+                        addPOIMarkers();
                         Log.v(TAG, "Number of active geofences: " + geofenceList.size() + "");
                         activateGeofences();
                     }
@@ -269,7 +268,7 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                addMarkers();
+                addPOIMarkers();
             }
 
         }, 100);
@@ -279,14 +278,14 @@ public class MapsFragment extends MapFragment implements
 
     // Add Markers to Map
 
-    private void addMarkers() {
+    private void addPOIMarkers() {
 
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
 
         if(cursor.moveToFirst()) {
             do {
-                POI poi = DataSource.poiFromCursor(cursor);
+                final POI poi = DataSource.poiFromCursor(cursor);
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
@@ -295,7 +294,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showResultDialog();
+                        showResultDialog(poi);
                         return true;
                     }
                 });
@@ -319,7 +318,7 @@ public class MapsFragment extends MapFragment implements
 
         if(cursor.moveToFirst()) {
             do {
-                POI poi = DataSource.poiFromCursor(cursor);
+                final POI poi = DataSource.poiFromCursor(cursor);
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
@@ -328,13 +327,13 @@ public class MapsFragment extends MapFragment implements
                                 + poi.getCity() + ","
                                 + poi.getState() + ")"));
 
-                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        showResultDialog();
-                        return true;
-                    }
-                });
+//                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//                    @Override
+//                    public boolean onMarkerClick(Marker marker) {
+//                        showResultDialog(poi);
+//                        return true;
+//                    }
+//                });
             }
             while(cursor.moveToNext());
         }
@@ -360,7 +359,7 @@ public class MapsFragment extends MapFragment implements
 
     public void removeCurSrchMarkers() {
         removeAllMarkers();
-        addMarkers();
+        addPOIMarkers();
     }
 
     // Activate geofences
@@ -447,8 +446,8 @@ public class MapsFragment extends MapFragment implements
                 .setResultCallback(this);
     }
 
-    private void showResultDialog() {
-        ResultDialog resultDialog = ResultDialog.newInstance(R.string.result_dialog);
+    private void showResultDialog(POI poi) {
+        ResultDialog resultDialog = ResultDialog.newInstance(poi);
         resultDialog.show(getFragmentManager(), "result_dialog");
     }
 
