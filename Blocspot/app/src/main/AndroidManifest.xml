@@ -45,9 +45,6 @@
                 android:resource="@xml/searchable"/>
         </activity>
 
-        <activity android:name=".ui.activity.PopupResultActivity"
-            android:theme="@style/AppTheme"/>
-
     </application>
 
 </manifest>

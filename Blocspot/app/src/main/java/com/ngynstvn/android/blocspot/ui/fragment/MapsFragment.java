@@ -30,11 +30,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
+import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
-import com.ngynstvn.android.blocspot.ui.activity.PopupResultActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -210,8 +210,11 @@ public class MapsFragment extends MapFragment implements
                         position = new LatLng(latitude, longitude);
                         zoom = 16;
 
-                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                                .newLatLngZoom(position, zoom), 1500, null);
+                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(position, zoom));
+
+//                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+//                                .newLatLngZoom(position, zoom), 1500, null);
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -292,7 +295,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        getPopUpWindow();
+                        showResultDialog();
                         return true;
                     }
                 });
@@ -328,7 +331,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        getPopUpWindow();
+                        showResultDialog();
                         return true;
                     }
                 });
@@ -444,8 +447,9 @@ public class MapsFragment extends MapFragment implements
                 .setResultCallback(this);
     }
 
-    private void getPopUpWindow() {
-        startActivity(new Intent(BlocspotApplication.getSharedInstance(), PopupResultActivity.class));
+    private void showResultDialog() {
+        ResultDialog resultDialog = ResultDialog.newInstance(R.string.result_dialog);
+        resultDialog.show(getFragmentManager(), "result_dialog");
     }
 
     /**

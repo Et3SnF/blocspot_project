@@ -48,5 +48,9 @@
     <string name="fbc_dialog_title">Filter by Category</string>
     <string name="btn_cancel_text">Cancel</string>
     <string name="btn_ok_text">Ok</string>
+    <string name="result_dialog">Result Dialog</string>
+    <string name="result_item_visit_site">Visit Site</string>
+    <string name="result_item_set_as_poi">Set as Favorite</string>
+    <string name="result_item_cancel">Cancel</string>
 
 </resources>

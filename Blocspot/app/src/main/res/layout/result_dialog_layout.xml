@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="180dp"
+    android:orientation="vertical"
+    android:background="@color/white_60">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+
+        <ImageView
+            android:id="@+id/iv_search_result_logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="8dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/tv_search_result_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="The Hot Dog Place"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginBottom="4dp"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/iv_search_result_logo"
+            android:layout_toEndOf="@+id/iv_search_result_logo" />
+
+        <ImageView
+            android:id="@+id/iv_search_result_rating"
+            android:layout_width="133dp"
+            android:layout_height="24dp"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="4dp"
+            android:layout_below="@+id/tv_search_result_name"
+            android:layout_toRightOf="@+id/iv_search_result_logo"
+            android:layout_alignRight="@+id/tv_search_result_name"
+            android:layout_alignEnd="@+id/tv_search_result_name" />
+
+        <TextView
+            android:id="@+id/tv_search_result_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="123 Fake St"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingRight="8dp"
+            android:layout_below="@+id/iv_search_result_rating"
+            android:layout_toRightOf="@+id/iv_search_result_logo"
+            android:layout_toEndOf="@+id/iv_search_result_logo" />
+
+        <TextView
+            android:id="@+id/tv_search_result_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Los Angeles"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:paddingRight="2dp"
+            android:layout_alignTop="@+id/tv_search_result_address"
+            android:layout_toRightOf="@+id/tv_search_result_address"
+            android:layout_toEndOf="@+id/tv_search_result_address" />
+
+        <TextView
+            android:id="@+id/divider2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text=","
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:paddingRight="3dp"
+            android:layout_alignTop="@+id/tv_search_result_city"
+            android:layout_toRightOf="@+id/tv_search_result_city"
+            android:layout_toEndOf="@+id/tv_search_result_city" />
+
+        <TextView
+            android:id="@+id/tv_search_result_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="CA"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:paddingRight="8dp"
+            android:layout_alignTop="@+id/divider2"
+            android:layout_toRightOf="@+id/divider2"
+            android:layout_toEndOf="@+id/divider2" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_26"
+        android:paddingBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/fl_result_cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_red_light"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_cancel_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/ic_close_white_24dp"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_result_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/click_effect"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_poi_favorite_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_blue_light"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_delete_poi_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:background="@drawable/abc_btn_rating_star_off_mtrl_alpha"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_result_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/click_effect"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_result_visit_site"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/holo_green_light"
+            android:layout_gravity="center">
+
+            <View
+                android:id="@+id/v_visit_site_icon"
+                android:layout_width="@dimen/poi_swipe_icon_side"
+                android:layout_height="@dimen/poi_swipe_icon_side"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_result_visit_site"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/result_item_visit_site"
+                android:textColor="@android:color/white"
+                android:background="@drawable/click_effect"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

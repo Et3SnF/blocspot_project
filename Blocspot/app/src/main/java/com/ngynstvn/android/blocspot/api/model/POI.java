@@ -32,21 +32,6 @@ public class POI extends Model implements Serializable {
 
     // Constructor
 
-    public POI(long rowId) {
-        super(rowId);
-        String locationName = "";
-        String categoryName = "";
-        int categoryColor = 0;
-        String address = "";
-        String city = "";
-        String state = "";
-        double latitudeValue = 0.00d;
-        double longitudeValue = 0.00d;
-        String description = "";
-        boolean hasVisited = false;
-        distanceToPOI = 0.00f;
-    }
-
     public POI(long rowId, String locationName, String categoryName, int categoryColor, String address,
                String city, String state, double latitudeValue, double longitudeValue,
                String description, boolean hasVisited, float distanceToPOI) {
