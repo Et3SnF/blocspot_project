@@ -14,6 +14,10 @@
         <item name="searchViewStyle">@style/SearchViewStyle</item>
         <item name="android:textColorHint">@color/white_60</item>
 
+        <!-- For Popup Window-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+
     </style>
 
     <!-- SearchView Icon Color in Toolbar. This only applies to NoActionBar parent usage-->

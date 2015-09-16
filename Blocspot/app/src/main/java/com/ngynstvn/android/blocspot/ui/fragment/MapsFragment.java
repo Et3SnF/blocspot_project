@@ -34,6 +34,7 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.activity.PopupResultActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -286,10 +287,15 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-                        .snippet(poi.getAddress() + " ("
-                                + poi.getCity() + ","
-                                + poi.getState() + ")"));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+
+                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        getPopUpWindow();
+                        return true;
+                    }
+                });
 
                 addGeofence(poi);
 
@@ -322,6 +328,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
+                        getPopUpWindow();
                         return true;
                     }
                 });
@@ -435,6 +442,10 @@ public class MapsFragment extends MapFragment implements
     private void removeAllGeofences() {
         LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent())
                 .setResultCallback(this);
+    }
+
+    private void getPopUpWindow() {
+        startActivity(new Intent(BlocspotApplication.getSharedInstance(), PopupResultActivity.class));
     }
 
     /**

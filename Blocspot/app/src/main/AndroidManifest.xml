@@ -33,6 +33,7 @@
         <activity
             android:name=".ui.activity.BlocspotActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -43,7 +44,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
         </activity>
-        
+
+        <activity android:name=".ui.activity.PopupResultActivity"
+            android:theme="@style/AppTheme"/>
+
     </application>
 
 </manifest>
