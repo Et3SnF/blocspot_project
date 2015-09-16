@@ -9,6 +9,7 @@ import android.util.Log;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.api.model.PlaceResult;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
@@ -275,150 +276,29 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public long addSearchResult(POI poi) {
+    public long addSearchResult(PlaceResult placeResult) {
 
 //        Log.v(TAG, "addSearchResult() called");
 
-        if(poi == null) {
+        if(placeResult == null) {
             return -1L;
         }
-        else if(poi.getLatitudeValue() == 0 && poi.getLongitudeValue() == 0) {
+        else if(placeResult.getLatitudeValue() == 0 && placeResult.getLongitudeValue() == 0) {
             return -1L;
         }
 
         return new FTSTable.Builder()
-                .setLocationName(poi.getLocationName())
-                .setAddress(poi.getAddress())
-                .setCity(poi.getCity())
-                .setState(poi.getState())
-                .setLatitude(poi.getLatitudeValue())
-                .setLongitude(poi.getLongitudeValue())
+                .setLocationName(placeResult.getLocationName())
+                .setAddress(placeResult.getAddress())
+                .setCity(placeResult.getCity())
+                .setState(placeResult.getState())
+                .setLatitude(placeResult.getLatitudeValue())
+                .setLongitude(placeResult.getLongitudeValue())
+                .setPlaceURL(placeResult.getPlaceURL())
+                .setRatingURL(placeResult.getRatingImgURL())
+                .setLogoURL(placeResult.getLogoURL())
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
-
-      // ------ Pulling Methods ------ //
-//
-//    public void fetchAllPOIs() {
-//
-//        Log.v(TAG, "fetchAllPOIs() called");
-//
-//        // Perform AsyncTask at startup
-//
-//        new AsyncTask<Void, Void, ArrayList<POI>>() {
-//
-//            @Override
-//            protected void onPreExecute() {
-//                Log.v(TAG, "onPreExecute() performing in " + Thread.currentThread().getName());
-//
-//                if(!poiArrayList.isEmpty()) {
-//                    poiArrayList.clear();
-//                }
-//            }
-//
-//            @Override
-//            protected ArrayList<POI> doInBackground(Void... params) {
-//
-//                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
-//
-//                ArrayList<POI> poiArrayList = new ArrayList<>();
-//
-//                if(!poiArrayList.isEmpty()) {
-//                    poiArrayList.clear();
-//                }
-//
-//                Cursor cursor = POITable.getAllPOIs(databaseOpenHelper.getReadableDatabase());
-//
-//                if(cursor.moveToFirst()) {
-//
-//                    do {
-//                        poiArrayList.add(poiFromCursor(cursor));
-//                    }
-//                    while(cursor.moveToNext());
-//
-//                    cursor.close();
-//
-//                }
-//
-//                return poiArrayList;
-//
-//            }
-//
-//            // Runs on UI Thread
-//
-//            @Override
-//            protected void onPostExecute(ArrayList<POI> poiArrayList) {
-//
-//                Log.v(TAG, "onPostExecute() performing in " + Thread.currentThread().getName());
-//                Log.v(TAG, "Size in Asynchronous ArrayList " + poiArrayList.size() + "");
-//
-//                if(dataSourceDelegate == null) {
-//                    Log.v(TAG, "Issue connecting ArrayList with geofence!");
-//                    return;
-//                }
-//
-//                DataSource.this.poiArrayList = poiArrayList;
-//                getDataSourceDelegate().onFetchingComplete(poiArrayList);
-//            }
-//
-//        }.execute();
-//
-//    }
-
-//    public void fetchAllCategories() {
-//
-//        new AsyncTask<Void, Void, ArrayList<Category>>() {
-//
-//            @Override
-//            protected void onPreExecute() {
-//
-//                if (!categoryArrayList.isEmpty()) {
-//                    categoryArrayList.clear();
-//                }
-//
-//            }
-//
-//            @Override
-//            protected ArrayList<Category> doInBackground(Void... params) {
-//
-//                ArrayList<Category> categoryArrayList = new ArrayList<>();
-//
-//                if (!categoryArrayList.isEmpty()) {
-//                    categoryArrayList.clear();
-//                }
-//
-//                Cursor cursor = CategoryTable.getAllCategories(databaseOpenHelper.getReadableDatabase());
-//
-//                if (cursor.moveToFirst()) {
-//                    do {
-//                        categoryArrayList.add(catFromCursor(cursor));
-//                    }
-//                    while (cursor.moveToNext());
-//
-//                    cursor.close();
-//                }
-//
-//                return categoryArrayList;
-//            }
-//
-//            @Override
-//            protected void onPostExecute(ArrayList<Category> categoryArrayList) {
-//
-//                // In case something went wrong in category_table, do something about it
-//
-//                if (categoryArrayList.isEmpty()) {
-//
-//                    for (POI poi : DataSource.this.poiArrayList) {
-//                    }
-//
-//                    updateCategoriesToDB();
-//                    return;
-//                }
-//
-//                DataSource.this.categoryArrayList = categoryArrayList;
-//            }
-//
-//        }.execute();
-//    }
 
     public void fetchFilteredPOIs(final PostTask postTask, final String... categories) {
 
@@ -581,6 +461,14 @@ public class DataSource {
 
         return new Category(CategoryTable.getRowId(cursor), CategoryTable.getCategoryName(cursor),
                 CategoryTable.getCategoryColor(cursor), category.getIsCatChecked());
+    }
+
+    public static PlaceResult placeResultFromCursor(Cursor cursor) {
+
+        return new PlaceResult(FTSTable.getRowId(cursor), FTSTable.getLocationName(cursor),
+                FTSTable.getAddress(cursor), FTSTable.getCity(cursor), FTSTable.getState(cursor),
+                FTSTable.getLatitude(cursor), FTSTable.getLongitude(cursor), FTSTable.getPlaceURL(cursor),
+                FTSTable.getRatingURL(cursor), FTSTable.getLogoURL(cursor));
     }
 
 }

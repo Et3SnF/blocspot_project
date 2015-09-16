@@ -22,6 +22,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.api.model.PlaceResult;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
 import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
@@ -297,20 +298,23 @@ public class BlocspotActivity extends AppCompatActivity implements
                                 .optJSONObject("coordinate").getDouble("latitude");
                         double longitude = jsonArray.optJSONObject(i).optJSONObject("location")
                                 .optJSONObject("coordinate").getDouble("longitude");
+                        String placeURL = jsonArray.optJSONObject(i).getString("mobile_url");
+                        String ratingURL = jsonArray.optJSONObject(i).getString("rating_img_url_small");;
+                        String logoURL = jsonArray.optJSONObject(i).getString("snippet_image_url");
 
                         // To log the search results
 
-//                        Log.v(TAG, "Place #" + (i+1) + ": " + location_name + " | " + address + " | " + city +
-//                                " | " + state + " | " + latitude + " | " + longitude);
+//                        Log.v(TAG, "Place #" + (i+1) + ": " + location_name + " | " + address + " | "
+//                                + city + " | " + state + " | " + latitude + " | " + longitude);
 
                         // Add result to the fts virtual table
 
-                        dataSource.addSearchResult(new POI(0, location_name,
-                                null, 0, address, city, state, latitude, longitude, null, false, 0.00f));
+                        dataSource.addSearchResult(new PlaceResult(0, location_name, address, city,
+                                state, latitude, longitude, placeURL, ratingURL, logoURL));
                     }
+
                     Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());
                     return jsonArray.length();
-
                 }
                 catch (JSONException e) {
                     return null;

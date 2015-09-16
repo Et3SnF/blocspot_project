@@ -20,6 +20,9 @@ public class FTSTable extends Table {
     private static final String COLUMN_STATE = "state";
     private static final String COLUMN_LATITUDE = "latitude";
     private static final String COLUMN_LONGITUDE = "longitude";
+    private static final String COLUMN_PLACE_URL = "place_url";
+    private static final String COLUMN_RATING_URL = "rating_url";
+    private static final String COLUMN_LOGO_URL = "logo_url";
 
     // Getters
 
@@ -39,12 +42,10 @@ public class FTSTable extends Table {
                 + COLUMN_CITY + " TEXT,"
                 + COLUMN_STATE + " TEXT,"
                 + COLUMN_LATITUDE + " DOUBLE,"
-                + COLUMN_LONGITUDE + " DOUBLE);";
-    }
-
-    public static Cursor getYelpPOIs(SQLiteDatabase readonlyDatabase) {
-        // Select * FROM poi_table order has_visited;
-        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + ";", null);
+                + COLUMN_LONGITUDE + " DOUBLE,"
+                + COLUMN_PLACE_URL + " TEXT,"
+                + COLUMN_RATING_URL + " TEXT,"
+                + COLUMN_LOGO_URL + " TEXT);";
     }
 
     // Builder Class
@@ -83,6 +84,21 @@ public class FTSTable extends Table {
             return this;
         }
 
+        public Builder setPlaceURL(String placeURL) {
+            values.put(COLUMN_PLACE_URL, placeURL);
+            return this;
+        }
+
+        public Builder setRatingURL(String ratingURL) {
+            values.put(COLUMN_RATING_URL, ratingURL);
+            return this;
+        }
+
+        public Builder setLogoURL(String logoURL) {
+            values.put(COLUMN_LOGO_URL, logoURL);
+            return this;
+        }
+
         @Override
         public long insert(SQLiteDatabase writableDB) {
             return writableDB.insert(NAME, null, values);
@@ -113,6 +129,18 @@ public class FTSTable extends Table {
 
     public static double getLongitude(Cursor cursor) {
         return getDouble(cursor, COLUMN_LONGITUDE);
+    }
+
+    public static String getPlaceURL(Cursor cursor) {
+        return getString(cursor, COLUMN_PLACE_URL);
+    }
+
+    public static String getRatingURL(Cursor cursor) {
+        return getString(cursor, COLUMN_RATING_URL);
+    }
+
+    public static String getLogoURL(Cursor cursor) {
+        return getString(cursor, COLUMN_LOGO_URL);
     }
 
     // get info based on data type
