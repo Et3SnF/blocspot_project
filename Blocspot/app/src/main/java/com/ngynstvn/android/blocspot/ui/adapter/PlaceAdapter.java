@@ -241,8 +241,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             poiName.setText(poi.getLocationName());
 
             if(poi.getDescription().length() == 0) {
-                poi.setDescription("Insert a note here...");
-                poiDescription.setTextColor(ColorStateList.valueOf(Color.DKGRAY));
+                poi.setDescription("How about adding a little note for this location? :)");
+                poiDescription.setTextColor(ColorStateList.valueOf(Color.GRAY));
                 poiDescription.setTypeface(null, Typeface.ITALIC);
             }
 
