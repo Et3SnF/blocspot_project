@@ -38,7 +38,9 @@ import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapsFragment extends MapFragment implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback {
@@ -79,6 +81,7 @@ public class MapsFragment extends MapFragment implements
     private GoogleMap googleMap;
     private LatLng position;
     private float zoom;
+    private Map<String, POI> markerMap = new HashMap<>();
 
     // GoogleApiClient variables
 
@@ -287,17 +290,22 @@ public class MapsFragment extends MapFragment implements
         if(cursor.moveToFirst()) {
             do {
                 final POI poi = DataSource.poiFromCursor(cursor);
-                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+
+                Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-                        .title(poi.getLocationName())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+
+                markerMap.put(marker.getId(), poi);
+
+                Log.v(TAG, "Marker " + marker.getId() + " | " + "LatLng: " +
+                        new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()) + " stored");
 
                 UIUtils.displayPOIInfo(TAG, poi);
 
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showMarkerDialog(poi);
+                        getMarkerDialog(marker);
                         return true;
                     }
                 });
@@ -322,15 +330,16 @@ public class MapsFragment extends MapFragment implements
         if(cursor.moveToFirst()) {
             do {
                 final POI poi = DataSource.poiFromCursor(cursor);
-                MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-                        .title(poi.getLocationName())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+                markerMap.put(marker.getId(), poi);
 
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showMarkerDialog(poi);
+                        getMarkerDialog(marker);
                         return true;
                     }
                 });
@@ -444,6 +453,15 @@ public class MapsFragment extends MapFragment implements
     private void removeAllGeofences() {
         LocationServices.GeofencingApi.removeGeofences(googleApiClient, getGeofencePendingIntent())
                 .setResultCallback(this);
+    }
+
+    private void getMarkerDialog(Marker marker) {
+        for (String id : markerMap.keySet().toArray(new String[markerMap.size()])) {
+            if (marker.getId().equalsIgnoreCase(id)) {
+                Log.v(TAG, "Markers are equal");
+                showMarkerDialog(markerMap.get(id));
+            }
+        }
     }
 
     private void showMarkerDialog(POI poi) {
