@@ -43,13 +43,14 @@
 
         <ImageView
             android:id="@+id/iv_poi_rating"
-            android:layout_width="135dp"
-            android:layout_height="25dp"
+            android:layout_width="124.5dp"
+            android:layout_height="22.5dp"
             android:layout_marginBottom="4dp"
-            android:scaleType="fitCenter"
             android:layout_below="@+id/tv_poi_name"
             android:layout_toRightOf="@+id/iv_poi_logo"
-            android:layout_alignLeft="@+id/tv_poi_name"/>
+            android:layout_toEndOf="@+id/iv_poi_logo"
+            android:layout_alignLeft="@+id/tv_poi_name"
+            android:layout_alignStart="@+id/tv_poi_name"/>
 
         <LinearLayout
             android:id="@+id/ll_poi_full_address"

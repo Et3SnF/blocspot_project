@@ -106,7 +106,7 @@ public class DataSource {
                 .setLongitude(-118.2561726)
                 .setDescription("A very well known mall in the city. Across from Americana.")
                 .setPlaceURL("http://www.m.yelp.com/biz/glendale-galleria-glendale")
-                .setRatingURL("http://s3-media1.fl.yelpcdn.com/assets/2/www/img/c7623205d5cd/ico/stars/v1/stars_small_5.png")
+                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
@@ -122,7 +122,7 @@ public class DataSource {
                 .setLongitude(-118.2472838)
                 .setDescription("This place serves alcoholic boba. What an interesting place!")
                 .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
-                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png")
+                .setRatingURL("http://s3-media4.fl.yelpcdn.com/assets/2/www/img/9f83790ff7f6/ico/stars/v1/stars_large_4_half.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(1)
                 .insert(writableDatabase);
@@ -138,7 +138,7 @@ public class DataSource {
                 .setLongitude(-118.24994)
                 .setDescription("I never knew what this building was until I found out it was related to Disney!")
                 .setPlaceURL("http://www.m.yelp.com/biz/walt-disney-concert-hall-los-angeles")
-                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png")
+                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
@@ -154,7 +154,7 @@ public class DataSource {
                 .setLongitude(-118.340852)
                 .setDescription("I heard this place has crazy hot dogs! Not like those typical dodger dogs!")
                 .setPlaceURL("http://www.m.yelp.com/biz/dog-haus-burbank?osq=doghaus")
-                .setRatingURL("http://s3-media4.fl.yelpcdn.com/assets/2/www/img/f62a5be2f902/ico/stars/v1/stars_small_4.png")
+                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);
@@ -170,7 +170,7 @@ public class DataSource {
                 .setLongitude(-118.350048)
                 .setDescription("Located in West Hollywood. I heard this ramen place is good!")
                 .setPlaceURL("http://www.m.yelp.com/biz/urban-ramen-los-angeles-2")
-                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/a5221e66bc70/ico/stars/v1/stars_small_4_half.png")
+                .setRatingURL("http://s3-media2.fl.yelpcdn.com/assets/2/www/img/ccf2b76faa2c/ico/stars/v1/stars_large_4.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
                 .setHasVisited(0)
                 .insert(writableDatabase);

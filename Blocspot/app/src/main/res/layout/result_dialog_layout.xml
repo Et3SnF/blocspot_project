@@ -42,13 +42,14 @@
 
         <ImageView
             android:id="@+id/iv_search_result_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="26dp"
-            android:scaleType="fitXY"
+            android:layout_width="124.5dp"
+            android:layout_height="22.5dp"
             android:layout_marginBottom="4dp"
             android:layout_below="@+id/tv_search_result_name"
             android:layout_toRightOf="@+id/iv_search_result_logo"
-            android:layout_alignLeft="@+id/tv_search_result_name"/>
+            android:layout_toEndOf="@+id/iv_search_result_logo"
+            android:layout_alignLeft="@+id/tv_search_result_name"
+            android:layout_alignStart="@+id/tv_search_result_name"/>
 
         <TextView
             android:id="@+id/tv_search_result_address"
