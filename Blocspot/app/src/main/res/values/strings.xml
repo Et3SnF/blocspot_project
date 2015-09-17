@@ -53,4 +53,7 @@
     <string name="result_item_set_as_poi">Set as Favorite</string>
     <string name="result_item_cancel">Cancel</string>
 
+    <string name="catergory_string">Category:</string>
+    <string name="category_name">Restaurants</string>
+
 </resources>

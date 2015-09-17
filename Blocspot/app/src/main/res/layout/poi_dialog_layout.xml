@@ -3,13 +3,13 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="162dp"
+    android:layout_height="200dp"
     android:orientation="vertical"
     android:background="@color/white_60"
     android:weightSum="1">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -17,7 +17,7 @@
         android:paddingBottom="16dp">
 
         <ImageView
-            android:id="@+id/iv_search_result_logo"
+            android:id="@+id/iv_poi_logo"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
@@ -27,7 +27,7 @@
             android:layout_alignParentStart="true" />
 
         <TextView
-            android:id="@+id/tv_search_result_name"
+            android:id="@+id/tv_poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -38,20 +38,31 @@
             android:ellipsize="end"
             android:layout_marginBottom="4dp"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/iv_search_result_logo"
-            android:layout_toEndOf="@+id/iv_search_result_logo" />
+            android:layout_toRightOf="@+id/iv_poi_logo"
+            android:layout_toEndOf="@+id/iv_poi_logo" />
+
+        <ImageView
+            android:id="@+id/iv_poi_rating"
+            android:layout_width="134dp"
+            android:layout_height="24dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="4dp"
+            android:layout_below="@+id/tv_poi_name"
+            android:layout_toRightOf="@+id/iv_poi_logo"
+            android:layout_alignRight="@+id/tv_poi_name"
+            android:layout_alignEnd="@+id/tv_poi_name" />
 
         <LinearLayout
             android:id="@+id/ll_poi_full_address"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_search_result_name"
-            android:layout_alignLeft="@id/tv_search_result_name"
             android:orientation="horizontal"
+            android:layout_toRightOf="@id/iv_poi_logo"
+            android:layout_below="@id/iv_poi_rating"
             android:layout_marginBottom="8dp">
 
             <TextView
-                android:id="@+id/tv_search_result_address"
+                android:id="@+id/tv_poi_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -59,10 +70,13 @@
                 android:textColor="@android:color/black"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:paddingRight="8dp"/>
+                android:paddingRight="8dp"
+                android:layout_below="@+id/iv_poi_rating"
+                android:layout_toRightOf="@+id/iv_poi_logo"
+                android:layout_toEndOf="@+id/iv_poi_logo" />
 
             <TextView
-                android:id="@+id/tv_search_result_city"
+                android:id="@+id/tv_poi_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -71,12 +85,12 @@
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
                 android:paddingRight="2dp"
-                android:layout_below="@+id/iv_search_result_rating"
-                android:layout_toRightOf="@+id/tv_search_result_address"
-                android:layout_toEndOf="@+id/tv_search_result_address" />
+                android:layout_alignTop="@+id/tv_poi_address"
+                android:layout_toRightOf="@+id/tv_poi_address"
+                android:layout_toEndOf="@+id/tv_poi_address" />
 
             <TextView
-                android:id="@+id/tv_comma"
+                android:id="@+id/tv_poi_comma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -85,12 +99,12 @@
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
                 android:paddingRight="3dp"
-                android:layout_above="@+id/textView"
-                android:layout_toRightOf="@+id/tv_search_result_city"
-                android:layout_toEndOf="@+id/tv_search_result_city" />
+                android:layout_alignTop="@+id/tv_poi_city"
+                android:layout_toRightOf="@+id/tv_poi_city"
+                android:layout_toEndOf="@+id/tv_poi_city" />
 
             <TextView
-                android:id="@+id/tv_search_result_state"
+                android:id="@+id/tv_poi_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
@@ -99,33 +113,31 @@
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
                 android:paddingRight="8dp"
-                android:layout_toRightOf="@+id/tv_comma"
-                android:layout_toEndOf="@+id/tv_comma" />
+                android:layout_alignTop="@+id/tv_poi_comma"
+                android:layout_toRightOf="@+id/tv_poi_comma"
+                android:layout_toEndOf="@+id/tv_poi_comma" />
 
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_poi_category_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/poi_result_category_string"
-            android:layout_marginRight="4dp"
-            android:layout_below="@+id/iv_search_result_rating"
-            android:layout_alignBottom="@id/iv_search_result_logo"
-            android:layout_alignLeft="@+id/ll_poi_full_address"/>
 
         <TextView
             android:id="@+id/tv_poi_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/poi_result_category_name"
-            android:textColor="@color/material_red_dark"
-            android:layout_below="@+id/iv_search_result_rating"
-            android:layout_alignBottom="@id/iv_search_result_logo"
-            android:layout_toRightOf="@+id/tv_poi_category_text"
-            android:layout_toEndOf="@+id/iv_search_result_logo" />
+            android:text="Category: "
+            android:layout_marginRight="2dp"
+            android:layout_below="@+id/ll_poi_full_address"
+            android:layout_alignLeft="@+id/ll_poi_full_address"
+            android:layout_alignStart="@+id/ll_poi_full_address" />
+
+        <TextView
+            android:id="@+id/tv_poi_category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Restaurants"
+            android:layout_toRightOf="@id/tv_poi_category"
+            android:layout_below="@+id/ll_poi_full_address"/>
 
     </RelativeLayout>
 

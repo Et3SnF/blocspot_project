@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -126,13 +127,13 @@ public class POIDialog extends DialogFragment {
 
         // Content Items
 
-        poiLogo = (ImageView) view.findViewById(R.id.iv_search_result_logo);
-        poiRating = (ImageView) view.findViewById(R.id.iv_search_result_rating);
-        poiName = (TextView) view.findViewById(R.id.tv_search_result_name);
-        poiAddress = (TextView) view.findViewById(R.id.tv_search_result_address);
-        poiCity = (TextView) view.findViewById(R.id.tv_search_result_city);
-        poiState = (TextView) view.findViewById(R.id.tv_search_result_state);
-        poiCategory = (TextView) view.findViewById(R.id.tv_poi_category_text);
+        poiLogo = (ImageView) view.findViewById(R.id.iv_poi_logo);
+        poiRating = (ImageView) view.findViewById(R.id.iv_poi_rating);
+        poiName = (TextView) view.findViewById(R.id.tv_poi_name);
+        poiAddress = (TextView) view.findViewById(R.id.tv_poi_address);
+        poiCity = (TextView) view.findViewById(R.id.tv_poi_city);
+        poiState = (TextView) view.findViewById(R.id.tv_poi_state);
+        poiCategory = (TextView) view.findViewById(R.id.tv_poi_category_name);
 
         builder.setView(view);
 
@@ -216,6 +217,10 @@ public class POIDialog extends DialogFragment {
         if(poiLogo != null) {
             Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getLogoURL()).into(poiLogo);
         }
+
+        if(poiRating != null) {
+            Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getRatingImgURL()).into(poiRating);
+        }
     }
 
     private void setTextViews(POI poi) {
@@ -223,7 +228,15 @@ public class POIDialog extends DialogFragment {
         poiAddress.setText(poi.getAddress());
         poiCity.setText(poi.getCity());
         poiState.setText(poi.getState());
-        poiCategory.setText(poi.getCategoryName());
+
+        if(poi.getCategoryName().equals("")) {
+            poiCategory.setText("N/A");
+            poiCategory.setTextColor(Color.DKGRAY);
+        }
+        else {
+            poiCategory.setText(poi.getCategoryName());
+            poiCategory.setTextColor(poi.getCategoryColor());
+        }
     }
 
 }
