@@ -124,7 +124,7 @@ public class DataSource {
                 .setPlaceURL("http://www.m.yelp.com/biz/boba-7-los-angeles-2")
                 .setRatingURL("http://s3-media4.fl.yelpcdn.com/assets/2/www/img/9f83790ff7f6/ico/stars/v1/stars_large_4_half.png")
                 .setLogoURL("http://s3-media3.fl.yelpcdn.com/bphoto/Bq5fsdWuvuy98v4S7SnCsQ/ms.jpg")
-                .setHasVisited(1)
+                .setHasVisited(0)
                 .insert(writableDatabase);
 
         new POITable.Builder()

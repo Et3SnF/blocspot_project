@@ -49,4 +49,15 @@ public class UIUtils {
 
     }
 
+    public static void logSearchResult(String TAG, String locationName, String address, String city,
+                                       String state, double latitude, double longitude, String placeURL,
+                                       String ratingURL, String logoURL) {
+
+        // To log the search results
+
+        Log.v(TAG, "Place: " + locationName + " | Address: " + address + " | City: "
+                + city + " | State: " + state + " | Latitude: " + latitude + " | Longitude: " + longitude);
+
+    }
+
 }

@@ -298,11 +298,6 @@ public class BlocspotActivity extends AppCompatActivity implements
                         String ratingURL = jsonArray.optJSONObject(i).getString("rating_img_url_large");
                         String logoURL = jsonArray.optJSONObject(i).getString("image_url");
 
-                        // To log the search results
-
-//                        Log.v(TAG, "Place #" + (i+1) + ": " + location_name + " | " + address + " | "
-//                                + city + " | " + state + " | " + latitude + " | " + longitude);
-
                         // Add result to the fts virtual table
 
                         dataSource.addSearchResult(new POI(0, location_name, "", 0, address, city,
