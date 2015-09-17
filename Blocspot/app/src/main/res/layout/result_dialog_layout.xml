@@ -42,20 +42,19 @@
 
         <ImageView
             android:id="@+id/iv_search_result_rating"
-            android:layout_width="133dp"
-            android:layout_height="24dp"
-            android:scaleType="fitCenter"
+            android:layout_width="wrap_content"
+            android:layout_height="26dp"
+            android:scaleType="fitXY"
             android:layout_marginBottom="4dp"
             android:layout_below="@+id/tv_search_result_name"
             android:layout_toRightOf="@+id/iv_search_result_logo"
-            android:layout_alignRight="@+id/tv_search_result_name"
-            android:layout_alignEnd="@+id/tv_search_result_name" />
+            android:layout_alignLeft="@+id/tv_search_result_name"/>
 
         <TextView
             android:id="@+id/tv_search_result_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="123 Fake St"
             android:textColor="@android:color/black"
             android:singleLine="true"
@@ -69,7 +68,7 @@
             android:id="@+id/tv_search_result_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Los Angeles"
             android:singleLine="true"
             android:textColor="@android:color/black"
@@ -83,7 +82,7 @@
             android:id="@+id/divider2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text=","
             android:singleLine="true"
             android:textColor="@android:color/black"
@@ -97,7 +96,7 @@
             android:id="@+id/tv_search_result_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="CA"
             android:singleLine="true"
             android:textColor="@android:color/black"
