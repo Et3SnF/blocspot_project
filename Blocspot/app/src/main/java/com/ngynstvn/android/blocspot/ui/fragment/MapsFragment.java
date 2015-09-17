@@ -294,7 +294,7 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showResultDialog(poi);
+                        showPOIDialog(poi);
                         return true;
                     }
                 });
@@ -327,13 +327,14 @@ public class MapsFragment extends MapFragment implements
                                 + poi.getCity() + ","
                                 + poi.getState() + ")"));
 
-//                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(Marker marker) {
-//                        showResultDialog(poi);
-//                        return true;
-//                    }
-//                });
+                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        showResultDialog(poi);
+                        return true;
+                    }
+                });
+
             }
             while(cursor.moveToNext());
         }
@@ -447,8 +448,15 @@ public class MapsFragment extends MapFragment implements
     }
 
     private void showResultDialog(POI poi) {
+        Log.v(TAG, "showResultDialog() called");
         ResultDialog resultDialog = ResultDialog.newInstance(poi);
         resultDialog.show(getFragmentManager(), "result_dialog");
+    }
+
+    private void showPOIDialog(POI poi) {
+        Log.v(TAG, "showPOIDialog() called");
+        POIDialog poiDialog = POIDialog.newInstance(poi);
+        poiDialog.show(getFragmentManager(), "poi_dialog");
     }
 
     /**

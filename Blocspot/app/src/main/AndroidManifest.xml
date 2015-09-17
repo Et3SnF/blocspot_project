@@ -28,21 +28,21 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <!-- Main Activity -->
-
         <activity
             android:name=".ui.activity.BlocspotActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
             android:launchMode="singleTop">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
+
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable"/>
+
         </activity>
 
     </application>

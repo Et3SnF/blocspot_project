@@ -298,7 +298,7 @@ public class BlocspotActivity extends AppCompatActivity implements
                         double longitude = jsonArray.optJSONObject(i).optJSONObject("location")
                                 .optJSONObject("coordinate").getDouble("longitude");
                         String placeURL = jsonArray.optJSONObject(i).getString("mobile_url");
-                        String ratingURL = jsonArray.optJSONObject(i).getString("rating_img_url");;
+                        double rating = jsonArray.optJSONObject(i).getDouble("rating");;
                         String logoURL = jsonArray.optJSONObject(i).getString("image_url");
 
                         // To log the search results
@@ -309,7 +309,7 @@ public class BlocspotActivity extends AppCompatActivity implements
                         // Add result to the fts virtual table
 
                         dataSource.addSearchResult(new POI(0, location_name, "", 0, address, city,
-                                state, latitude, longitude, "", placeURL, ratingURL, logoURL, false));
+                                state, latitude, longitude, "", placeURL, rating, logoURL, false));
                     }
 
                     Log.v(TAG, "Current # of business JSON objects = " + jsonArray.length());
