@@ -53,13 +53,29 @@ public class ResultDialog extends DialogFragment {
         // Supply num input as an argument --> for retrieving stuff later
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("poi", poi);
+
+        bundle.putLong("row_id", poi.getRowId());
+        bundle.putString("location_name", poi.getLocationName());
+        bundle.putString("category_name", poi.getCategoryName());
+        bundle.putInt("category_color", poi.getCategoryColor());
+        bundle.putString("address", poi.getAddress());
+        bundle.putString("city", poi.getCity());
+        bundle.putString("state", poi.getState());
+        bundle.putDouble("latitude", poi.getLatitudeValue());
+        bundle.putDouble("longitude", poi.getLongitudeValue());
+        bundle.putString("description", poi.getDescription());
+        bundle.putString("place_url", poi.getPlaceURL());
+        bundle.putString("rating_url", poi.getRatingImgURL());
+        bundle.putString("logo_url", poi.getLogoURL());
+        bundle.putBoolean("visited", poi.isHasVisited());
 
         resultDialog.setArguments(bundle);
 
         return resultDialog;
 
     }
+
+
 
     // ----- Lifecycle Methods ----- //
 

@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +19,8 @@ import android.widget.TextView;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
-import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 public class POIDialog extends DialogFragment {
 
@@ -54,7 +50,19 @@ public class POIDialog extends DialogFragment {
         // Supply num input as an argument --> for retrieving stuff later
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("poi", poi);
+        bundle.putString("location_name", poi.getLocationName());
+        bundle.putString("category_name", poi.getCategoryName());
+        bundle.putInt("category_color", poi.getCategoryColor());
+        bundle.putString("address", poi.getAddress());
+        bundle.putString("city", poi.getCity());
+        bundle.putString("state", poi.getState());
+        bundle.putDouble("latitude", poi.getLatitudeValue());
+        bundle.putDouble("longitude", poi.getLongitudeValue());
+        bundle.putString("description", poi.getDescription());
+        bundle.putString("place_url", poi.getPlaceURL());
+        bundle.putString("rating_url", poi.getRatingImgURL());
+        bundle.putString("logo_url", poi.getLogoURL());
+        bundle.putBoolean("visited", poi.isHasVisited());
 
         poiDialog.setArguments(bundle);
 
@@ -74,46 +82,42 @@ public class POIDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+
+        savedInstanceState = getArguments(); // the most important line
+
+        if(savedInstanceState != null) {
+
+            long row_id = savedInstanceState.getLong("row_id");
+            String location_name = savedInstanceState.getString("location_name");
+            String category_name = savedInstanceState.getString("category_name");
+            int category_color = savedInstanceState.getInt("category_color");
+            String address = savedInstanceState.getString("address");
+            String city = savedInstanceState.getString("city");
+            String state = savedInstanceState.getString("state");
+            double latitude = savedInstanceState.getDouble("latitude");
+            double longitude = savedInstanceState.getDouble("longitude");
+            String description = savedInstanceState.getString("description");
+            String place_url = savedInstanceState.getString("place_url");
+            String rating_url = savedInstanceState.getString("rating_url");
+            String logo_url = savedInstanceState.getString("logo_url");
+            boolean hasVisited = savedInstanceState.getBoolean("visited");
+
+            poi = new POI(row_id, location_name, category_name, category_color, address, city, state,
+                    latitude, longitude, description, place_url, rating_url, logo_url, hasVisited);
+
+            Log.v(TAG, "row_id: " + row_id + " | " + location_name + " | " + category_name +
+                    " | " + category_color + " | " + address + " | " + city + " | " + state
+                    + " | " + latitude + " | " + longitude + " | " + description + " | "
+                    + place_url + " | " + rating_url + " | " + logo_url + " | " + hasVisited);
+
+        }
+
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Log.v(TAG, "onCreateDialog() called");
-
-        new AsyncTask<Void, Void, ArrayList<POI>>() {
-
-            @Override
-            protected void onPreExecute() {
-                cursor = database.rawQuery("Select * from " + POI_TABLE, null);
-            }
-
-            @Override
-            protected ArrayList<POI> doInBackground(Void... params) {
-
-                ArrayList<POI> poiArrayList = new ArrayList<>();
-
-                if (cursor.moveToFirst()) {
-                    do {
-                        poi = DataSource.poiFromCursor(cursor);
-                        poiArrayList.add(poi);
-                        Log.v(TAG, "The place URL is: " + poi.getPlaceURL());
-                    }
-                    while (cursor.moveToNext());
-                }
-
-                return poiArrayList;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<POI> poiArrayList) {
-                for(POI poi : poiArrayList) {
-                    loadImages(poi);
-                    setTextViews(poi);
-                }
-            }
-
-        }.execute();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
                 R.style.MaterialAlertDialogStyle);
@@ -135,8 +139,10 @@ public class POIDialog extends DialogFragment {
         poiState = (TextView) view.findViewById(R.id.tv_poi_state);
         poiCategory = (TextView) view.findViewById(R.id.tv_poi_category_name);
 
-        builder.setView(view);
+        setTextViews(poi);
+        loadImages(poi);
 
+        builder.setView(view);
         return builder.create();
     }
 
