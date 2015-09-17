@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -238,6 +239,13 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             this.poi = poi; // this is very important as far as which item is chosen!
             poi = DataSource.poiFromCursor(getCursor());
             poiName.setText(poi.getLocationName());
+
+            if(poi.getDescription().length() == 0) {
+                poi.setDescription("Insert a note here...");
+                poiDescription.setTextColor(ColorStateList.valueOf(Color.DKGRAY));
+                poiDescription.setTypeface(null, Typeface.ITALIC);
+            }
+
             poiDescription.setText(poi.getDescription());
 
             if(poi.getCategoryColor() == 0) {

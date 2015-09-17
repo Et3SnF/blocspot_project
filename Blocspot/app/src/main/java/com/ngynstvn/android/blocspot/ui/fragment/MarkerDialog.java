@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -188,6 +189,14 @@ public class MarkerDialog extends DialogFragment {
                 @Override
                 public void onClick(View v) {
                     Log.v(TAG, "Favorite button has been clicked");
+
+                    BlocspotApplication.getSharedDataSource().addNewPOI(poi);
+
+                    Toast.makeText(BlocspotApplication.getSharedInstance(), poi.getLocationName() +
+                            " has been added to your Points of Interest", Toast.LENGTH_SHORT).show();
+
+                    dismiss();
+                    Log.v(TAG, "Item has been inserted into the database");
                 }
             });
         }
