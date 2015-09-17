@@ -34,6 +34,7 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -291,10 +292,12 @@ public class MapsFragment extends MapFragment implements
                         .title(poi.getLocationName())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
 
+                UIUtils.displayPOIInfo(TAG, poi);
+
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showPOIDialog(poi);
+                        showMarkerDialog(poi);
                         return true;
                     }
                 });
@@ -322,19 +325,15 @@ public class MapsFragment extends MapFragment implements
                 MapsFragment.this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .title(poi.getLocationName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                        .snippet(poi.getAddress() + " ("
-                                + poi.getCity() + ","
-                                + poi.getState() + ")"));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        showResultDialog(poi);
+                        showMarkerDialog(poi);
                         return true;
                     }
                 });
-
             }
             while(cursor.moveToNext());
         }
@@ -447,16 +446,10 @@ public class MapsFragment extends MapFragment implements
                 .setResultCallback(this);
     }
 
-    private void showResultDialog(POI poi) {
-        Log.v(TAG, "showResultDialog() called");
-        ResultDialog resultDialog = ResultDialog.newInstance(poi);
-        resultDialog.show(getFragmentManager(), "result_dialog");
-    }
-
-    private void showPOIDialog(POI poi) {
-        Log.v(TAG, "showPOIDialog() called");
-        POIDialog poiDialog = POIDialog.newInstance(poi);
-        poiDialog.show(getFragmentManager(), "poi_dialog");
+    private void showMarkerDialog(POI poi) {
+        Log.v(TAG, "showMarkerDialog() called");
+        MarkerDialog markerDialog = MarkerDialog.newInstance(poi);
+        markerDialog.show(getFragmentManager(), "marker_dialog");
     }
 
     /**

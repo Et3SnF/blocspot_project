@@ -162,7 +162,7 @@
                 android:layout_gravity="center"/>
 
             <Button
-                android:id="@+id/btn_result_cancel"
+                android:id="@+id/btn_poi_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/click_effect"/>
@@ -184,7 +184,7 @@
                 android:layout_gravity="center"/>
 
             <Button
-                android:id="@+id/btn_result_visit_site"
+                android:id="@+id/btn_poi_visit_site"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/result_item_visit_site"
