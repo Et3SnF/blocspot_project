@@ -2,19 +2,19 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="200dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white_60"
     android:weightSum="1">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/iv_poi_logo"
@@ -30,7 +30,7 @@
             android:id="@+id/tv_poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="The Hot Dog Place"
             android:textColor="@android:color/black"
             android:textStyle="bold"
@@ -65,7 +65,7 @@
                 android:id="@+id/tv_poi_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="123 Fake St"
                 android:textColor="@android:color/black"
                 android:singleLine="true"
@@ -79,7 +79,7 @@
                 android:id="@+id/tv_poi_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Los Angeles"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
@@ -93,7 +93,7 @@
                 android:id="@+id/tv_poi_comma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text=","
                 android:singleLine="true"
                 android:textColor="@android:color/black"
@@ -107,7 +107,7 @@
                 android:id="@+id/tv_poi_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="CA"
                 android:singleLine="true"
                 android:textColor="@android:color/black"
@@ -140,6 +140,47 @@
             android:layout_below="@+id/ll_poi_full_address"/>
 
     </RelativeLayout>
+
+    <!-- Description Area -->
+
+    <LinearLayout
+        android:id="@+id/ll_result_poi_note"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <View
+            android:id="@+id/v_border_poi_address_tv"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_60"/>
+
+        <TextView
+            android:id="@+id/tv_poi_note_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/poi_note_text"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_poi_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/default_poi_description"
+            android:textColor="@color/black_87"
+            android:maxEms="8"/>
+
+    </LinearLayout>
+
+    <!-- Buttons Area -->
 
     <LinearLayout
         android:layout_width="match_parent"

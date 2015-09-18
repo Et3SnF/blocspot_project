@@ -55,5 +55,7 @@
 
     <string name="catergory_string">Category:</string>
     <string name="category_name">Restaurants</string>
-
+    <string name="poi_note_text">[NOTE]</string>
+    <string name="default_poi_description">None for now :(</string>
+    <string name="edit_text_instruction">Enter note here (optional)</string>
 </resources>

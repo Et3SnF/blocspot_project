@@ -2,18 +2,18 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="180dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white_60">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp">
+        android:paddingBottom="4dp">
 
         <ImageView
             android:id="@+id/iv_search_result_logo"
@@ -29,7 +29,7 @@
             android:id="@+id/tv_search_result_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="The Hot Dog Place"
             android:textColor="@android:color/black"
             android:textStyle="bold"
@@ -75,9 +75,8 @@
             android:textColor="@android:color/black"
             android:ellipsize="end"
             android:paddingRight="2dp"
-            android:layout_alignTop="@+id/tv_search_result_address"
-            android:layout_toRightOf="@+id/tv_search_result_address"
-            android:layout_toEndOf="@+id/tv_search_result_address" />
+            android:layout_below="@+id/tv_search_result_address"
+            android:layout_alignLeft="@id/tv_search_result_address"/>
 
         <TextView
             android:id="@+id/divider2"
@@ -109,6 +108,58 @@
 
     </RelativeLayout>
 
+
+    <!-- Edit Text Area -->
+
+    <LinearLayout
+        android:id="@+id/ll_result_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <View
+            android:id="@+id/v_border_result_address_edit"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_60"/>
+
+        <TextView
+            android:id="@+id/tv_result_edittext_instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_text_instruction"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"/>
+
+        <EditText
+            android:id="@+id/et_result_description_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:textColor="@color/black_87"
+            android:maxLines="3"
+            android:maxLength="100"
+            android:maxEms="8"/>
+
+        <TextView
+            android:id="@+id/tv_result_edittext_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="130"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Buttons Regions -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -117,7 +168,7 @@
         <FrameLayout
             android:id="@+id/fl_result_cancel_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/holo_red_light"
             android:layout_gravity="center">
@@ -140,7 +191,7 @@
         <FrameLayout
             android:id="@+id/fl_poi_favorite_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/holo_blue_light"
             android:layout_gravity="center">
@@ -163,7 +214,7 @@
         <FrameLayout
             android:id="@+id/fl_result_visit_site"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/holo_green_light"
             android:layout_gravity="center">
