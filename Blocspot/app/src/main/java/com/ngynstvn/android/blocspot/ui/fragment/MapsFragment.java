@@ -230,8 +230,8 @@ public class MapsFragment extends MapFragment implements
 
     // Set up the map
 
-    private void startUpMap(final double latitude, final double longitude) {
-        Log.v(TAG, "startUpMap() called");
+    private void loadMap(final double latitude, final double longitude) {
+        Log.v(TAG, "loadMap() called");
 
         new Handler().post(new Runnable() {
             @Override
@@ -527,14 +527,14 @@ public class MapsFragment extends MapFragment implements
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
-                startUpMap(latitude, longitude);
+                loadMap(latitude, longitude);
             }
             else {
-                startUpMap(latitude, longitude);
+                loadMap(latitude, longitude);
             }
         }
         else if(counter > 1) {
-            startUpMap(latitude, longitude);
+            loadMap(latitude, longitude);
             Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
         }
     }
