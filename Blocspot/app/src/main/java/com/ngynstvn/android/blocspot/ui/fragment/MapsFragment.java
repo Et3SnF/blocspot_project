@@ -167,7 +167,12 @@ public class MapsFragment extends MapFragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Log.e(TAG, "onSaveInstanceState() called");
-        // only used for orientation changing
+
+        // Only used for orientation change!
+
+        outState.putDouble("latitude", latitude);
+        outState.putDouble("longitude", longitude);
+        outState.putFloat("zoom", zoom);
     }
 
     @Override
@@ -259,7 +264,7 @@ public class MapsFragment extends MapFragment implements
                         }
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                        
+
                     }
 
                 });
@@ -281,9 +286,10 @@ public class MapsFragment extends MapFragment implements
                             public void onCameraChange(CameraPosition cameraPosition) {
                                 MapsFragment.latitude = cameraPosition.target.latitude;
                                 MapsFragment.longitude = cameraPosition.target.longitude;
+                                MapsFragment.zoom = cameraPosition.zoom;
 
                                 Log.v(TAG, "Current position: (" + MapsFragment.latitude
-                                        + ", " + MapsFragment.longitude + ")");
+                                        + ", " + MapsFragment.longitude + ") | zoom =" + MapsFragment.zoom);
                             }
                         });
                     }
