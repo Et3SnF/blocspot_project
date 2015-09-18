@@ -14,13 +14,14 @@
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="16dp"
-        android:paddingBottom="4dp">
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/iv_poi_logo"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
+            android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
@@ -41,84 +42,6 @@
             android:layout_toRightOf="@+id/iv_poi_logo"
             android:layout_toEndOf="@+id/iv_poi_logo" />
 
-        <ImageView
-            android:id="@+id/iv_poi_rating"
-            android:layout_width="124.5dp"
-            android:layout_height="22.5dp"
-            android:layout_marginBottom="4dp"
-            android:layout_below="@+id/tv_poi_name"
-            android:layout_toRightOf="@+id/iv_poi_logo"
-            android:layout_toEndOf="@+id/iv_poi_logo"
-            android:layout_alignLeft="@+id/tv_poi_name"
-            android:layout_alignStart="@+id/tv_poi_name"/>
-
-        <LinearLayout
-            android:id="@+id/ll_poi_full_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_toRightOf="@id/iv_poi_logo"
-            android:layout_below="@id/iv_poi_rating"
-            android:layout_marginBottom="8dp">
-
-            <TextView
-                android:id="@+id/tv_poi_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="123 Fake St"
-                android:textColor="@android:color/black"
-                android:singleLine="true"
-                android:ellipsize="end"
-                android:paddingRight="8dp"
-                android:layout_below="@+id/iv_poi_rating"
-                android:layout_toRightOf="@+id/iv_poi_logo"
-                android:layout_toEndOf="@+id/iv_poi_logo" />
-
-            <TextView
-                android:id="@+id/tv_poi_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Los Angeles"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:ellipsize="end"
-                android:paddingRight="2dp"
-                android:layout_alignTop="@+id/tv_poi_address"
-                android:layout_toRightOf="@+id/tv_poi_address"
-                android:layout_toEndOf="@+id/tv_poi_address" />
-
-            <TextView
-                android:id="@+id/tv_poi_comma"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text=","
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:ellipsize="end"
-                android:paddingRight="3dp"
-                android:layout_alignTop="@+id/tv_poi_city"
-                android:layout_toRightOf="@+id/tv_poi_city"
-                android:layout_toEndOf="@+id/tv_poi_city" />
-
-            <TextView
-                android:id="@+id/tv_poi_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="CA"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:ellipsize="end"
-                android:paddingRight="8dp"
-                android:layout_alignTop="@+id/tv_poi_comma"
-                android:layout_toRightOf="@+id/tv_poi_comma"
-                android:layout_toEndOf="@+id/tv_poi_comma" />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/tv_poi_category"
             android:layout_width="wrap_content"
@@ -126,9 +49,9 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Category: "
             android:layout_marginRight="2dp"
-            android:layout_below="@+id/ll_poi_full_address"
-            android:layout_alignLeft="@+id/ll_poi_full_address"
-            android:layout_alignStart="@+id/ll_poi_full_address" />
+            android:layout_below="@+id/tv_poi_name"
+            android:layout_toRightOf="@id/iv_poi_logo"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
             android:id="@+id/tv_poi_category_name"
@@ -137,7 +60,74 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Restaurants"
             android:layout_toRightOf="@id/tv_poi_category"
-            android:layout_below="@+id/ll_poi_full_address"/>
+            android:layout_below="@+id/tv_poi_name"
+            android:layout_marginBottom="8dp"/>
+
+        <ImageView
+            android:id="@+id/iv_poi_rating"
+            android:layout_width="124.5dp"
+            android:layout_height="22.5dp"
+            android:layout_marginBottom="4dp"
+            android:layout_below="@+id/tv_poi_category_name"
+            android:layout_toRightOf="@+id/iv_poi_logo"
+            android:layout_toEndOf="@+id/iv_poi_logo"
+            android:layout_alignLeft="@+id/tv_poi_name"
+            android:layout_alignStart="@+id/tv_poi_name"/>
+
+        <TextView
+            android:id="@+id/tv_poi_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="123 Fake St"
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:paddingRight="8dp"
+            android:layout_below="@+id/iv_poi_rating"
+            android:layout_toRightOf="@+id/iv_poi_logo"
+            android:layout_toEndOf="@+id/iv_poi_logo" />
+
+        <TextView
+            android:id="@+id/tv_poi_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Los Angeles"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:layout_below="@id/tv_poi_address"
+            android:layout_toRightOf="@id/iv_poi_logo"
+            android:paddingRight="2dp"/>
+
+        <TextView
+            android:id="@+id/tv_poi_comma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=","
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:paddingRight="3dp"
+            android:layout_alignTop="@+id/tv_poi_city"
+            android:layout_toRightOf="@+id/tv_poi_city"
+            android:layout_toEndOf="@+id/tv_poi_city" />
+
+        <TextView
+            android:id="@+id/tv_poi_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="CA"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:ellipsize="end"
+            android:paddingRight="8dp"
+            android:layout_alignTop="@+id/tv_poi_comma"
+            android:layout_toRightOf="@+id/tv_poi_comma"
+            android:layout_toEndOf="@+id/tv_poi_comma" />
 
     </RelativeLayout>
 
@@ -148,8 +138,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="16dp"
+        android:visibility="gone">
 
         <View
             android:id="@+id/v_border_poi_address_tv"
