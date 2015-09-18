@@ -34,7 +34,6 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -71,7 +70,6 @@ public class MapsFragment extends MapFragment implements
     // ----- Class variables ----- //
 
     private static final String TAG = "Test (" + MapsFragment.class.getSimpleName() + ")";
-    private static final String BUNDLE_MAP_MODE = MapsFragment.class.getCanonicalName().concat(".MAP_MODE");
 
     private static final String POI_TABLE = "poi_table";
     private static final String FTS_TABLE = "yelp_search_table";
@@ -103,7 +101,25 @@ public class MapsFragment extends MapFragment implements
     private NotificationManager notificationManager;
     private int notificationId;
 
-    
+    // ----- Fragment New Instance Method ------ //
+
+    public static MapsFragment newInstance() {
+        MapsFragment mapsFragment = new MapsFragment();
+        return mapsFragment;
+    }
+
+    public static MapsFragment newInstance(double latitude, double longitude) {
+
+        MapsFragment mapsFragment = new MapsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("latitude", latitude);
+        bundle.putDouble("longitude", longitude);
+
+        mapsFragment.setArguments(bundle);
+
+        return mapsFragment;
+    }
+
 
     // ---------- Lifecycle methods ----------- //
 
@@ -121,6 +137,11 @@ public class MapsFragment extends MapFragment implements
         super.onCreate(savedInstanceState);
         geofenceList = new ArrayList<>();
 
+        if(savedInstanceState != null) {
+            latitude = savedInstanceState.getDouble("latitude");
+            longitude = savedInstanceState.getDouble("longitude");
+            Log.v(TAG, "LatLng in onCreate(): (" + latitude + ", " + longitude + ")");
+        }
     }
 
     @Override
@@ -289,10 +310,7 @@ public class MapsFragment extends MapFragment implements
 
                 markerMap.put(marker.getId(), poi);
 
-                Log.v(TAG, "Marker " + marker.getId() + " | " + "LatLng: " +
-                        new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()) + " stored");
-
-                UIUtils.displayPOIInfo(TAG, poi);
+//                UIUtils.displayPOIInfo(TAG, poi);
 
                 MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override

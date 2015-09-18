@@ -191,7 +191,7 @@ public class BlocspotActivity extends AppCompatActivity implements
                     item.setIcon(R.drawable.menu_list_mode_selector);
 
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.fl_activity_blocspot, MapsFragment.returnMapMarkers()).commit();
+                            .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance()).commit();
 
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
