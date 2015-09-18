@@ -251,11 +251,10 @@ public class MapsFragment extends MapFragment implements
 
                         // First time, animate the camera. Otherwise just show the position w/o animation
 
-                        if(counter == 1) {
+                        if (counter == 1) {
                             MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
                                     .newLatLngZoom(position, zoom), 2000, null);
-                        }
-                        else {
+                        } else {
                             MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(position, zoom));
                         }
@@ -332,7 +331,7 @@ public class MapsFragment extends MapFragment implements
             do {
                 final POI poi = DataSource.poiFromCursor(cursor);
 
-                Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                Marker marker = googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
 
@@ -340,7 +339,7 @@ public class MapsFragment extends MapFragment implements
 
 //                UIUtils.displayPOIInfo(TAG, poi);
 
-                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         getMarkerDialog(marker);
@@ -368,13 +367,13 @@ public class MapsFragment extends MapFragment implements
         if(cursor.moveToFirst()) {
             do {
                 final POI poi = DataSource.poiFromCursor(cursor);
-                Marker marker = MapsFragment.this.googleMap.addMarker(new MarkerOptions()
+                Marker marker = googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                 markerMap.put(marker.getId(), poi);
 
-                MapsFragment.this.googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
                         getMarkerDialog(marker);
@@ -395,7 +394,7 @@ public class MapsFragment extends MapFragment implements
 
         if(cursor.moveToFirst()) {
             do {
-                MapsFragment.this.googleMap.clear();
+                googleMap.clear();
             }
             while(cursor.moveToNext());
         }
