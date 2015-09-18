@@ -103,15 +103,7 @@ public class MapsFragment extends MapFragment implements
     private NotificationManager notificationManager;
     private int notificationId;
 
-    // Critical method for saving instance state. For now null.
-
-    public static MapsFragment returnMapMarkers() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(BUNDLE_MAP_MODE, null);
-        MapsFragment mapsFragment = new MapsFragment();
-        mapsFragment.setArguments(bundle);
-        return mapsFragment;
-    }
+    
 
     // ---------- Lifecycle methods ----------- //
 
