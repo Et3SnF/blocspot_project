@@ -64,6 +64,12 @@ public class BlocspotActivity extends AppCompatActivity implements
     private SearchView searchView;
     private YelpAPI yelpAPI;
 
+        // Map variables
+
+    private double latitude = 34.05;
+    private double longitude = -118.25;
+    private float zoom = 15.0f;
+
     // ----- LIFECYCLE METHODS ----- //
 
     @Override
@@ -87,6 +93,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();
+
     }
 
     @Override
@@ -191,7 +198,8 @@ public class BlocspotActivity extends AppCompatActivity implements
                     item.setIcon(R.drawable.menu_list_mode_selector);
 
                     getFragmentManager().beginTransaction()
-                            .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance()).commit();
+                            .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance(latitude,
+                                    longitude, zoom)).commit();
 
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
@@ -370,6 +378,14 @@ public class BlocspotActivity extends AppCompatActivity implements
     void showCategoryDialog() {
         DialogFragment newFragment = CatDialogFragment.newInstance(R.string.alert_dialog_two_button_title);
         newFragment.show(getFragmentManager(), "dialog");
+    }
+
+    @Override
+    public void onCoordinatesSaved(MapsFragment mapsFragment, double latitude, double longitude
+            , float zoom) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.zoom = zoom;
     }
 
     /**

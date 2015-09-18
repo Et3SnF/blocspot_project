@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -47,7 +48,7 @@ public class MapsFragment extends MapFragment implements
     // Interface for future delegation
 
     public static interface MapFragDelegate {
-
+        public void onCoordinatesSaved(MapsFragment mapsFragment, double latitude, double longitude, float zoom);
     }
 
     // ----- Setter and getter for ListFragDelegate -----//
@@ -74,11 +75,13 @@ public class MapsFragment extends MapFragment implements
     private static final String POI_TABLE = "poi_table";
     private static final String FTS_TABLE = "yelp_search_table";
 
+    private static CameraPosition cameraPosition;
+    private static int counter = 0;
+
     // ----- Member variables ----- //
 
     private GoogleMap googleMap;
     private LatLng position;
-    private float zoom;
     private Map<String, POI> markerMap = new HashMap<>();
 
     // GoogleApiClient variables
@@ -90,6 +93,7 @@ public class MapsFragment extends MapFragment implements
 
     private double latitude = 34.05;
     private double longitude = -118.25;
+    private float zoom = 15.00f;
 
     // Geofence Variables
 
@@ -108,12 +112,13 @@ public class MapsFragment extends MapFragment implements
         return mapsFragment;
     }
 
-    public static MapsFragment newInstance(double latitude, double longitude) {
+    public static MapsFragment newInstance(double latitude, double longitude, float zoom) {
 
         MapsFragment mapsFragment = new MapsFragment();
         Bundle bundle = new Bundle();
         bundle.putDouble("latitude", latitude);
         bundle.putDouble("longitude", longitude);
+        bundle.putFloat("zoom", zoom);
 
         mapsFragment.setArguments(bundle);
 
@@ -137,10 +142,14 @@ public class MapsFragment extends MapFragment implements
         super.onCreate(savedInstanceState);
         geofenceList = new ArrayList<>();
 
+        savedInstanceState = getArguments();
+
         if(savedInstanceState != null) {
             latitude = savedInstanceState.getDouble("latitude");
             longitude = savedInstanceState.getDouble("longitude");
-            Log.v(TAG, "LatLng in onCreate(): (" + latitude + ", " + longitude + ")");
+            zoom = savedInstanceState.getFloat("zoom");
+
+            Log.v(TAG, "Restored position: (" + latitude + "," + longitude + "), zoom = " + zoom);
         }
     }
 
@@ -159,6 +168,7 @@ public class MapsFragment extends MapFragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Log.e(TAG, "onSaveInstanceState() called");
+        // only used for orientation changing
     }
 
     @Override
@@ -177,6 +187,19 @@ public class MapsFragment extends MapFragment implements
     public void onDestroyView() {
         Log.e(TAG, "onDestroyView() called");
         super.onDestroyView();
+        googleMap = getMap();
+        cameraPosition = googleMap.getCameraPosition();
+
+        if(getMapFragDelegate() != null) {
+            LatLng currentPosition = cameraPosition.target;
+            double latitude = currentPosition.latitude;
+            double longitude = currentPosition.longitude;
+            float zoom = cameraPosition.zoom;
+
+            Log.v(TAG, "Saved camera position: (" + latitude + "," + longitude + "), zoom = " + zoom);
+
+            getMapFragDelegate().onCoordinatesSaved(this, latitude, longitude, zoom);
+        }
     }
 
     @Override
@@ -207,7 +230,7 @@ public class MapsFragment extends MapFragment implements
 
     // Set up the map
 
-    private void startUpMap() {
+    private void startUpMap(final double latitude, final double longitude) {
         Log.v(TAG, "startUpMap() called");
 
         new Handler().post(new Runnable() {
@@ -216,6 +239,7 @@ public class MapsFragment extends MapFragment implements
                 getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
+
                         MapsFragment.this.googleMap = googleMap;
                         MapsFragment.this.googleMap.setMyLocationEnabled(true);
                         MapsFragment.this.googleMap.getUiSettings().isCompassEnabled();
@@ -224,13 +248,17 @@ public class MapsFragment extends MapFragment implements
                         // Goes to center of LA
 
                         position = new LatLng(latitude, longitude);
-                        zoom = 16;
 
-                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory
-                                .newLatLngZoom(position, zoom));
+                        // First time, animate the camera. Otherwise just show the position w/o animation
 
-//                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-//                                .newLatLngZoom(position, zoom), 1500, null);
+                        if(counter == 1) {
+                            MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
+                                    .newLatLngZoom(position, zoom), 2000, null);
+                        }
+                        else {
+                            MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(position, zoom));
+                        }
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
@@ -490,31 +518,25 @@ public class MapsFragment extends MapFragment implements
     public void onConnected(Bundle bundle) {
         Log.v(TAG, "onConnected() called");
 
+        counter++;
+
         location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+        if(counter <= 1) {
 
-            if(bundle == null) {
-                Log.v(TAG, "Bundle is null. (Location is not null)");
-                startUpMap();
+            if (location != null) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
+                startUpMap(latitude, longitude);
             }
-
-            // return to map at current location on screen
-
+            else {
+                startUpMap(latitude, longitude);
+            }
         }
-        else {
-            Log.v(TAG, "Location is null. Unable to get location");
-
-            if(bundle == null) {
-                Log.v(TAG, "Bundle is null. (Location is null)");
-                startUpMap();
-            }
-
-            // return to map at current location on screen
-
+        else if(counter > 1) {
+            startUpMap(latitude, longitude);
+            Log.v(TAG, "Your current location: (" + latitude + "," + longitude + ")");
         }
     }
 
