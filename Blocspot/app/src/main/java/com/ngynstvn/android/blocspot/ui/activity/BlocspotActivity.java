@@ -23,6 +23,7 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
+import com.ngynstvn.android.blocspot.ui.UIUtils;
 import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
@@ -93,7 +94,6 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         getFragmentManager().beginTransaction()
                 .add(R.id.fl_activity_blocspot, mapsFragment).commit();
-
     }
 
     @Override
@@ -250,7 +250,7 @@ public class BlocspotActivity extends AppCompatActivity implements
         Log.v(TAG, "onNewIntent() called");
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            runSearch(query, "Los Angeles, CA");
+            runSearch(query, UIUtils.latlngToZipCode(TAG, MapsFragment.getLatitude(), MapsFragment.getLongitude()));
         }
     }
 

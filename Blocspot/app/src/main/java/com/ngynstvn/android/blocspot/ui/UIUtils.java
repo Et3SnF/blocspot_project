@@ -1,9 +1,14 @@
 package com.ngynstvn.android.blocspot.ui;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 
+import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.model.POI;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class UIUtils {
@@ -40,12 +45,12 @@ public class UIUtils {
 
         // Check blank category names
 
-//        if(poi.getCategoryName() == null) {
-//            Log.v(TAG, "Category name is null");
-//        }
-//        else if(poi.getCategoryName() != null){
-//            Log.v(TAG, "Category name is not null. Length: " + poi.getCategoryName().length());
-//        }
+        if(poi.getCategoryName() == null) {
+            Log.v(TAG, "Category name is null");
+        }
+        else if(poi.getCategoryName() != null){
+            Log.v(TAG, "Category name is not null. Length: " + poi.getCategoryName().length());
+        }
 
     }
 
@@ -58,6 +63,52 @@ public class UIUtils {
         Log.v(TAG, "Place: " + locationName + " | Address: " + address + " | City: "
                 + city + " | State: " + state + " | Latitude: " + latitude + " | Longitude: " + longitude);
 
+    }
+
+    /*
+     *
+     * LatLng to City converter
+     *
+     */
+
+    public static String latlngToCity(String TAG, double latitude, double longitude) {
+
+        String city = "";
+
+        try {
+            Geocoder geocoder = new Geocoder(BlocspotApplication.getSharedInstance());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            city = addresses.get(0).getLocality();
+//            Log.v(TAG, "Location: " + location);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return city;
+    }
+
+        /*
+     *
+     * LatLng to City converter
+     *
+     */
+
+    public static String latlngToZipCode(String TAG, double latitude, double longitude) {
+
+        String zipCode = null;
+
+        try {
+            Geocoder geocoder = new Geocoder(BlocspotApplication.getSharedInstance());
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            zipCode = addresses.get(0).getPostalCode();
+//            Log.v(TAG, "Zip Code: " + zipCode);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return zipCode;
     }
 
 }

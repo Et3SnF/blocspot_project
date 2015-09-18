@@ -47,8 +47,8 @@ public class MapsFragment extends MapFragment implements
 
     // Interface for future delegation
 
-    public static interface MapFragDelegate {
-        public void onCoordinatesSaved(MapsFragment mapsFragment, double latitude, double longitude, float zoom);
+    public interface MapFragDelegate {
+        void onCoordinatesSaved(MapsFragment mapsFragment, double latitude, double longitude, float zoom);
     }
 
     // ----- Setter and getter for ListFragDelegate -----//
@@ -78,6 +78,11 @@ public class MapsFragment extends MapFragment implements
     private static CameraPosition cameraPosition;
     private static int counter = 0;
 
+    // Defaulted to center of Los Angeles, CA
+    private static double latitude = 34.05;
+    private static double longitude = -118.25;
+    private static float zoom = 15.00f;
+
     // ----- Member variables ----- //
 
     private GoogleMap googleMap;
@@ -88,12 +93,6 @@ public class MapsFragment extends MapFragment implements
 
     private GoogleApiClient googleApiClient;
     private Location location;
-
-    // Defaulted to center of Los Angeles
-
-    private double latitude = 34.05;
-    private double longitude = -118.25;
-    private float zoom = 15.00f;
 
     // Geofence Variables
 
@@ -260,7 +259,7 @@ public class MapsFragment extends MapFragment implements
                         }
 
                         MapsFragment.this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+                        
                     }
 
                 });
@@ -271,6 +270,22 @@ public class MapsFragment extends MapFragment implements
                         addPOIMarkers();
                         Log.v(TAG, "Number of active geofences: " + geofenceList.size() + "");
                         activateGeofences();
+                    }
+                });
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                            @Override
+                            public void onCameraChange(CameraPosition cameraPosition) {
+                                MapsFragment.latitude = cameraPosition.target.latitude;
+                                MapsFragment.longitude = cameraPosition.target.longitude;
+
+                                Log.v(TAG, "Current position: (" + MapsFragment.latitude
+                                        + ", " + MapsFragment.longitude + ")");
+                            }
+                        });
                     }
                 });
             }
@@ -308,7 +323,7 @@ public class MapsFragment extends MapFragment implements
                         position = new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue());
                         zoom = 15;
 
-                        MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
+                        MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, zoom), 1500, null);
                     }
                 });
 
@@ -447,9 +462,10 @@ public class MapsFragment extends MapFragment implements
             return geofencePendingIntent;
         }
 
-        Intent intent = new Intent(getActivity(), GeofenceTransitionsIntentService.class);
+        Intent intent = new Intent(BlocspotApplication.getSharedInstance(),
+                GeofenceTransitionsIntentService.class);
 
-        return PendingIntent.getService(getActivity(), 0, intent, PendingIntent.
+        return PendingIntent.getService(BlocspotApplication.getSharedInstance(), 0, intent, PendingIntent.
                 FLAG_UPDATE_CURRENT);
     }
 
@@ -505,6 +521,17 @@ public class MapsFragment extends MapFragment implements
         Log.v(TAG, "showMarkerDialog() called");
         MarkerDialog markerDialog = MarkerDialog.newInstance(poi);
         markerDialog.show(getFragmentManager(), "marker_dialog");
+    }
+
+    // Map related methods
+
+
+    public static double getLatitude() {
+        return latitude;
+    }
+
+    public static double getLongitude() {
+        return longitude;
     }
 
     /**
