@@ -134,7 +134,7 @@
     <!-- Description Area -->
 
     <LinearLayout
-        android:id="@+id/ll_result_poi_note"
+        android:id="@+id/ll_poi_note"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"

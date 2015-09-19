@@ -9,10 +9,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +40,29 @@ public class MarkerDialog extends DialogFragment {
     private TextView placeAddress;
     private TextView placeCity;
     private TextView placeState;
+    private EditText placeNoteInput;
+    private TextView noteInputCounter;
+    private TextView placeDescription;
+    private LinearLayout poiLinearLayout;
+
+    // Special one for character tracking
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Nothing to put here
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            noteInputCounter.setText(String.valueOf(s.length()) + " / 130");
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // Nothing to put here
+        }
+    };
 
     private POI poi;
 
@@ -109,7 +136,6 @@ public class MarkerDialog extends DialogFragment {
         else {
             Log.v(TAG, "POI is null");
         }
-
     }
 
     @Override
@@ -125,6 +151,8 @@ public class MarkerDialog extends DialogFragment {
         if(poi.getRowId() == -1) {
             view = getActivity().getLayoutInflater().inflate(R.layout.result_dialog_layout, null);
             favoriteButton = (Button) view.findViewById(R.id.btn_result_favorite);
+            placeNoteInput = (EditText) view.findViewById(R.id.et_result_description_input);
+            noteInputCounter = (TextView) view.findViewById(R.id.tv_result_edittext_counter);
 
             cancelButton = (Button) view.findViewById(R.id.btn_result_cancel);
             visitButton = (Button) view.findViewById(R.id.btn_result_visit_site);
@@ -138,6 +166,8 @@ public class MarkerDialog extends DialogFragment {
         else {
             view = getActivity().getLayoutInflater().inflate(R.layout.poi_dialog_layout, null);
             placeCategory = (TextView) view.findViewById(R.id.tv_poi_category_name);
+            placeDescription = (TextView) view.findViewById(R.id.tv_poi_description);
+            poiLinearLayout = (LinearLayout) view.findViewById(R.id.ll_poi_note);
 
             cancelButton = (Button) view.findViewById(R.id.btn_poi_cancel);
             visitButton = (Button) view.findViewById(R.id.btn_poi_visit_site);
@@ -185,10 +215,17 @@ public class MarkerDialog extends DialogFragment {
         // For yelp results only
 
         if(poi.getRowId() == -1) {
+
+            // Attach the character counter to EditText
+            placeNoteInput.addTextChangedListener(textWatcher);
+
             favoriteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.v(TAG, "Favorite button has been clicked");
+
+                    String input = placeNoteInput.getText().toString();
+                    poi.setDescription(input);
 
                     BlocspotApplication.getSharedDataSource().addNewPOI(poi);
 
@@ -199,6 +236,7 @@ public class MarkerDialog extends DialogFragment {
                     Log.v(TAG, "Item has been inserted into the database");
                 }
             });
+
         }
 
     }
@@ -266,6 +304,9 @@ public class MarkerDialog extends DialogFragment {
         placeState.setText(poi.getState());
 
         if(poi.getRowId() != -1) {
+
+            // Update category stuff
+
             if(poi.getCategoryName().length() == 0) {
                 placeCategory.setText("N/A");
                 placeCategory.setTextColor(Color.DKGRAY);
@@ -273,6 +314,16 @@ public class MarkerDialog extends DialogFragment {
             else {
                 placeCategory.setText(poi.getCategoryName());
                 placeCategory.setTextColor(poi.getCategoryColor());
+            }
+
+            // Update description stuff
+
+            if(poi.getDescription().length() != 0) {
+                poiLinearLayout.setVisibility(View.VISIBLE);
+                placeDescription.setText(poi.getDescription());
+            }
+            else {
+                poiLinearLayout.setVisibility(View.GONE);
             }
         }
 
