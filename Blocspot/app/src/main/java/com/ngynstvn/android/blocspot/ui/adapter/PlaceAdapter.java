@@ -263,10 +263,10 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             }
             else {
                 if(Build.VERSION.SDK_INT < 21) {
-                    visitCheckbox.setBackgroundColor(Color.BLACK);
+                    visitCheckbox.setBackgroundColor(poi.getCategoryColor());
                 }
                 else {
-                    visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                    visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
                 }
             }
 

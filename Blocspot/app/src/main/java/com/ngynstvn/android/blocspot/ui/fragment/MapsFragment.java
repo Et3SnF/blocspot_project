@@ -273,7 +273,7 @@ public class MapsFragment extends MapFragment implements
                     @Override
                     public void run() {
                         addPOIMarkers();
-                        Log.v(TAG, "Number of active geofences: " + geofenceList.size() + "");
+                        Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                         activateGeofences();
                     }
                 });
@@ -352,9 +352,22 @@ public class MapsFragment extends MapFragment implements
             do {
                 final POI poi = DataSource.poiFromCursor(cursor);
 
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                Marker marker;
+
+                if (POITable.getColumnHasVisited(cursor) == 0) {
+                    marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                    addGeofence(poi);
+                    Log.v(TAG, "Geofence activated for: " + poi.getLocationName());
+                }
+                else {
+                    marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    geofenceList.remove(poi);
+                    Log.v(TAG, "Geofence deactivated for: " + poi.getLocationName());
+                }
 
                 markerMap.put(marker.getId(), poi);
 
@@ -368,11 +381,6 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                addGeofence(poi);
-
-                if (POITable.getColumnHasVisited(cursor) == 0) {
-                    geofenceList.remove(poi);
-                }
             }
             while(cursor.moveToNext());
         }
@@ -479,7 +487,7 @@ public class MapsFragment extends MapFragment implements
 
     private void addGeofence(POI poi) {
 
-        Log.v(TAG, "addGeofence() called");
+//        Log.v(TAG, "addGeofence() called");
 
         if(poi == null) {
             return;
@@ -498,13 +506,6 @@ public class MapsFragment extends MapFragment implements
                 .setLoiteringDelay(10000)
                 .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                 .build());
-
-        // Add the circular fence around each point of interest
-
-        if(googleMap == null) {
-            Log.v(TAG, "googleMap variable null. Unable to add geofence circle");
-            return;
-        }
     }
 
     // Method to remove geofence
