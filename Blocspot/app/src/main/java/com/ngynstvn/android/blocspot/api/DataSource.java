@@ -419,13 +419,29 @@ public class DataSource {
         }.execute();
     }
 
-    public boolean checkIfItemIsInDB(String dbName, String dbField, String value) {
+    public boolean checkIfItemIsInPOIdB(String dbName, int rowId, String dbField, String value) {
 
-//        Log.v(TAG, "checkIfItemIsInDB() called");
+//        Log.v(TAG, "checkIfItemIsInPOIdB() called");
 
         SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
-        Cursor cursor = database.rawQuery("Select * from " + dbName + " where " + dbField +
-                " like '" + value + "';", null);
+        Cursor cursor = database.rawQuery("Select * from " + dbName + " where _id = "  + String.valueOf(rowId)
+                + " and " + dbField + " like '" + value + "';", null);
+
+        if(cursor.getCount() <= 0) {
+            cursor.close();
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkIfItemIsInCatDB(String dbName, String dbField, String value) {
+
+//        Log.v(TAG, "checkIfItemIsInCatDB() called");
+
+        SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
+        Cursor cursor = database.rawQuery("Select * from " + dbName + " where " + dbField
+                + " like '" + value + "';", null);
 
         if(cursor.getCount() <= 0) {
             cursor.close();

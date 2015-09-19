@@ -30,8 +30,6 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     private RecyclerView recyclerView;
     private AssignCategoryAdapter assignCategoryAdapter;
 
-    private PostTask task;
-
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
             .getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
@@ -49,10 +47,6 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
         return assignCategoryDialog;
 
-    }
-
-    public static interface PostTask {
-        public void onComplete(int poi_position);
     }
 
     // ----- Lifecycle Methods ----- //
@@ -99,7 +93,6 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.v(TAG, "onActivityCreated() called");
         super.onActivityCreated(savedInstanceState);
-        task = (PostTask) getActivity();
     }
 
     @Override
@@ -176,7 +169,8 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
         cursor.close();
 
-        boolean isAlreadyCategory = BlocspotApplication.getSharedDataSource().checkIfItemIsInDB("poi_table", "category", catItemName);
+        boolean isAlreadyCategory = BlocspotApplication.getSharedDataSource().checkIfItemIsInPOIdB("poi_table",
+                getArguments().getInt("position"), "category", catItemName);
 
         if(isAlreadyCategory) {
             Toast.makeText(BlocspotApplication.getSharedInstance(), "The point of interest is already assigned as "
@@ -201,7 +195,8 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
         Log.v(TAG, "Category ID: " + catItemPosition + " | " + "Cat Name: " + catItemName
                 + " | " + "Cat Color: " + catItemColor);
 
-        task.onComplete(getArguments().getInt("position"));
+        getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                ListFragment.newInstance(getArguments().getInt("position"))).commit();
 
         dismiss();
     }

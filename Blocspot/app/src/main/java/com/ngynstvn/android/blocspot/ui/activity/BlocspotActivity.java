@@ -24,7 +24,6 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
 import com.ngynstvn.android.blocspot.ui.UIUtils;
-import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
@@ -34,7 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class BlocspotActivity extends AppCompatActivity implements
-        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate, AssignCategoryDialog.PostTask {
+        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate {
 
     // ------ Class variables ----- //
 
@@ -388,15 +387,4 @@ public class BlocspotActivity extends AppCompatActivity implements
         this.zoom = zoom;
     }
 
-    /**
-     *
-     *  AssignCategoryDialog.PostTask Implemented Methods
-     *
-     */
-
-    @Override
-    public void onComplete(int poi_position) {
-        getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
-                ListFragment.newInstance(poi_position)).commit();
-    }
 }

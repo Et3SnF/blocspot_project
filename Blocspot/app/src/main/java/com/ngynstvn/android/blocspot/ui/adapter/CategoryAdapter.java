@@ -226,8 +226,9 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
                 categoryColor.setClipToOutline(true);
             }
-
-            // Might implement swipe to delete here...
+            else {
+                categoryColor.setText("");
+            }
 
         }
 

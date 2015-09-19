@@ -18,11 +18,11 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 
-public class EditCategoryDialog extends DialogFragment {
+public class EditNoteDialog extends DialogFragment {
 
     // ----- Class Variables ----- //
 
-    private static final String TAG = "Test (" + EditCategoryDialog.class.getSimpleName() + "): ";
+    private static final String TAG = "Test (" + EditNoteDialog.class.getSimpleName() + "): ";
 
     // ----- Member Variables ----- //
 
@@ -31,25 +31,24 @@ public class EditCategoryDialog extends DialogFragment {
 
     // Important single instantiation of this class
 
-    public static EditCategoryDialog newInstance(int position) {
+    public static EditNoteDialog newInstance(int rowId) {
 
-        EditCategoryDialog editCategoryDialog = new EditCategoryDialog();
+        EditNoteDialog editNoteDialog = new EditNoteDialog();
 
         // Supply num input as an argument --> for retrieving stuff later
 
         Bundle bundle = new Bundle();
-        bundle.putInt("position", position);
+        bundle.putInt("rowId", rowId);
 
-        editCategoryDialog.setArguments(bundle);
+        editNoteDialog.setArguments(bundle);
 
-        return editCategoryDialog;
+        return editNoteDialog;
 
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getArguments().getInt("position");
     }
 
     @Override
@@ -62,7 +61,7 @@ public class EditCategoryDialog extends DialogFragment {
 
         editText = (EditText) view.findViewById(R.id.et_category_input);
 
-        builder.setTitle("Edit Category")
+        builder.setTitle("Edit Note")
                 .setView(view)
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
@@ -103,34 +102,25 @@ public class EditCategoryDialog extends DialogFragment {
 
                     String value = editText.getText().toString();
 
-                    boolean isAlreadyInDB = BlocspotApplication.getSharedDataSource()
-                            .checkIfItemIsInCatDB("category_table", "category", value);
-
-                    if (value.equalsIgnoreCase("")) {
-                        Toast.makeText(BlocspotApplication.getSharedInstance(), "Invalid entry. Please " +
-                                "try again.", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    if(isAlreadyInDB) {
-                        Toast.makeText(BlocspotApplication.getSharedInstance(), value + " is already " +
-                                "a category. Enter a different name.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Update the item
+                    // Update the note for the item
 
                     final ContentValues values = new ContentValues();
-                    values.put("category", value);
+                    values.put("description", value);
 
-                    Log.v(TAG, "Value of position: " + getArguments().getInt("position"));
+                    Log.v(TAG, "Value of rowId: " + getArguments().getInt("rowId"));
 
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
                             BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                                    .getWritableDatabase().update("category_table", values, "_id = "
-                                    + (getArguments().getInt("position")), null);
+                                    .getWritableDatabase().update("poi_table", values, "_id = "
+                                    + (getArguments().getInt("rowId")), null);
+
+                            Toast.makeText(BlocspotApplication.getSharedInstance(), "The note has " +
+                                    "been successfully updated", Toast.LENGTH_SHORT).show();
+
+                            getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                                    ListFragment.newInstance(getArguments().getInt("rowId"))).commit();
                         }
                     });
 
@@ -143,7 +133,6 @@ public class EditCategoryDialog extends DialogFragment {
             });
 
         }
-
     }
 
     @Override
@@ -159,14 +148,5 @@ public class EditCategoryDialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        showCategoryDialog();
-    }
-
-    // ----- Separate Method ----- //
-
-    void showCategoryDialog() {
-        // Show the category dialog once this method hits
-        DialogFragment dialogFragment = CatDialogFragment.newInstance(getArguments().getInt("title"));
-        dialogFragment.show(getFragmentManager(), "category_dialog");
     }
 }

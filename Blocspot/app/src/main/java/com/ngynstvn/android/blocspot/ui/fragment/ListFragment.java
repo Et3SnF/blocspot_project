@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
@@ -177,15 +176,14 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     }
 
     @Override
-    public void onItemAssigned(PlaceAdapter placeAdapter, int position) {
-        showAssignCategoryDialog(position);
+    public void onItemAssigned(PlaceAdapter placeAdapter, int rowId) {
+        showAssignCategoryDialog(rowId);
     }
 
     @Override
-    public void onNoteAdded(PlaceAdapter placeAdapter, int position) {
+    public void onNoteClicked(PlaceAdapter placeAdapter, int rowId) {
         // show the add note popup dialog
-        Toast.makeText(BlocspotApplication.getSharedInstance(), "Functionality coming soon...",
-                Toast.LENGTH_SHORT).show();
+        showEditNoteDialog(rowId);
     }
 
     @Override
@@ -215,9 +213,14 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     // ----- Separate Methods ----- //
 
-    private void showAssignCategoryDialog(final int position) {
+    private void showAssignCategoryDialog(int position) {
         AssignCategoryDialog assignCategoryDialog = AssignCategoryDialog.newInstance(position);
         assignCategoryDialog.show(getFragmentManager(), "assign_category");
+    }
+
+    private void showEditNoteDialog(int position) {
+        EditNoteDialog editNoteDialog = EditNoteDialog.newInstance(position);
+        editNoteDialog.show(getFragmentManager(), "edit_note");
     }
 
     @Override

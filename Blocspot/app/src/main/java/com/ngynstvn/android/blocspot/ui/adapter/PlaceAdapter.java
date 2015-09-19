@@ -1,6 +1,5 @@
 package com.ngynstvn.android.blocspot.ui.adapter;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -58,8 +57,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
     public static interface PlaceAdapterDelegate {
         public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
-        public void onItemAssigned(PlaceAdapter placeAdapter, int position);
-        public void onNoteAdded(PlaceAdapter placeAdapter, int position);
+        public void onItemAssigned(PlaceAdapter placeAdapter, int rowId);
+        public void onNoteClicked(PlaceAdapter placeAdapter, int rowId);
         public void onVisitClicked(PlaceAdapter placeAdapter, int rowId, boolean isChecked);
     }
 
@@ -190,7 +189,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 public void onClick(View v) {
 
                     if(getAdapterDelegate() != null) {
-                        getAdapterDelegate().onNoteAdded(PlaceAdapter.this, (int) PlaceAdapter.
+                        getAdapterDelegate().onNoteClicked(PlaceAdapter.this, (int) PlaceAdapter.
                                 this.getItemId(getAdapterPosition()));
                     }
                     notifyItemChanged(getAdapterPosition());
@@ -235,7 +234,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
         }
 
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         void updateViewHolder(POI poi) {
             Log.v(TAG, "updateViewHolder() called");
             this.poi = poi; // this is very important as far as which item is chosen!
@@ -243,18 +241,33 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             poiName.setText(poi.getLocationName());
 
             if(poi.getDescription().length() == 0) {
-                poi.setDescription("How about adding a little note for this location? :)");
+                poiDescription.setText("Add a note to this point of interest.");
                 poiDescription.setTextColor(ColorStateList.valueOf(Color.GRAY));
                 poiDescription.setTypeface(null, Typeface.ITALIC);
             }
-
-            poiDescription.setText(poi.getDescription());
+            else {
+                poiDescription.setText(poi.getDescription());
+                poiDescription.setTextColor(ColorStateList.valueOf(Color.BLACK));
+                poiDescription.setTypeface(null, Typeface.NORMAL);
+            }
 
             if(poi.getCategoryColor() == 0) {
-                visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                if(Build.VERSION.SDK_INT < 21) {
+                    // For devices not on Lollipop
+                    visitCheckbox.setBackgroundColor(Color.BLACK);
+                }
+                else {
+                    // Lollipop compatibility
+                    visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                }
             }
             else {
-                visitCheckbox.setButtonTintList(ColorStateList.valueOf(poi.getCategoryColor()));
+                if(Build.VERSION.SDK_INT < 21) {
+                    visitCheckbox.setBackgroundColor(Color.BLACK);
+                }
+                else {
+                    visitCheckbox.setButtonTintList(ColorStateList.valueOf(Color.BLACK));
+                }
             }
 
             visitCheckbox.setChecked(poi.isHasVisited());

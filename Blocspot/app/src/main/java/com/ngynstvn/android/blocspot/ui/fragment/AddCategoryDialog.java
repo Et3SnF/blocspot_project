@@ -126,7 +126,7 @@ public class AddCategoryDialog extends DialogFragment {
                     String value = editText.getText().toString();
 
                     boolean isAlreadyInDB = BlocspotApplication.getSharedDataSource()
-                            .checkIfItemIsInDB("category_table", "category", value);
+                            .checkIfItemIsInCatDB("category_table", "category", value);
 
                     if(value.equalsIgnoreCase("")) {
                         Toast.makeText(getActivity(), "Invalid entry. Please try again.",
