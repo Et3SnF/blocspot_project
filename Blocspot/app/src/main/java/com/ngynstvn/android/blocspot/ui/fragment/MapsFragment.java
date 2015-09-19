@@ -257,7 +257,7 @@ public class MapsFragment extends MapFragment implements
 
                         if (counter == 1) {
                             MapsFragment.this.googleMap.animateCamera(CameraUpdateFactory
-                                    .newLatLngZoom(position, zoom), 2000, null);
+                                    .newLatLngZoom(position, zoom), 1700, null);
                         } else {
                             MapsFragment.this.googleMap.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(position, zoom));
@@ -539,6 +539,10 @@ public class MapsFragment extends MapFragment implements
 
     public static double getLongitude() {
         return longitude;
+    }
+
+    public static float getZoom() {
+        return zoom;
     }
 
     /**

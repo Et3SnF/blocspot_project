@@ -61,7 +61,7 @@ public class AddCategoryDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Log.v(TAG, "onCreateDialog() called");
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.edit_category, null);
 
         editText = (EditText) view.findViewById(R.id.et_category_input);
 

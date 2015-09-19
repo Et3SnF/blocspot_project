@@ -8,11 +8,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -28,6 +31,24 @@ public class EditCategoryDialog extends DialogFragment {
 
     private AlertDialog.Builder builder;
     private EditText editText;
+    private TextView editCatCounter;
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            editCatCounter.setText(String.valueOf(s.length()) + " / 25");
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     // Important single instantiation of this class
 
@@ -58,9 +79,10 @@ public class EditCategoryDialog extends DialogFragment {
         builder = new AlertDialog.Builder(getActivity(),
         R.style.MaterialAlertDialogStyle);
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.edit_category, null);
 
         editText = (EditText) view.findViewById(R.id.et_category_input);
+        editCatCounter = (TextView) view.findViewById(R.id.tv_editcat_edittext_counter);
 
         builder.setTitle("Edit Category")
                 .setView(view)
@@ -90,6 +112,10 @@ public class EditCategoryDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        getDialog().getWindow().setLayout(940, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        editText.addTextChangedListener(textWatcher);
 
         final AlertDialog alertDialog = (AlertDialog) getDialog();
 

@@ -8,11 +8,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -28,6 +31,24 @@ public class EditNoteDialog extends DialogFragment {
 
     private AlertDialog.Builder builder;
     private EditText editText;
+    private TextView editNoteCounter;
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Nothing to put here
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            editNoteCounter.setText(String.valueOf(s.length()) + " / 250");
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // Nothing to put here
+        }
+    };
 
     // Important single instantiation of this class
 
@@ -57,9 +78,10 @@ public class EditNoteDialog extends DialogFragment {
         builder = new AlertDialog.Builder(getActivity(),
         R.style.MaterialAlertDialogStyle);
 
-        View view = getActivity().getLayoutInflater().inflate(R.layout.category_input, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.edit_note, null);
 
-        editText = (EditText) view.findViewById(R.id.et_category_input);
+        editText = (EditText) view.findViewById(R.id.et_note_input);
+        editNoteCounter = (TextView) view.findViewById(R.id.tv_edit_note_edittext_counter);
 
         builder.setTitle("Edit Note")
                 .setView(view)
@@ -83,12 +105,17 @@ public class EditNoteDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        editText.addTextChangedListener(textWatcher);
 
         final AlertDialog alertDialog = (AlertDialog) getDialog();
 

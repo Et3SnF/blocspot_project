@@ -58,4 +58,6 @@
     <string name="poi_note_text">[NOTE]</string>
     <string name="default_poi_description">None for now :(</string>
     <string name="edit_text_instruction">Enter note here (optional)</string>
+    <string name="edit_category_instructions">Edit category below:</string>
+    <string name="edit_note_instructions">Edit note below:</string>
 </resources>

@@ -54,8 +54,8 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
     // ----- Delegation Interface Material ----- //
 
-    public static interface CategoryAdapterDelegate {
-        public void onEditButtonClicked(CategoryAdapter categoryAdapter, int position);
+    public interface CategoryAdapterDelegate {
+        void onEditButtonClicked(CategoryAdapter categoryAdapter, int position);
     }
 
     private WeakReference<CategoryAdapterDelegate> categoryAdapterDelegate;
@@ -83,20 +83,14 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
     public boolean onItemMove(int fromPosition, int toPosition) {
 
         if(fromPosition < toPosition) {
-            for(int i = fromPosition; i < toPosition; i++) {
-                // allows item to move down
-//                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i + 1);
-            }
+
         }
         else {
-            for(int i = fromPosition; i > toPosition; i--) {
-                // allows item to move up
-//                Collections.swap(BlocspotApplication.getSharedDataSource().getCategoryArrayList(), i, i -1);
-            }
+
         }
 
         notifyItemMoved(fromPosition, toPosition); // important for adapter to be aware of this
-        return true;
+        return false;
 
     }
 

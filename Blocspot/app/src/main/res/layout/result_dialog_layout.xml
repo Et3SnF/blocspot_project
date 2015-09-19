@@ -142,15 +142,15 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:textColor="@color/black_87"
-            android:maxLines="3"
-            android:maxLength="130"
+            android:maxLines="4"
+            android:maxLength="250"
             android:maxEms="8"/>
 
         <TextView
             android:id="@+id/tv_result_edittext_counter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0 / 130"
+            android:text="0 / 250"
             android:layout_gravity="end"
             android:gravity="end"
             android:layout_marginRight="8dp"

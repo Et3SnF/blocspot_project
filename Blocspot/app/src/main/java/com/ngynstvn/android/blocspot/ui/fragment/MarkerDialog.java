@@ -56,7 +56,7 @@ public class MarkerDialog extends DialogFragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            noteInputCounter.setText(String.valueOf(s.length()) + " / 130");
+            noteInputCounter.setText(String.valueOf(s.length()) + " / 250");
         }
 
         @Override
