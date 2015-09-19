@@ -189,12 +189,17 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     }
 
     @Override
-    public void onVisitClicked(PlaceAdapter placeAdapter, final int position, boolean isChecked) {
+    public void onVisitClicked(PlaceAdapter placeAdapter, final int rowId, boolean isChecked) {
 
         int dbValue = 0;
 
+        Log.v(TAG, "Position from PlaceAdapter transferred " + rowId);
+
         if(isChecked) {
             dbValue = 1;
+        }
+        else {
+            dbValue = 0;
         }
 
         final ContentValues values = new ContentValues();
@@ -203,7 +208,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                database.update("poi_table", values, "_id = " + (position + 1), null);
+                database.update("poi_table", values, "_id = " + rowId, null);
             }
         });
     }

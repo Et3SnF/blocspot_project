@@ -60,7 +60,7 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
         public void onItemAssigned(PlaceAdapter placeAdapter, int position);
         public void onNoteAdded(PlaceAdapter placeAdapter, int position);
-        public void onVisitClicked(PlaceAdapter placeAdapter, int position, boolean isChecked);
+        public void onVisitClicked(PlaceAdapter placeAdapter, int rowId, boolean isChecked);
     }
 
     // Setter and getter for delegate
@@ -227,6 +227,8 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                     if (getAdapterDelegate() != null) {
                         getAdapterDelegate().onVisitClicked(PlaceAdapter.this,
                                 (int) PlaceAdapter.this.getItemId(getAdapterPosition()), isChecked);
+                        Log.v(TAG, "db rowId: " + (int) PlaceAdapter.this.getItemId(getAdapterPosition())
+                                + " | " + "Adapter position: " + getAdapterPosition());
                     }
                 }
             });
