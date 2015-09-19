@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -198,6 +199,10 @@ public class MarkerDialog extends DialogFragment {
         Log.v(TAG, "onStart() called");
         super.onStart();
 
+        // Re-adjusting dialog dimension to prevent unnecessary blank space below buttons
+
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,6 +263,11 @@ public class MarkerDialog extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         Log.v(TAG, "onSaveInstanceState() called");
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override

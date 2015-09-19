@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/white_60"
-    android:weightSum="1">
+    android:background="@color/white_60">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="16dp"
@@ -31,7 +30,7 @@
             android:id="@+id/tv_poi_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="The Hot Dog Place"
             android:textColor="@android:color/black"
             android:textStyle="bold"
@@ -136,7 +135,7 @@
     <LinearLayout
         android:id="@+id/ll_poi_note"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="16dp"
         android:visibility="gone">
@@ -173,9 +172,12 @@
     <!-- Buttons Area -->
 
     <LinearLayout
+        android:id="@+id/ll_poi_buttons"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_gravity="bottom">
 
         <FrameLayout
             android:id="@+id/fl_result_cancel_button"
