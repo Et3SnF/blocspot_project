@@ -60,8 +60,8 @@ public class DataSource {
             databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
                     poi_table, categoryTable, ftsTable);
 
-            dbFakeData();
-            dbFakeCategoryData();
+            //dbFakeData();
+            //dbFakeCategoryData();
         }
 
         Log.v(TAG, "Instantiation counter: " + counter);

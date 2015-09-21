@@ -26,9 +26,14 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     private static final String TAG = "Test " + GeofenceTransitionsIntentService.class.getSimpleName() + ": ";
     private int notificationId;
-    int geofenceTransition;
+    private int geofenceTransition;
 
     private NotificationManager notificationManager;
+    private String location_name;
+    private String address;
+    private String city;
+    private String state;
+    private String category_name;
 
     public GeofenceTransitionsIntentService() {
         super(GeofenceTransitionsIntentService.class.getSimpleName());
@@ -40,6 +45,13 @@ public class GeofenceTransitionsIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        location_name = intent.getExtras().getString("location_name");
+        address = intent.getExtras().getString("address");
+        city = intent.getExtras().getString("city");
+        state = intent.getExtras().getString("state");
+        category_name = intent.getExtras().getString("category_name");
+
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             String errorMessage = GeofenceErrorMessages.getErrorString(this,
@@ -52,9 +64,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
         geofenceTransition = geofencingEvent.getGeofenceTransition();
 
         // Test that the reported transition was of interest.
-        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT ||
-                geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_DWELL) {
 
             // Get the geofences that were triggered. A single event can trigger
             // multiple geofences.
@@ -99,7 +109,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         }
         String triggeringGeofencesIdsString = TextUtils.join(", ", triggeringGeofencesIdsList);
 
-        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+//        return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
+        return "You are near a point of interest!";
     }
 
     // ---- Notification Material ----- //

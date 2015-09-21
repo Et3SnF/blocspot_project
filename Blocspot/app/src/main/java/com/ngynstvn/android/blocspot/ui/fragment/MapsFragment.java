@@ -103,6 +103,7 @@ public class MapsFragment extends MapFragment implements
 
     private NotificationManager notificationManager;
     private int notificationId;
+    private POI poi;
 
     // ----- Fragment New Instance Method ------ //
 
@@ -350,7 +351,7 @@ public class MapsFragment extends MapFragment implements
 
         if(cursor.moveToFirst()) {
             do {
-                final POI poi = DataSource.poiFromCursor(cursor);
+                poi = DataSource.poiFromCursor(cursor);
 
                 Marker marker;
 
@@ -386,6 +387,15 @@ public class MapsFragment extends MapFragment implements
         }
 
         cursor.close();
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
+                activateGeofences();
+            }
+        });
+
     }
 
     public void addNewResultMarkers() {
@@ -395,7 +405,7 @@ public class MapsFragment extends MapFragment implements
 
         if(cursor.moveToFirst()) {
             do {
-                final POI poi = DataSource.poiFromCursor(cursor);
+                poi = DataSource.poiFromCursor(cursor);
                 Marker marker = googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
