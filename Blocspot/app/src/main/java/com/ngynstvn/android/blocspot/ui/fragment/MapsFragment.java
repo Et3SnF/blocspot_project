@@ -431,6 +431,8 @@ public class MapsFragment extends MapFragment implements
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, FTS_TABLE, null, null, null, null, null, null, null);
 
+        // refresh cursor for filtering
+
         if(cursor.moveToFirst()) {
             do {
                 googleMap.clear();

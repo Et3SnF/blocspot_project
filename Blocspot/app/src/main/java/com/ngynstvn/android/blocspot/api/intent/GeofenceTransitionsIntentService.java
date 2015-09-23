@@ -127,7 +127,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setAutoCancel(true);
 
-        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        Intent intent = new Intent(this, BlocspotActivity.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
