@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -97,6 +98,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
 
     @Override
     public void onStart() {
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         Log.v(TAG, "onStart() called");
         super.onStart();
     }

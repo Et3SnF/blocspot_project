@@ -6,12 +6,16 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -26,6 +30,27 @@ public class AddCategoryDialog extends DialogFragment {
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
     private EditText editText;
+    private TextView addCatInstr;
+    private TextView addCatCounter;
+
+    // Special one for character tracking
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // Nothing to put here
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            addCatCounter.setText(String.valueOf(s.length()) + " / 25");
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // Nothing to put here
+        }
+    };
 
     // Important instance method with saved state
 
@@ -64,6 +89,8 @@ public class AddCategoryDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.edit_category, null);
 
         editText = (EditText) view.findViewById(R.id.et_category_input);
+        addCatInstr = (TextView) view.findViewById(R.id.tv_edit_category_instruction);
+        addCatCounter = (TextView) view.findViewById(R.id.tv_editcat_edittext_counter);
 
         builder.setTitle("Add Category")
                 .setView(view)
@@ -98,11 +125,15 @@ public class AddCategoryDialog extends DialogFragment {
         Log.v(TAG, "onStart() called");
         super.onStart();
 
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         // Overriding + button behavior
 
         final AlertDialog alertDialog = (AlertDialog) getDialog();
 
         if(alertDialog != null) {
+
+            addCatInstr.setText("Add category below:");
 
             editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -112,6 +143,7 @@ public class AddCategoryDialog extends DialogFragment {
             });
 
             editText.setInputType(InputType.TYPE_CLASS_TEXT);
+            editText.addTextChangedListener(textWatcher);
 
             Button okButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 
