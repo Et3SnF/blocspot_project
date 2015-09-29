@@ -162,6 +162,11 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
                 @Override
                 public void onClick(View v) {
                     onItemDismiss((int) CategoryAdapter.this.getItemId(getAdapterPosition()));
+
+                    // Remove from DB and SharedPreferences
+
+                    BlocspotApplication.getSharedDataSource().removeCatFromDB((CategoryAdapter.this.getItemId(getAdapterPosition())));
+
                     Utils.delAllSPrefValues(Utils.newSPrefInstance(Utils.FILTER_LIST), category.getCategoryName());
                     swipeLayout.close();
                 }

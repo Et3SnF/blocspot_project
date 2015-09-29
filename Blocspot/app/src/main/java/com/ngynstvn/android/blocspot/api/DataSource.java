@@ -377,7 +377,7 @@ public class DataSource {
         }.execute();
     }
 
-    public void removeCatFromDB(final int item_position)  {
+    public void removeCatFromDB(final long item_db_position)  {
 
         Log.v(TAG, "removePOIFromDB() called");
 
@@ -385,7 +385,7 @@ public class DataSource {
 
             @Override
             protected Void doInBackground(Void... params) {
-                getDatabaseOpenHelper().getWritableDatabase().delete(CATEGORY_TABLE, "_id = " + item_position, null);
+                getDatabaseOpenHelper().getWritableDatabase().delete(CATEGORY_TABLE, "_id = " + item_db_position, null);
                 return null;
             }
 
