@@ -175,9 +175,11 @@ public class AddCategoryDialog extends DialogFragment {
                     new CategoryTable.Builder()
                             .setCategoryName(value)
                             .setCategoryColor(Utils.generateRandomColor(android.R.color.white))
-                            .setHasChecked(0)
                             .insert(BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                                     .getWritableDatabase());
+
+                    Utils.putSPrefBooleanValue(Utils.newSPrefInstance(Utils.FILTER_LIST),
+                            Utils.FILTER_LIST, value, false);
 
                     closeDialog = true;
 

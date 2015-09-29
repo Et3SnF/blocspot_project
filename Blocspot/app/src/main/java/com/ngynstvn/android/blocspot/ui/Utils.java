@@ -132,4 +132,11 @@ public class Utils {
         editor.clear();
         editor.apply();
     }
+
+    public static void delSPrefValue(SharedPreferences sharedPreferences, String fileName, String key) {
+        sharedPreferences = BlocspotApplication.getSharedInstance().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(key);
+        editor.apply();
+    }
 }
