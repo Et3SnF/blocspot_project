@@ -14,9 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -25,6 +23,8 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
+
+import java.util.HashMap;
 
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate,
         DataSource.DataSourceDelegate {
@@ -45,6 +45,8 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     private SQLiteDatabase database = BlocspotApplication.getSharedDataSource()
             .getDatabaseOpenHelper().getWritableDatabase();
     private Cursor cursor;
+
+    private static HashMap<String, Boolean> filterPair = new HashMap<>();
 
     // Important single instantiation of this class
 
@@ -82,6 +84,8 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
         callback = new ItemTouchHelperCallback(categoryAdapter);
         touchHelper = new ItemTouchHelper(callback);
+
+        storeCurrentCbStates();
     }
 
     @Override
@@ -115,6 +119,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Negative Button Clicked");
+                        restorePrevCbStates();
                         categoryAdapter.notifyDataSetChanged();
                     }
                 })
@@ -246,23 +251,20 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         categoryAdapter.swapCursor(cursor);
     }
 
-    private void removeAllChecks(ViewGroup vg) {
-        View v = null;
-        for(int i = 0; i < vg.getChildCount(); i++){
-            try {
-                v = vg.getChildAt(i);
-                ((CheckBox)v).setChecked(false);
-            }
-            catch(Exception e1){ //if not checkBox, null View, etc
-                try {
-                    removeAllChecks((ViewGroup)v);
-                }
-                catch(Exception e2){ //v is not a view group
-                    continue;
-                }
-            }
-        }
+    private void storeCurrentCbStates() {
+        filterPair = (HashMap<String, Boolean>) Utils.newSPrefInstance(Utils.FILTER_LIST).getAll();
+    }
 
+    private void restorePrevCbStates() {
+        for(String key : filterPair.keySet()) {
+
+            if(filterPair.size() == 0) {
+                return;
+            }
+
+            Utils.putSPrefBooleanValue(Utils.newSPrefInstance(Utils.FILTER_LIST),
+                    Utils.FILTER_LIST, key, filterPair.get(key));
+        }
     }
 }
 

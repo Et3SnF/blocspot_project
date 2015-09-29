@@ -39,7 +39,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
         Log.v(TAG, "CategoryAdapter object instantiated");
     }
 
-    // ----- CategoryAdapter Methods ----- //
+// ----- CategoryAdapter Methods ----- //
 
     @Override
     public CategoryAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
