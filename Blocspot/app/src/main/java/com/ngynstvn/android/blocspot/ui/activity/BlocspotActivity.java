@@ -23,7 +23,7 @@ import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
@@ -249,7 +249,7 @@ public class BlocspotActivity extends AppCompatActivity implements
         Log.v(TAG, "onNewIntent() called");
         if(Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            runSearch(query, UIUtils.latlngToZipCode(TAG, MapsFragment.getLatitude(), MapsFragment.getLongitude()));
+            runSearch(query, Utils.latlngToZipCode(TAG, MapsFragment.getLatitude(), MapsFragment.getLongitude()));
         }
     }
 

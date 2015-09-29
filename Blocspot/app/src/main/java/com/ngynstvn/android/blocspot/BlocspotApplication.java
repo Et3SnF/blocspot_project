@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.api.DataSource;
-import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
 public class BlocspotApplication extends Application {
 
@@ -12,7 +11,6 @@ public class BlocspotApplication extends Application {
 
     private static BlocspotApplication sharedInstance;
     private DataSource dataSource;
-    private MapsFragment mapsFragment;
 
     public static BlocspotApplication getSharedInstance() {
         return sharedInstance;

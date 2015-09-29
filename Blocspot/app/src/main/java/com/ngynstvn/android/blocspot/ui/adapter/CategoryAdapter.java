@@ -21,6 +21,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.Category;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
 import java.lang.ref.WeakReference;
@@ -139,8 +140,8 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
             filterCategory.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    // Do something here that manipulates the database. Will require delegation
-                    // of some sort.
+                    Utils.putSPrefBooleanValue(Utils.newSPrefInstance(Utils.FILTER_LIST),
+                            Utils.FILTER_LIST, category.getCategoryName(), isChecked);
                 }
             });
 
@@ -236,7 +237,7 @@ public class CategoryAdapter extends CursorRecyclerViewAdapter<CategoryAdapter.C
 
             categoryName.setText(category.getCategoryName());
             categoryColor.setBackgroundColor(category.getCategoryColor());
-
+            filterCategory.setChecked(Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category.getCategoryName(), false));
         }
 
         /**

@@ -64,6 +64,7 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:id="@+id/rl_category_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/category_item_height"
             android:paddingLeft="24dp"

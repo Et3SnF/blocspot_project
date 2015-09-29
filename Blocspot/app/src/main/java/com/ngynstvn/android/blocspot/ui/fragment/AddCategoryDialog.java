@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
+import com.ngynstvn.android.blocspot.ui.Utils;
 
 public class AddCategoryDialog extends DialogFragment {
 
@@ -174,7 +174,7 @@ public class AddCategoryDialog extends DialogFragment {
 
                     new CategoryTable.Builder()
                             .setCategoryName(value)
-                            .setCategoryColor(UIUtils.generateRandomColor(android.R.color.white))
+                            .setCategoryColor(Utils.generateRandomColor(android.R.color.white))
                             .setHasChecked(0)
                             .insert(BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                                     .getWritableDatabase());

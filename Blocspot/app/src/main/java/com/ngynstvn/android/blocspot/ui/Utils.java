@@ -1,5 +1,7 @@
 package com.ngynstvn.android.blocspot.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -11,7 +13,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-public class UIUtils {
+public class Utils {
+
+    public static final String FILTER_LIST = "filter_list";
 
     public static int generateRandomColor(int baseColor) {
 
@@ -111,4 +115,21 @@ public class UIUtils {
         return zipCode;
     }
 
+    public static SharedPreferences newSPrefInstance(String name) {
+        return BlocspotApplication.getSharedInstance().getSharedPreferences(name, Context.MODE_PRIVATE);
+    }
+
+    public static void putSPrefBooleanValue(SharedPreferences sharedPreferences, String fileName, String key, boolean value) {
+        sharedPreferences = BlocspotApplication.getSharedInstance().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    public static void delAllSPrefValues(SharedPreferences sharedPreferences, String fileName) {
+        sharedPreferences = BlocspotApplication.getSharedInstance().getSharedPreferences(fileName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 }

@@ -13,7 +13,7 @@ import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
+import com.ngynstvn.android.blocspot.ui.Utils;
 
 import java.lang.ref.WeakReference;
 
@@ -186,27 +186,27 @@ public class DataSource {
 
         new CategoryTable.Builder()
                 .setCategoryName("Restaurants")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategoryColor(Utils.generateRandomColor(BASE_COLOR))
                 .insert(writableDatabase);
 
         new CategoryTable.Builder()
                 .setCategoryName("Entertainment")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategoryColor(Utils.generateRandomColor(BASE_COLOR))
                 .insert(writableDatabase);
 
         new CategoryTable.Builder()
                 .setCategoryName("Night Life")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategoryColor(Utils.generateRandomColor(BASE_COLOR))
                 .insert(writableDatabase);
 
         new CategoryTable.Builder()
                 .setCategoryName("Museums")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategoryColor(Utils.generateRandomColor(BASE_COLOR))
                 .insert(writableDatabase);
 
         new CategoryTable.Builder()
                 .setCategoryName("Theme Parks")
-                .setCategoryColor(UIUtils.generateRandomColor(BASE_COLOR))
+                .setCategoryColor(Utils.generateRandomColor(BASE_COLOR))
                 .insert(writableDatabase);
     }
 

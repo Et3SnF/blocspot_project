@@ -14,12 +14,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -112,6 +115,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Negative Button Clicked");
+                        categoryAdapter.notifyDataSetChanged();
                     }
                 })
                 .setNeutralButton("Reset", new DialogInterface.OnClickListener() {
@@ -137,12 +141,22 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         super.onStart();
         // This is where the fragment stops at when I first load it.
 
+        final AlertDialog alertDialog = (AlertDialog) getDialog();
+
         btnAddCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.v(TAG, "Add Category Button Clicked");
                 dismiss();
                 showAddCategoryDialog();
+            }
+        });
+
+        alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.delAllSPrefValues(Utils.newSPrefInstance(Utils.FILTER_LIST), Utils.FILTER_LIST);
+                categoryAdapter.notifyDataSetChanged();
             }
         });
 
@@ -230,6 +244,25 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     @Override
     public void onQueryComplete(Cursor cursor) {
         categoryAdapter.swapCursor(cursor);
+    }
+
+    private void removeAllChecks(ViewGroup vg) {
+        View v = null;
+        for(int i = 0; i < vg.getChildCount(); i++){
+            try {
+                v = vg.getChildAt(i);
+                ((CheckBox)v).setChecked(false);
+            }
+            catch(Exception e1){ //if not checkBox, null View, etc
+                try {
+                    removeAllChecks((ViewGroup)v);
+                }
+                catch(Exception e2){ //v is not a view group
+                    continue;
+                }
+            }
+        }
+
     }
 }
 

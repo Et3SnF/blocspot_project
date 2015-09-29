@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.model.POI;
-import com.ngynstvn.android.blocspot.ui.UIUtils;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.squareup.picasso.Picasso;
 
 public class MarkerDialog extends DialogFragment {
@@ -131,7 +131,7 @@ public class MarkerDialog extends DialogFragment {
             poi = new POI(row_id, location_name, category_name, category_color, address, city, state,
                     latitude, longitude, description, place_url, rating_url, logo_url, hasVisited);
 
-            UIUtils.displayPOIInfo(TAG, poi);
+            Utils.displayPOIInfo(TAG, poi);
 
         }
         else {
