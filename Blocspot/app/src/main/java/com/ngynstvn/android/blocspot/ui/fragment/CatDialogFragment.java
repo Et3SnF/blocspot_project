@@ -24,6 +24,7 @@ import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate,
@@ -113,6 +114,16 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Positive Button Clicked");
+                        ArrayList<String> categories = new ArrayList<>();
+
+                        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+                            if(Utils.newSPrefInstance(Utils.FILTER_LIST).contains(category)) {
+                                categories.add(category);
+                            }
+                        }
+
+                        BlocspotApplication.getSharedDataSource().filterFromDB("poi_table", categories);
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

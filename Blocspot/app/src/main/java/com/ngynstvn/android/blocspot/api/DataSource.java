@@ -16,6 +16,7 @@ import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.Utils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class DataSource {
 
@@ -39,10 +40,6 @@ public class DataSource {
     private CategoryTable categoryTable;
     private FTSTable ftsTable;
 
-//    private ArrayList<POI> poiArrayList = new ArrayList<>();
-//    private ArrayList<Category> categoryArrayList = new ArrayList<>();
-//    private Map<String, Integer> catNameColorMap = new HashMap<String, Integer>();
-
     // Constructor
 
     public DataSource(Context context) {
@@ -60,8 +57,8 @@ public class DataSource {
             databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
                     poi_table, categoryTable, ftsTable);
 
-            //dbFakeData();
-            //dbFakeCategoryData();
+            dbFakeData();
+            dbFakeCategoryData();
         }
 
         Log.v(TAG, "Instantiation counter: " + counter);
@@ -69,12 +66,12 @@ public class DataSource {
 
     // ----- Interface and Interface Delegation material ----- //
 
-    public static interface PostTask {
-        public void onFetchingComplete();
+    public interface PostTask {
+        void onFetchingComplete();
     }
 
-    public static interface DataSourceDelegate {
-        public void onQueryComplete(Cursor cursor);
+    public interface DataSourceDelegate {
+        void onQueryComplete(Cursor cursor);
     }
 
     private WeakReference<DataSourceDelegate> dataSourceDelegate;
@@ -317,45 +314,52 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
-    public void fetchFilteredPOIs(final PostTask postTask, final String... categories) {
+    public void filterFromDB(final String dbName, final ArrayList<String> strings)  {
 
-        Log.v(TAG, "fetchFilteredPOIs() called");
+        Log.v(TAG, "removePOIFromDB() called");
 
-        // Perform AsyncTask at startup
-
-        new AsyncTask<Void, Void, POI>() {
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected POI doInBackground(Void... params) {
+            protected Void doInBackground(Void... params) {
+                SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
 
-                Log.v(TAG, "doInBackground() performing in " + Thread.currentThread().getName());
+                // Select * from poi_table where category like 'blah' and category like 'blah';
 
-                Cursor cursor = POITable.getFilteredPOIs(databaseOpenHelper.getWritableDatabase(), categories);
-                POI poi = null;
+                String statement = "";
 
-                if(cursor.moveToFirst()) {
+                if(strings.size() == 0) {
+                    statement = "Select * from " + dbName + ";";
+                }
+                else if(strings.size() == 1) {
+                    statement = "Select * from " + dbName + " where category like '" + strings.get(1) + "';";
+                }
+                else {
+                    for(int i = 0; i < strings.size()-2; i++) {
 
-                    do {
-                        poi = poiFromCursor(cursor);
+                        statement = "Select * from " + dbName + " where " + ("category like '" + strings.get(i) + "' or ");
+
+                        if(i == strings.size()-1) {
+                            statement += ("category like '" + strings.get(strings.size()-1) + "';");
+                        }
                     }
-                    while(cursor.moveToNext());
-
-                    cursor.close();
-
                 }
 
-                return poi;
+                Log.v(TAG, statement);
 
+//                Cursor cursor = database.rawQuery(statement, null);
+//                cursor.close();
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(POI poi) {
-                postTask.onFetchingComplete();
-            }
+//            @Override
+//            protected void onPostExecute(Void aVoid) {
+//                requeryDB(POI_TABLE);
+//            }
 
         }.execute();
-
     }
+
 
     public void removePOIFromDB(final int item_position)  {
 
