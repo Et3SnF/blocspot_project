@@ -409,8 +409,13 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         BlocspotApplication.getSharedDataSource().filterFromDB("poi_table", null);
         mapsFragment.addFilteredPOIMarkers();
-        
+
         getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                 MapsFragment.newInstance()).commit();
+
+        if(item.getTitle() == getString(R.string.map_mode_text)) {
+            item.setTitle(getResources().getString(R.string.list_mode_text));
+            item.setIcon(R.drawable.menu_list_mode_selector);
+        }
     }
 }

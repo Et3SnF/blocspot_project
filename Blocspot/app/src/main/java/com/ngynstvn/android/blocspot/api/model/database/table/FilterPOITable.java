@@ -1,17 +1,15 @@
-package com.ngynstvn.android.blocspot.api.model.database.fts_table;
+package com.ngynstvn.android.blocspot.api.model.database.table;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.ngynstvn.android.blocspot.api.model.database.table.Table;
-
-public class FilterFTSTable extends Table {
+public class FilterPOITable extends Table {
 
     // Class variables
 
-    private static final String TAG = "Test " + FilterFTSTable.class.getSimpleName() + ")";
+    private static final String TAG = "Test " + FilterPOITable.class.getSimpleName() + ")";
 
     private static final String NAME = "filter_poi_table";
     private static final String COLUMN_LOCATION_NAME = "location_name";
@@ -28,6 +26,11 @@ public class FilterFTSTable extends Table {
     private static final String COLUMN_LOGO_URL = "logo_url";
     private static final String COLUMN_HAS_VISITED = "has_visited";
 
+    // Hold off on the distance to POI part for now...
+
+    // SELECT DISTINCT(category) from poi_table --> Query to get categories and then you store them
+    // an array using cursor
+
     // Getters
 
     @Override
@@ -40,8 +43,9 @@ public class FilterFTSTable extends Table {
 
         Log.v(TAG, "getCreateStatement() called");
 
-        return "CREATE VIRTUAL TABLE " + getName() + " USING FTS3 ("
-                + COLUMN_LOCATION_NAME + " TEXT PRIMARY KEY,"
+        return "CREATE TABLE " + getName() + " ("
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_LOCATION_NAME + " TEXT,"
                 + COLUMN_CATEGORY + " TEXT,"
                 + COLUMN_CATEGORY_COLOR + " INTEGER,"
                 + COLUMN_ADDRESS + " TEXT,"
@@ -53,7 +57,37 @@ public class FilterFTSTable extends Table {
                 + COLUMN_PLACE_URL + " TEXT,"
                 + COLUMN_RATING_URL + " TEXT,"
                 + COLUMN_LOGO_URL + " TEXT, "
-                + COLUMN_HAS_VISITED + " INTEGER);";
+                + COLUMN_HAS_VISITED + " INTEGER);"; // 0 for false, 1 for true
+    }
+
+    // NOTE rawquery() method: sql method must not end in ';'
+
+    public static Cursor getAllPOIs(SQLiteDatabase readonlyDatabase) {
+        // Select * FROM poi_table order has_visited;
+        return readonlyDatabase.rawQuery("SELECT * FROM " + NAME + " ORDER BY " + COLUMN_HAS_VISITED, null);
+    }
+
+    // Getting filtered table data BY CATEGORY
+
+    public static Cursor getFilteredPOIs(SQLiteDatabase readOnlyDatabase, String... strings) {
+        // Select * from poi_table where category = "blah1" or category="pigeons" or ...;
+
+        String conditions = "";
+
+        if(strings.length == 0) {
+            return readOnlyDatabase.rawQuery("Select * from " + NAME, null);
+        }
+        else if(strings.length == 1) {
+            conditions += "category = " + "'" + strings[strings.length-1] + "'";
+        }
+
+        for(int i = 0; i < strings.length-1; i++) {
+            conditions += "category = " + "'" + strings[i] + "'" + " or ";
+        }
+
+        conditions += "category = " + "'" + strings[strings.length-1] + "'";
+
+        return readOnlyDatabase.rawQuery("Select * from " + NAME + " where " + conditions, null);
     }
 
     // Builder Class
@@ -139,6 +173,14 @@ public class FilterFTSTable extends Table {
         return getString(cursor, COLUMN_LOCATION_NAME);
     }
 
+    public static String getCategory(Cursor cursor) {
+        return getString(cursor, COLUMN_CATEGORY);
+    }
+
+    public static int getCategoryColor(Cursor cursor) {
+        return getInteger(cursor, COLUMN_CATEGORY_COLOR);
+    }
+
     public static String getAddress(Cursor cursor) {
         return getString(cursor, COLUMN_ADDRESS);
     }
@@ -159,6 +201,10 @@ public class FilterFTSTable extends Table {
         return getDouble(cursor, COLUMN_LONGITUDE);
     }
 
+    public static String getColumnDescription(Cursor cursor) {
+        return getString(cursor, COLUMN_DESCRIPTION);
+    }
+
     public static String getPlaceURL(Cursor cursor) {
         return getString(cursor, COLUMN_PLACE_URL);
     }
@@ -174,51 +220,4 @@ public class FilterFTSTable extends Table {
     public static int getColumnHasVisited(Cursor cursor) {
         return getInteger(cursor, COLUMN_HAS_VISITED);
     }
-
-    // get info based on data type
-
-    protected static int getInteger(Cursor cursor, String column) {
-        int columnIndex = cursor.getColumnIndex(column);
-
-        if(columnIndex == -1) {
-            return -1;
-        }
-
-        return cursor.getInt(columnIndex);
-    }
-
-    protected static double getDouble(Cursor cursor, String column) {
-        int columnIndex = cursor.getColumnIndex(column);
-
-        if(columnIndex == -1) {
-            return -1.00D;
-        }
-
-        return cursor.getDouble(columnIndex);
-    }
-
-    public static long getLong(Cursor cursor, String column) {
-        int columnIndex = cursor.getColumnIndex(column);
-
-        if(columnIndex == -1) {
-            return -1L;
-        }
-
-        return cursor.getLong(columnIndex);
-    }
-
-    protected static String getString(Cursor cursor, String column) {
-        int columnIndex = cursor.getColumnIndex(column);
-
-        if(columnIndex == -1) {
-            return "";
-        }
-
-        return cursor.getString(columnIndex);
-    }
-
-    public void onUpgrade(SQLiteDatabase writableDatabase, int oldVersion, int newVersion) {
-        // In case one table is upgrade over the other
-    }
-
 }

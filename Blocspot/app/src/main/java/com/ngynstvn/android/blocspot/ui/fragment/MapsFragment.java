@@ -34,6 +34,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.api.model.database.table.FilterPOITable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.Utils;
 
@@ -75,7 +76,7 @@ public class MapsFragment extends MapFragment implements
 
     private static final String POI_TABLE = "poi_table";
     private static final String FTS_TABLE = "yelp_search_table";
-    private static final String FILTER_FTS_TABLE = "filter_poi_table";
+    private static final String FILTER_POI_TABLE = "filter_poi_table";
 
     private static CameraPosition cameraPosition;
     private static int counter = 0;
@@ -275,12 +276,11 @@ public class MapsFragment extends MapFragment implements
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if(Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().size() == 0) {
+                        if (Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().size() == 0) {
                             addPOIMarkers();
                             Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                             activateGeofences();
-                        }
-                        else {
+                        } else {
                             addFilteredPOIMarkers();
                             Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                             activateGeofences();
@@ -415,16 +415,31 @@ public class MapsFragment extends MapFragment implements
     public void getFilteredMarkers() {
 
         Cursor newCursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                .getReadableDatabase().query(true, FILTER_FTS_TABLE, null, null, null, null, null, null, null);
+                .getReadableDatabase().query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
 
         if(newCursor.moveToFirst()) {
             do {
                 poi = DataSource.poiFromCursor(newCursor);
-                Marker marker = googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                Marker marker;
+
+                if (FilterPOITable.getColumnHasVisited(newCursor) == 0) {
+                    marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+                    addGeofence(poi);
+                    Log.v(TAG, "Geofence activated for: " + poi.getLocationName());
+                }
+                else {
+                    marker = googleMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    geofenceList.remove(poi);
+                    Log.v(TAG, "Geofence deactivated for: " + poi.getLocationName());
+                }
 
                 markerMap.put(marker.getId(), poi);
+
+//                UIUtils.displayPOIInfo(TAG, poi);
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -438,33 +453,6 @@ public class MapsFragment extends MapFragment implements
         }
 
         newCursor.close();
-
-//                if (FilterFTSTable.getColumnHasVisited(cursor) == 0) {
-//                    marker = googleMap.addMarker(new MarkerOptions()
-//                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-//                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-//                    addGeofence(poi);
-//                    Log.v(TAG, "Geofence activated for: " + poi.getLocationName());
-//                }
-//                else {
-//                    marker = googleMap.addMarker(new MarkerOptions()
-//                            .position(new LatLng(poi.getLatitudeValue(), poi.getLongitudeValue()))
-//                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-//                    geofenceList.remove(poi);
-//                    Log.v(TAG, "Geofence deactivated for: " + poi.getLocationName());
-//                }
-//
-//                markerMap.put(marker.getId(), poi);
-//
-////                UIUtils.displayPOIInfo(TAG, poi);
-//
-//                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(Marker marker) {
-//                        getMarkerDialog(marker);
-//                        return true;
-//                    }
-//                });
 
         new Handler().post(new Runnable() {
             @Override

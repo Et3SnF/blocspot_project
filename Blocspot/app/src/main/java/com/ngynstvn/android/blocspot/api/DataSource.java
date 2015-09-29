@@ -11,8 +11,8 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
-import com.ngynstvn.android.blocspot.api.model.database.fts_table.FilterFTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
+import com.ngynstvn.android.blocspot.api.model.database.table.FilterPOITable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.Utils;
 
@@ -40,7 +40,7 @@ public class DataSource {
     private POITable poi_table;
     private CategoryTable categoryTable;
     private FTSTable ftsTable;
-    private FilterFTSTable filterFTSTable;
+    private FilterPOITable filterPOITable;
 
     // Constructor
 
@@ -55,10 +55,10 @@ public class DataSource {
             poi_table = new POITable();
             categoryTable = new CategoryTable();
             ftsTable = new FTSTable();
-            filterFTSTable = new FilterFTSTable();
+            filterPOITable = new FilterPOITable();
 
             databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                    poi_table, categoryTable, ftsTable, filterFTSTable);
+                    poi_table, categoryTable, ftsTable, filterPOITable);
 
             dbFakeData();
             dbFakeCategoryData();
@@ -336,7 +336,7 @@ public class DataSource {
             boolInt = 0;
         }
 
-        return new FilterFTSTable.Builder()
+        return new FilterPOITable.Builder()
                 .setLocationName(poi.getLocationName())
                 .setCategory(poi.getCategoryName())
                 .setCategoryColor(poi.getCategoryColor())
