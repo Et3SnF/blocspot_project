@@ -11,6 +11,7 @@ import com.ngynstvn.android.blocspot.api.model.Category;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.DatabaseOpenHelper;
 import com.ngynstvn.android.blocspot.api.model.database.fts_table.FTSTable;
+import com.ngynstvn.android.blocspot.api.model.database.fts_table.FilterFTSTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.CategoryTable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
 import com.ngynstvn.android.blocspot.ui.Utils;
@@ -39,6 +40,7 @@ public class DataSource {
     private POITable poi_table;
     private CategoryTable categoryTable;
     private FTSTable ftsTable;
+    private FilterFTSTable filterFTSTable;
 
     // Constructor
 
@@ -53,9 +55,10 @@ public class DataSource {
             poi_table = new POITable();
             categoryTable = new CategoryTable();
             ftsTable = new FTSTable();
+            filterFTSTable = new FilterFTSTable();
 
             databaseOpenHelper = new DatabaseOpenHelper(BlocspotApplication.getSharedInstance(),
-                    poi_table, categoryTable, ftsTable);
+                    poi_table, categoryTable, ftsTable, filterFTSTable);
 
             dbFakeData();
             dbFakeCategoryData();
@@ -314,6 +317,42 @@ public class DataSource {
                 .insert(databaseOpenHelper.getWritableDatabase());
     }
 
+    public long addFilteredResult(POI poi) {
+
+//        Log.v(TAG, "addSearchResult() called");
+
+        if(poi == null) {
+            return -1L;
+        }
+        else if(poi.getLatitudeValue() == 0 && poi.getLongitudeValue() == 0) {
+            return -1L;
+        }
+
+        int boolInt = 0;
+
+        if (poi.isHasVisited()) {
+            boolInt = 1;
+        } else {
+            boolInt = 0;
+        }
+
+        return new FilterFTSTable.Builder()
+                .setLocationName(poi.getLocationName())
+                .setCategory(poi.getCategoryName())
+                .setCategoryColor(poi.getCategoryColor())
+                .setAddress(poi.getAddress())
+                .setCity(poi.getCity())
+                .setState(poi.getState())
+                .setLatitude(poi.getLatitudeValue())
+                .setLongitude(poi.getLongitudeValue())
+                .setDescription(poi.getDescription())
+                .setPlaceURL(poi.getPlaceURL())
+                .setRatingURL(poi.getRatingImgURL())
+                .setLogoURL(poi.getLogoURL())
+                .setHasVisited(boolInt)
+                .insert(databaseOpenHelper.getWritableDatabase());
+    }
+
     public void filterFromDB(final String dbName, final ArrayList<String> strings)  {
 
         Log.v(TAG, "removePOIFromDB() called");
@@ -325,41 +364,27 @@ public class DataSource {
                 SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
 
                 // Select * from poi_table where category like 'blah' and category like 'blah';
+                Cursor cursor = database.rawQuery("Select * from poi_table where category like 'Restaurants'", null);
 
-                String statement = "";
-
-                if(strings.size() == 0) {
-                    statement = "Select * from " + dbName + ";";
-                }
-                else if(strings.size() == 1) {
-                    statement = "Select * from " + dbName + " where category like '" + strings.get(1) + "';";
-                }
-                else {
-                    for(int i = 0; i < strings.size()-2; i++) {
-
-                        statement = "Select * from " + dbName + " where " + ("category like '" + strings.get(i) + "' or ");
-
-                        if(i == strings.size()-1) {
-                            statement += ("category like '" + strings.get(strings.size()-1) + "';");
-                        }
+                if(cursor.moveToFirst()) {
+                    do {
+                        POI poi = poiFromCursor(cursor);
+                        addFilteredResult(poi);
                     }
+                    while(cursor.moveToNext());
                 }
 
-                Log.v(TAG, statement);
-
-//                Cursor cursor = database.rawQuery(statement, null);
-//                cursor.close();
+                cursor.close();
                 return null;
             }
 
-//            @Override
-//            protected void onPostExecute(Void aVoid) {
-//                requeryDB(POI_TABLE);
-//            }
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                requeryDB(POI_TABLE);
+            }
 
         }.execute();
     }
-
 
     public void removePOIFromDB(final int item_position)  {
 

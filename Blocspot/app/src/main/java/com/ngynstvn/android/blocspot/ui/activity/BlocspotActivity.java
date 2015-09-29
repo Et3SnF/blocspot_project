@@ -32,8 +32,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class BlocspotActivity extends AppCompatActivity implements
-        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate {
+        ListFragment.ListFragDelegate, MapsFragment.MapFragDelegate, CatDialogFragment.CatDialogFragDelegate {
 
     // ------ Class variables ----- //
 
@@ -57,6 +59,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     private MapsFragment mapsFragment;
     private ListFragment listFragment;
+    private CatDialogFragment catDialogFragment;
 
         // SearchView variables
 
@@ -387,4 +390,27 @@ public class BlocspotActivity extends AppCompatActivity implements
         this.zoom = zoom;
     }
 
+    /**
+     *
+     * CatDialogFragment.CatDialogFragmentDelegate Implemented Methods
+     *
+     */
+
+    @Override
+    public void onFilterButtonClicked(CatDialogFragment catDialogFragment) {
+        Log.v(TAG, "onFilterButtonClicked() called");
+        ArrayList<String> categories = new ArrayList<>();
+
+        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+            if(Utils.newSPrefInstance(Utils.FILTER_LIST).contains(category)) {
+                categories.add(category);
+            }
+        }
+
+        BlocspotApplication.getSharedDataSource().filterFromDB("poi_table", null);
+        mapsFragment.addFilteredPOIMarkers();
+        
+        getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                MapsFragment.newInstance()).commit();
+    }
 }

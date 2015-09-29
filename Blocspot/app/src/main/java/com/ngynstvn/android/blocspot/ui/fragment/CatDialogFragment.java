@@ -24,7 +24,7 @@ import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.CategoryAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
-import java.util.ArrayList;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 public class CatDialogFragment extends DialogFragment implements CategoryAdapter.CategoryAdapterDelegate,
@@ -48,6 +48,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     private Cursor cursor;
 
     private static HashMap<String, Boolean> filterPair = new HashMap<>();
+    private static MapsFragment mapsFragment;
 
     // Important single instantiation of this class
 
@@ -66,18 +67,45 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
     }
 
+    // Interface for future delegation
+
+    public interface CatDialogFragDelegate {
+        void onFilterButtonClicked(CatDialogFragment catDialogFragment);
+    }
+
+    // ----- Setter and getter for ListFragDelegate -----//
+
+    private WeakReference<CatDialogFragDelegate> catDialogFragDelegate;
+
+    public void setMapFragDelegate(CatDialogFragDelegate catDialogFragDelegate) {
+        this.catDialogFragDelegate = new WeakReference<CatDialogFragDelegate>(catDialogFragDelegate);
+    }
+
+    public CatDialogFragDelegate getCatDialogFragDelegate() {
+
+        if(catDialogFragDelegate == null) {
+            return null;
+        }
+
+        return catDialogFragDelegate.get();
+    }
+
     // ----- Lifecycle Methods ----- //
 
     @Override
     public void onAttach(Activity activity) {
         Log.v(TAG, "onAttach() called");
         super.onAttach(activity);
+        // Any fragment that needs to communicate with activity needs to be attached with some interface!
+        catDialogFragDelegate = new WeakReference<CatDialogFragDelegate>((CatDialogFragDelegate) activity);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+
+        mapsFragment = MapsFragment.newInstance();
 
         cursor = database.query(true, CATEGORY_TABLE, null, null, null, null, null, "category_color", null);
         categoryAdapter = new CategoryAdapter(BlocspotApplication.getSharedInstance(), cursor);
@@ -114,16 +142,10 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.v(TAG, "Positive Button Clicked");
-                        ArrayList<String> categories = new ArrayList<>();
 
-                        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
-                            if(Utils.newSPrefInstance(Utils.FILTER_LIST).contains(category)) {
-                                categories.add(category);
-                            }
+                        if(getCatDialogFragDelegate() != null) {
+                            getCatDialogFragDelegate().onFilterButtonClicked(CatDialogFragment.this);
                         }
-
-                        BlocspotApplication.getSharedDataSource().filterFromDB("poi_table", categories);
-
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
