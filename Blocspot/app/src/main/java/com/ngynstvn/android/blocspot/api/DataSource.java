@@ -479,6 +479,13 @@ public class DataSource {
         }.execute();
     }
 
+    public int getDBItemCount(String tableName) {
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, tableName, null, null, null, null, null, null, null);
+
+        return cursor.getCount();
+    }
+
     public boolean checkIfItemIsInPOIdB(String dbName, int rowId, String dbField, String value) {
 
 //        Log.v(TAG, "checkIfItemIsInPOIdB() called");

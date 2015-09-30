@@ -200,11 +200,12 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
             public void onClick(View v) {
 
                 BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
-                        .rawQuery("Delete from " + FILTER_POI_TABLE + ";", null);
+                        .execSQL("Delete from " + FILTER_POI_TABLE);
 
                 for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
                     Utils.putSPrefBooleanValue(sharedPreferences, Utils.FILTER_LIST, category, false);
                 }
+
                 categoryAdapter.notifyDataSetChanged();
             }
         });

@@ -36,7 +36,6 @@ import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.FilterPOITable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
-import com.ngynstvn.android.blocspot.ui.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -276,7 +275,7 @@ public class MapsFragment extends MapFragment implements
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if (Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().size() == 0) {
+                        if (BlocspotApplication.getSharedDataSource().getDBItemCount(FILTER_POI_TABLE) == 0) {
                             addPOIMarkers();
                             Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                             activateGeofences();
