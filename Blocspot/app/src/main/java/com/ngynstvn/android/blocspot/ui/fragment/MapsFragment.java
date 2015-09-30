@@ -720,5 +720,8 @@ public class MapsFragment extends MapFragment implements
 
     }
 
+    public boolean isFragmentUIActive() {
+        return !isDetached();
+    }
 }
 

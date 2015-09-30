@@ -234,4 +234,8 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
     public void onQueryComplete(Cursor cursor) {
         placeAdapter.swapCursor(cursor);
     }
+
+    public boolean isFragmentUIActive() {
+        return !isDetached();
+    }
 }

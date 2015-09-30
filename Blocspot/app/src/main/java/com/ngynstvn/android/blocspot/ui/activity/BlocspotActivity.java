@@ -186,8 +186,11 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                 if (item.getTitle().equals(getResources().getString(R.string.list_mode_text))) {
                     this.item = item;
-                    item.setTitle(getResources().getString(R.string.map_mode_text));
-                    item.setIcon(R.drawable.menu_map_mode_selector);
+
+                    if(listFragment.isFragmentUIActive()) {
+                        item.setTitle(getResources().getString(R.string.map_mode_text));
+                        item.setIcon(R.drawable.menu_map_mode_selector);
+                    }
 
                     getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                             new ListFragment()).commit();
@@ -198,8 +201,14 @@ public class BlocspotActivity extends AppCompatActivity implements
                     Log.v(TAG, "BlocspotActivity List Mode Pressed");
                 } else if (item.getTitle().equals(getResources().getString(R.string.map_mode_text))) {
                     this.item = item;
-                    item.setTitle(getResources().getString(R.string.list_mode_text));
-                    item.setIcon(R.drawable.menu_list_mode_selector);
+
+                    mapsFragment.removeAllPOIMarkers();
+                    mapsFragment.addFilteredPOIMarkers();
+
+                    if(mapsFragment.isFragmentUIActive()) {
+                        item.setTitle(getResources().getString(R.string.list_mode_text));
+                        item.setIcon(R.drawable.menu_list_mode_selector);
+                    }
 
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance(latitude,

@@ -409,11 +409,6 @@ public class DataSource {
                 return null;
             }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                requeryDB(POI_TABLE);
-            }
-
         }.execute();
     }
 
