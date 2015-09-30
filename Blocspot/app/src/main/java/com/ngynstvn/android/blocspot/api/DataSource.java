@@ -361,6 +361,12 @@ public class DataSource {
         new AsyncTask<String, Void, Void>() {
 
             @Override
+            protected void onPreExecute() {
+                BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                        .execSQL("Delete from " + FILTER_POI_TABLE + ";");
+            }
+
+            @Override
             protected Void doInBackground(String... strings1) {
 
                 BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
@@ -397,12 +403,18 @@ public class DataSource {
 
                 Cursor cursor = database.rawQuery(statement, null);
 
-                if(cursor.moveToFirst()) {
-                    do {
-                        POI poi = poiFromCursor(cursor);
-                        addFilteredResult(poi);
+                if(cursor.getCount() == 0) {
+                    database.execSQL("Delete from " + FILTER_POI_TABLE + ";");
+                    return null;
+                }
+                else {
+                    if(cursor.moveToFirst()) {
+                        do {
+                            POI poi = poiFromCursor(cursor);
+                            addFilteredResult(poi);
+                        }
+                        while(cursor.moveToNext());
                     }
-                    while(cursor.moveToNext());
                 }
 
                 cursor.close();
@@ -479,6 +491,18 @@ public class DataSource {
                 .getReadableDatabase().query(true, tableName, null, null, null, null, null, null, null);
 
         return cursor.getCount();
+    }
+
+    public boolean isDBEmpty(String tableName) {
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, tableName, null, null, null, null, null, null, null);
+
+        if(cursor.getCount() == 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean checkIfItemIsInPOIdB(String dbName, int rowId, String dbField, String value) {

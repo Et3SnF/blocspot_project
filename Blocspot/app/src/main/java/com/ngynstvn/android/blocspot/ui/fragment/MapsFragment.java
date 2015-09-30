@@ -36,6 +36,7 @@ import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.FilterPOITable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -275,7 +276,9 @@ public class MapsFragment extends MapFragment implements
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        if (BlocspotApplication.getSharedDataSource().getDBItemCount(FILTER_POI_TABLE) == 0) {
+
+                        if (BlocspotApplication.getSharedDataSource().isDBEmpty(FILTER_POI_TABLE)
+                                && getSPrefTrueCount() == 0) {
                             addPOIMarkers();
                             Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                             activateGeofences();
@@ -417,8 +420,10 @@ public class MapsFragment extends MapFragment implements
     public void getFilteredMarkers() {
         Log.v(TAG, "getFilteredMarkers() called");
 
+        removeAllGeofences();
+
         Cursor newCursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                .getReadableDatabase().query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
+                .getReadableDatabase().rawQuery("Select * from " + FILTER_POI_TABLE, null);
 
         if(newCursor.moveToFirst()) {
             do {
@@ -453,17 +458,17 @@ public class MapsFragment extends MapFragment implements
                 });
             }
             while(newCursor.moveToNext());
+
+            newCursor.close();
+
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
+                    activateGeofences();
+                }
+            });
         }
-
-        newCursor.close();
-
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
-                activateGeofences();
-            }
-        });
     }
 
     public void addNewResultMarkers() {
@@ -530,27 +535,9 @@ public class MapsFragment extends MapFragment implements
         cursor.close();
     }
 
-    public void removeAllFilteredMarkers() {
-        Log.v(TAG, "removeAllFilteredMarkers() called");
-        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                .getReadableDatabase().query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
-
-        // refresh cursor for filtering
-
-        if(cursor.moveToFirst()) {
-            do {
-                googleMap.clear();
-            }
-            while(cursor.moveToNext());
-        }
-
-        removeAllGeofences();
-        cursor.close();
-    }
-
     public void removeCurSrchMarkers() {
         removeAllSearchMarkers();
-        addPOIMarkers();
+        addFilteredPOIMarkers();
     }
 
     // Activate geofences
@@ -659,6 +646,19 @@ public class MapsFragment extends MapFragment implements
 
     public static float getZoom() {
         return zoom;
+    }
+
+    private int getSPrefTrueCount() {
+
+        int counter = 0;
+
+        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+            if((Boolean) Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().get(category)) {
+                counter++;
+            }
+        }
+
+        return counter;
     }
 
     /**

@@ -36,6 +36,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
     private static final String CATEGORY_TABLE = "category_table";
     private static final String FILTER_POI_TABLE = "filter_poi_table";
+    private static final String POI_TABLE = "poi_table";
 
     // ----- Member Variables ----- //
 
@@ -201,6 +202,9 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
                 BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
                         .execSQL("Delete from " + FILTER_POI_TABLE);
+
+                BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                        .rawQuery("Select * from " + POI_TABLE, null);
 
                 for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
                     Utils.putSPrefBooleanValue(sharedPreferences, Utils.FILTER_LIST, category, false);
