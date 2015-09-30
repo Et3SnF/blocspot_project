@@ -14,14 +14,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
+import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 
@@ -55,11 +56,12 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
     // ----- Delegation Interface and Accessors & Mutators ----- //
 
-    public static interface PlaceAdapterDelegate {
-        public void onItemClicked(PlaceAdapter placeAdapter, POI poi);
-        public void onItemAssigned(PlaceAdapter placeAdapter, int rowId);
-        public void onNoteClicked(PlaceAdapter placeAdapter, int rowId);
-        public void onVisitClicked(PlaceAdapter placeAdapter, int rowId, boolean isChecked);
+    public interface PlaceAdapterDelegate {
+        void onItemClicked(PlaceAdapter placeAdapter, POI poi);
+        void onItemAssigned(PlaceAdapter placeAdapter, int rowId);
+        void onNoteClicked(PlaceAdapter placeAdapter, int rowId);
+        void onVisitClicked(PlaceAdapter placeAdapter, int rowId, boolean isChecked);
+        void onVisiteSiteClicked(PlaceAdapter placeAdapter, POI poi);
     }
 
     // Setter and getter for delegate
@@ -115,10 +117,13 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
 
         POI poi;
 
-        private SwipeLayout swipeLayout;
+        Button visitSite;
         Button noteButton;
         Button assignCatButton;
         Button deletePOIButton;
+
+        ImageView poiLogo;
+        ImageView poiRating;
 
         // Constructor
 
@@ -130,59 +135,15 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             poiName = (TextView) itemView.findViewById(R.id.tv_poi_name);
             poiDescription = (TextView) itemView.findViewById(R.id.tv_poi_description);
 
-            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.sl_poi_item);
+            visitSite = (Button) itemView.findViewById(R.id.btn_poi_visit_site);
             noteButton = (Button) itemView.findViewById(R.id.btn_poi_note);
             assignCatButton = (Button) itemView.findViewById(R.id.btn_assign_category);
             deletePOIButton = (Button) itemView.findViewById(R.id.btn_poi_delete);
 
+            poiLogo = (ImageView) itemView.findViewById(R.id.iv_poi_logo);
+            poiRating = (ImageView) itemView.findViewById(R.id.iv_poi_rating);
+
             // Listeners
-
-            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-            swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewById(R.id.ll_poi_bottom_view));
-
-            swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-                @Override
-                public void onStartOpen(SwipeLayout swipeLayout) {
-
-                }
-
-                @Override
-                public void onOpen(SwipeLayout swipeLayout) {
-
-                }
-
-                @Override
-                public void onStartClose(SwipeLayout swipeLayout) {
-
-                }
-
-                @Override
-                public void onClose(SwipeLayout swipeLayout) {
-
-                }
-
-                @Override
-                public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
-
-                }
-
-                @Override
-                public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
-
-                }
-            });
-
-            swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    // MUST USE this over itemView.setOnClickListener()!
-
-                    if (getAdapterDelegate() != null) {
-                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
-                    }
-                }
-            });
 
             noteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -193,8 +154,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                                 this.getItemId(getAdapterPosition()));
                     }
                     notifyItemChanged(getAdapterPosition());
-
-                    swipeLayout.close();
                 }
             });
 
@@ -207,7 +166,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                                 (int) PlaceAdapter.this.getItemId(getAdapterPosition()));
                     }
                     notifyItemChanged(getAdapterPosition());
-                    swipeLayout.close(true, true);
                 }
             });
 
@@ -215,6 +173,15 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 @Override
                 public void onClick(View v) {
                     onItemDismiss((int) PlaceAdapter.this.getItemId(getAdapterPosition()));
+                }
+            });
+
+            visitSite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getAdapterDelegate() != null) {
+                        getAdapterDelegate().onVisiteSiteClicked(PlaceAdapter.this, poi);
+                    }
                 }
             });
 
@@ -271,6 +238,15 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             }
 
             visitCheckbox.setChecked(poi.isHasVisited());
+
+            if(poiLogo != null) {
+                Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getLogoURL()).into(poiLogo);
+            }
+
+            if(poiRating != null) {
+                Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getRatingImgURL()).into(poiRating);
+            }
+
         }
 
         /**

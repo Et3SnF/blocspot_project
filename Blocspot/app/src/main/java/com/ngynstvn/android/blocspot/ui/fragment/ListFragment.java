@@ -3,8 +3,10 @@ package com.ngynstvn.android.blocspot.ui.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -211,7 +213,12 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         });
     }
 
-    // ----- Separate Methods ----- //
+    @Override
+    public void onVisiteSiteClicked(PlaceAdapter placeAdapter, POI poi) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(poi.getPlaceURL())));
+    }
+
+// ----- Separate Methods ----- //
 
     private void showAssignCategoryDialog(int position) {
         AssignCategoryDialog assignCategoryDialog = AssignCategoryDialog.newInstance(position);

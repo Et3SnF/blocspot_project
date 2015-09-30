@@ -1,147 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.daimajia.swipe.SwipeLayout
+<android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sl_poi_item"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <!-- Bottom View -->
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp">
 
     <LinearLayout
-        android:id="@+id/ll_poi_bottom_view"
-        android:layout_width="@dimen/poi_swipelayout_slide_length"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <FrameLayout
-            android:id="@+id/fl_poi_note_button"
-            android:layout_width="@dimen/poi_swipe_button_side"
-            android:layout_height="match_parent"
-            android:background="@color/material_indigo_500"
-            android:layout_gravity="center">
-
-            <View
-                android:id="@+id/v_poi_note_icon"
-                android:layout_width="@dimen/poi_swipe_icon_side"
-                android:layout_height="@dimen/poi_swipe_icon_side"
-                android:background="@drawable/ic_note_add_white_24dp"
-                android:layout_gravity="center"/>
-
-            <Button
-                android:id="@+id/btn_poi_note"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/click_effect"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/fl_poi_assign_category_button"
-            android:layout_width="@dimen/poi_swipe_button_side"
-            android:layout_height="match_parent"
-            android:background="@color/material_teal_500"
-            android:layout_gravity="center">
-
-            <View
-                android:id="@+id/v_poi_assign_category_icon"
-                android:layout_width="@dimen/poi_swipe_icon_side"
-                android:layout_height="@dimen/poi_swipe_icon_side"
-                android:background="@drawable/ic_beenhere_white_24dp"
-                android:layout_gravity="center"/>
-
-            <Button
-                android:id="@+id/btn_assign_category"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/click_effect"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/fl_poi_delete_poi_button"
-            android:layout_width="@dimen/poi_swipe_button_side"
-            android:layout_height="match_parent"
-            android:background="@android:color/holo_red_dark"
-            android:layout_gravity="center">
-
-            <View
-                android:id="@+id/v_delete_poi_icon"
-                android:layout_width="@dimen/poi_swipe_icon_side"
-                android:layout_height="@dimen/poi_swipe_icon_side"
-                android:background="@drawable/ic_delete_white_24dp"
-                android:layout_gravity="center"/>
-
-            <Button
-                android:id="@+id/btn_poi_delete"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/click_effect"/>
-
-        </FrameLayout>
-
-    </LinearLayout>
-
-    <!--- Bottom View Ends -->
-
-    <LinearLayout
-        android:id="@+id/ll_poi_user_view"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@drawable/click_effect">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+        <!-- POI Name and Image or Logo -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/v_poi_visit_background"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@color/black_26"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"/>
+
+            <Button
+                android:id="@+id/btn_poi_visit_site"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="@string/result_item_visit_site"
+                android:textColor="@android:color/holo_red_light"
+                android:background="@drawable/click_effect"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"/>
+
+            <ImageView
+                android:id="@+id/iv_poi_logo"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"/>
+
+            <View
+                android:id="@+id/v_poi_name_background"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/black_60"
+                android:layout_gravity="bottom"/>
+
+            <LinearLayout
+                android:id="@+id/ll_poi_name_and_rating"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    style="@style/POI_name"
+                    android:id="@+id/tv_poi_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/text_poi_name"
+                    android:layout_gravity="bottom"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="4dp"
+                    android:ellipsize="end"/>
+
+                <RelativeLayout
+                    android:id="@+id/rl_poi_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="bottom">
+
+                    <ImageView
+                        android:id="@+id/iv_poi_rating"
+                        android:layout_width="124.5dp"
+                        android:layout_height="22.5dp"
+                        android:gravity="center_vertical|end"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="8dp"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <!-- POI Checkbox and Note -->
+
+        <LinearLayout
+            android:id="@+id/ll_poi_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp">
 
-            <CheckBox
-                android:id="@+id/cb_has_visited"
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/material_red_dark"
-                android:layout_marginRight="8dp"/>
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_dist_to_poi"
-                style = "@style/POI_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_below="@+id/cb_has_visited"
-                android:layout_alignParentLeft="true"
-                android:text="@string/text_dummy_distance" />
+                <CheckBox
+                    android:id="@+id/cb_has_visited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/material_red_dark"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-
-            <TextView
-                style="@style/POI_name"
-                android:id="@+id/tv_poi_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignRight="@+id/tv_poi_description"
-                android:text="@string/text_poi_name"/>
+            </RelativeLayout>
 
             <TextView
                 style="@style/POI_description"
                 android:id="@+id/tv_poi_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_poi_name"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@string/text_dummy_comment"/>
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text="@string/text_dummy_comment"
+                android:maxLength="250"/>
 
-        </RelativeLayout>
+        </LinearLayout>
+
+        <!-- POI Buttons -->
+
+        <LinearLayout
+            android:id="@+id/ll_poi_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/fl_poi_note_button"
+                android:layout_width="@dimen/poi_swipe_button_side"
+                android:layout_height="match_parent"
+                android:background="@color/material_indigo_500"
+                android:layout_gravity="center"
+                android:layout_weight="1.0">
+
+                <View
+                    android:id="@+id/v_poi_note_icon"
+                    android:layout_width="@dimen/poi_swipe_icon_side"
+                    android:layout_height="@dimen/poi_swipe_icon_side"
+                    android:background="@drawable/ic_note_add_white_24dp"
+                    android:layout_gravity="center"/>
+
+                <Button
+                    android:id="@+id/btn_poi_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/click_effect"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/fl_poi_assign_category_button"
+                android:layout_width="@dimen/poi_swipe_button_side"
+                android:layout_height="match_parent"
+                android:background="@color/material_teal_500"
+                android:layout_gravity="center"
+                android:layout_weight="1.0">
+
+                <View
+                    android:id="@+id/v_poi_assign_category_icon"
+                    android:layout_width="@dimen/poi_swipe_icon_side"
+                    android:layout_height="@dimen/poi_swipe_icon_side"
+                    android:background="@drawable/ic_beenhere_white_24dp"
+                    android:layout_gravity="center"/>
+
+                <Button
+                    android:id="@+id/btn_assign_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/click_effect"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/fl_poi_delete_poi_button"
+                android:layout_width="@dimen/poi_swipe_button_side"
+                android:layout_height="match_parent"
+                android:background="@android:color/holo_red_dark"
+                android:layout_gravity="center"
+                android:layout_weight="1.0">
+
+                <View
+                    android:id="@+id/v_delete_poi_icon"
+                    android:layout_width="@dimen/poi_swipe_icon_side"
+                    android:layout_height="@dimen/poi_swipe_icon_side"
+                    android:background="@drawable/ic_delete_white_24dp"
+                    android:layout_gravity="center"/>
+
+                <Button
+                    android:id="@+id/btn_poi_delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/click_effect"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</com.daimajia.swipe.SwipeLayout>
+</android.support.v7.widget.CardView>
