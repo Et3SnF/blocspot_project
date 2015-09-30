@@ -105,8 +105,9 @@
                 android:layout_marginLeft="8dp"
                 android:gravity="center_vertical"
                 android:layout_gravity="center_vertical"
-                android:text="@string/text_dummy_comment"/>
-            
+                android:text="@string/text_dummy_comment"
+                android:lines="6"/>
+
         </LinearLayout>
 
         <!-- POI Buttons -->
