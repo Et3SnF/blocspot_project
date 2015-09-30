@@ -122,7 +122,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
         Button assignCatButton;
         Button deletePOIButton;
 
-        ImageView poiLogo;
         ImageView poiRating;
 
         // Constructor
@@ -140,7 +139,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             assignCatButton = (Button) itemView.findViewById(R.id.btn_assign_category);
             deletePOIButton = (Button) itemView.findViewById(R.id.btn_poi_delete);
 
-            poiLogo = (ImageView) itemView.findViewById(R.id.iv_poi_logo);
             poiRating = (ImageView) itemView.findViewById(R.id.iv_poi_rating);
 
             // Listeners
@@ -199,6 +197,15 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 }
             });
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(getAdapterDelegate() != null) {
+                        getAdapterDelegate().onItemClicked(PlaceAdapter.this, poi);
+                    }
+                }
+            });
+
         }
 
         void updateViewHolder(POI poi) {
@@ -238,10 +245,6 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
             }
 
             visitCheckbox.setChecked(poi.isHasVisited());
-
-            if(poiLogo != null) {
-                Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getLogoURL()).into(poiLogo);
-            }
 
             if(poiRating != null) {
                 Picasso.with(BlocspotApplication.getSharedInstance()).load(poi.getRatingImgURL()).into(poiRating);
