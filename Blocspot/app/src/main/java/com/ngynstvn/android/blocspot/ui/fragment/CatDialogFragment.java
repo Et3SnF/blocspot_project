@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
     private static final String TAG = "Test (" + CatDialogFragment.class.getSimpleName() + "): ";
     private static final String CATEGORY_TABLE = "category_table";
+    private static final String FILTER_POI_TABLE = "filter_poi_table";
 
     // ----- Member Variables ----- //
 
@@ -49,6 +51,8 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
 
     private static HashMap<String, Boolean> filterPair = new HashMap<>();
     private static MapsFragment mapsFragment;
+
+    private static SharedPreferences sharedPreferences;
 
     // Important single instantiation of this class
 
@@ -104,6 +108,7 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
+        sharedPreferences = Utils.newSPrefInstance(Utils.FILTER_LIST);
 
         mapsFragment = MapsFragment.newInstance();
 
@@ -193,7 +198,13 @@ public class CatDialogFragment extends DialogFragment implements CategoryAdapter
         alertDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils.delAllSPrefValues(Utils.newSPrefInstance(Utils.FILTER_LIST), Utils.FILTER_LIST);
+
+                BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                        .rawQuery("Delete from " + FILTER_POI_TABLE + ";", null);
+
+                for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+                    Utils.putSPrefBooleanValue(sharedPreferences, Utils.FILTER_LIST, category, false);
+                }
                 categoryAdapter.notifyDataSetChanged();
             }
         });

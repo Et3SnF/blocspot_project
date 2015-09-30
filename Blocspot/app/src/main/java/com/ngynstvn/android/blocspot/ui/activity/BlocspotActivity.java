@@ -41,6 +41,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
     private static final String TAG = "Test (" + BlocspotActivity.class.getSimpleName() + ")";
     private static final String FTS_TABLE = "yelp_search_table";
+    private static final String POI_TABLE = "poi_table";
+    private static final String FILTER_POI_TABLE = "filter_poi_table";
     private static int backpress_counter = 0;
 
     private static DataSource dataSource = BlocspotApplication.getSharedDataSource();
@@ -402,20 +404,21 @@ public class BlocspotActivity extends AppCompatActivity implements
         ArrayList<String> categories = new ArrayList<>();
 
         for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
-            if(Utils.newSPrefInstance(Utils.FILTER_LIST).contains(category)) {
+            if(Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
                 categories.add(category);
+            }
+            else if(!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                categories.remove(category);
             }
         }
 
-        BlocspotApplication.getSharedDataSource().filterFromDB("poi_table", null);
+        BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+        mapsFragment.removeAllPOIMarkers();
         mapsFragment.addFilteredPOIMarkers();
 
         getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                 MapsFragment.newInstance()).commit();
 
-        if(item.getTitle() == getString(R.string.map_mode_text)) {
-            item.setTitle(getResources().getString(R.string.list_mode_text));
-            item.setIcon(R.drawable.menu_list_mode_selector);
-        }
+        categories.clear();
     }
 }

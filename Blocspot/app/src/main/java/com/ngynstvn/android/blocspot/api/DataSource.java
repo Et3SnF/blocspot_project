@@ -27,6 +27,7 @@ public class DataSource {
     private static final String POI_TABLE = "poi_table";
     private static final String CATEGORY_TABLE = "category_table";
     private static final String FTS_TABLE = "yelp_search_table";
+    private static final String FILTER_POI_TABLE = "filter_poi_table";
     private static int counter;
 
     // ---- ----- //
@@ -355,16 +356,46 @@ public class DataSource {
 
     public void filterFromDB(final String dbName, final ArrayList<String> strings)  {
 
-        Log.v(TAG, "removePOIFromDB() called");
+        Log.v(TAG, "filterFromDB() called");
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<String, Void, Void>() {
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Void doInBackground(String... strings1) {
+
+                BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase()
+                        .rawQuery("Delete from " + FILTER_POI_TABLE + ";", null);
+
+                String statement = statement = "Select * from " + POI_TABLE + " where ";
+                String condition = "";
+                
+                // Select * from poi_table where category like 'blah' and category like 'blah';
+
+                Log.v(TAG, "Size of strings: " + strings.size());
+
+                // Conditions area
+
+                if(strings.size() == 0) {
+                    statement = "Select * from " + POI_TABLE;
+                    Log.v(TAG, statement);
+                }
+                else if(strings.size() ==1) {
+                    statement = "Select * from " + POI_TABLE + " where category like '" + strings.get(0) + "';";
+                    Log.v(TAG, statement);
+                }
+                else if(strings.size() > 1){
+                    for(int i = 0; i < strings.size()-1; i++) {
+                        condition += ("category like '" + strings.get(i) + "' or ");
+                    }
+                    condition += ("category like '" + strings.get(strings.size()-1) + "';");
+                    statement += condition;
+                }
+
+                Log.v(TAG, statement);
+
                 SQLiteDatabase database = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper().getWritableDatabase();
 
-                // Select * from poi_table where category like 'blah' and category like 'blah';
-                Cursor cursor = database.rawQuery("Select * from poi_table where category like 'Restaurants'", null);
+                Cursor cursor = database.rawQuery(statement, null);
 
                 if(cursor.moveToFirst()) {
                     do {
