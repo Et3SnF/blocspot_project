@@ -36,6 +36,7 @@ import com.ngynstvn.android.blocspot.api.intent.GeofenceTransitionsIntentService
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.model.database.table.FilterPOITable;
 import com.ngynstvn.android.blocspot.api.model.database.table.POITable;
+import com.ngynstvn.android.blocspot.ui.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -275,9 +276,15 @@ public class MapsFragment extends MapFragment implements
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        addFilteredPOIMarkers();
-                        Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
-                        activateGeofences();
+                        if (Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().size() == 0) {
+                            addPOIMarkers();
+                            Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
+                            activateGeofences();
+                        } else {
+                            addFilteredPOIMarkers();
+                            Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
+                            activateGeofences();
+                        }
                     }
                 });
 
@@ -346,7 +353,9 @@ public class MapsFragment extends MapFragment implements
 
     // Add Markers to Map
 
-    private void addPOIMarkers() {
+    public void addPOIMarkers() {
+
+        Log.v(TAG, "addPOIMarkers() called");
 
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
@@ -401,11 +410,13 @@ public class MapsFragment extends MapFragment implements
     }
 
     public void addFilteredPOIMarkers() {
+        Log.v(TAG, "addFilteredPOIMarkers() called");
         removeAllPOIMarkers();
         getFilteredMarkers();
     }
 
     public void getFilteredMarkers() {
+        Log.v(TAG, "getFilteredMarkers() called");
 
         Cursor newCursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
@@ -503,9 +514,27 @@ public class MapsFragment extends MapFragment implements
     }
 
     public void removeAllPOIMarkers() {
-
+        Log.v(TAG, "removeAllPOIMarkers() called");
         Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
                 .getReadableDatabase().query(true, POI_TABLE, null, null, null, null, null, null, null);
+
+        // refresh cursor for filtering
+
+        if(cursor.moveToFirst()) {
+            do {
+                googleMap.clear();
+            }
+            while(cursor.moveToNext());
+        }
+
+        removeAllGeofences();
+        cursor.close();
+    }
+
+    public void removeAllFilteredMarkers() {
+        Log.v(TAG, "removeAllFilteredMarkers() called");
+        Cursor cursor = BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                .getReadableDatabase().query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
 
         // refresh cursor for filtering
 
