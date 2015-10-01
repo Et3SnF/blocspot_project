@@ -290,7 +290,7 @@ public class MapsFragment extends MapFragment implements
                     public void run() {
 
                         if (BlocspotApplication.getSharedDataSource().isDBEmpty(FILTER_POI_TABLE)
-                                && getSPrefTrueCount() == 0) {
+                                && Utils.getSPrefTrueCount() == 0) {
                             addPOIMarkers();
                             Log.v(TAG, "Total Active Geofences: " + geofenceList.size() + "");
                             activateGeofences();
@@ -658,19 +658,6 @@ public class MapsFragment extends MapFragment implements
 
     public static float getZoom() {
         return zoom;
-    }
-
-    private int getSPrefTrueCount() {
-
-        int counter = 0;
-
-        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
-            if((Boolean) Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().get(category)) {
-                counter++;
-            }
-        }
-
-        return counter;
     }
 
     /**

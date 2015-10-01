@@ -139,4 +139,16 @@ public class Utils {
         editor.remove(key);
         editor.apply();
     }
+
+    public static int getSPrefTrueCount() {
+        int counter = 0;
+
+        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+            if((Boolean) Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().get(category)) {
+                counter++;
+            }
+        }
+
+        return counter;
+    }
 }

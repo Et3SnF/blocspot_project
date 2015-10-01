@@ -23,6 +23,7 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 
@@ -55,6 +56,12 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     // newInstance() method for fragment
 
+    public static ListFragment newInstance() {
+        ListFragment listFragment = new ListFragment();
+        Bundle bundle = new Bundle();
+        return listFragment;
+    }
+
     public static ListFragment newInstance(int value) {
 
         ListFragment listFragment = new ListFragment();
@@ -69,6 +76,7 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
 
     private static final String TAG = "Test (" + ListFragment.class.getSimpleName() + ")";
     private static final String POI_TABLE = "poi_table";
+    private static final String FILTER_POI_TABLE = "filter_poi_table";
 
     // ----- Member variables ------ //
 
@@ -98,7 +106,13 @@ public class ListFragment extends Fragment implements PlaceAdapter.PlaceAdapterD
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
 
-        cursor = database.query(true, POI_TABLE, null, null, null, null, null, null, null);
+        if (BlocspotApplication.getSharedDataSource().isDBEmpty(FILTER_POI_TABLE)
+                && Utils.getSPrefTrueCount() == 0) {
+            cursor = database.query(true, POI_TABLE, null, null, null, null, null, null, null);
+        } else {
+            cursor = database.query(true, FILTER_POI_TABLE, null, null, null, null, null, null, null);
+        }
+
         placeAdapter = new PlaceAdapter(BlocspotApplication.getSharedInstance(), cursor);
         placeAdapter.setPlaceAdapterDelegate(this);
         BlocspotApplication.getSharedDataSource().setDataSourceDelegate(this);
