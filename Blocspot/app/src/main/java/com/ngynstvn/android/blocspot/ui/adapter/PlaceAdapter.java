@@ -21,10 +21,12 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.helper.ItemTouchHelperCallback;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAdapterViewHolder>
         implements ItemTouchHelperCallback.ItemTouchHelperAdapter {
@@ -171,6 +173,23 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
                 @Override
                 public void onClick(View v) {
                     onItemDismiss((int) PlaceAdapter.this.getItemId(getAdapterPosition()));
+
+                    ArrayList<String> categories = new ArrayList<>();
+
+                    for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+                        if(Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                            categories.add(category);
+                        }
+                        else if(!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                            categories.remove(category);
+                        }
+                    }
+
+                    BlocspotApplication.getSharedDataSource().filterFromDB(Utils.POI_TABLE, categories);
+
+
+
+                    notifyDataSetChanged();
                 }
             });
 

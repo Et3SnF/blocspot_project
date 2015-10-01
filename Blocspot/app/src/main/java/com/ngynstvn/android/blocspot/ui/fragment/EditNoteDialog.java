@@ -22,6 +22,8 @@ import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
 import com.ngynstvn.android.blocspot.ui.Utils;
 
+import java.util.ArrayList;
+
 public class EditNoteDialog extends DialogFragment {
 
     // ----- Class Variables ----- //
@@ -144,12 +146,27 @@ public class EditNoteDialog extends DialogFragment {
                                     .getWritableDatabase().update("poi_table", values, "_id = "
                                     + (getArguments().getInt("rowId")), null);
 
-                            Toast.makeText(BlocspotApplication.getSharedInstance(), "The note has " +
-                                    "been successfully updated", Toast.LENGTH_SHORT).show();
+                            ArrayList<String> categories = new ArrayList<>();
+
+                            for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+                                if(Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                                    categories.add(category);
+                                }
+                                else if(!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                                    categories.remove(category);
+                                }
+                            }
+
+                            BlocspotApplication.getSharedDataSource().filterFromDB(Utils.POI_TABLE, categories);
 
                             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                                     ListFragment.newInstance(getArguments().getInt("rowId")),
                                     Utils.LIST_FRAGMENT).commit();
+
+                            Toast.makeText(BlocspotApplication.getSharedInstance(), "The note has " +
+                                    "been successfully updated", Toast.LENGTH_SHORT).show();
+
+                            categories.clear();
                         }
                     });
 

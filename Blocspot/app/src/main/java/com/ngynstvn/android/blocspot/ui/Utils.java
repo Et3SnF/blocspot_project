@@ -18,6 +18,7 @@ public class Utils {
     public static final String FILTER_LIST = "filter_list";
     public static final String MAPS_FRAGMENT = "maps_fragment";
     public static final String LIST_FRAGMENT = "list_fragment";
+    public static final String POI_TABLE = "poi_table";
 
     public static int generateRandomColor(int baseColor) {
 
@@ -153,4 +154,5 @@ public class Utils {
 
         return counter;
     }
+
 }
