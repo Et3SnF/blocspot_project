@@ -189,6 +189,18 @@ public class MapsFragment extends MapFragment implements
     public void onResume() {
         Log.e(TAG, "onResume() called");
         super.onResume();
+
+        ArrayList<String> categories = new ArrayList<>();
+
+        for (String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+            if (Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                categories.add(category);
+            } else if (!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                categories.remove(category);
+            }
+        }
+
+        BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
     }
 
     @Override
@@ -345,7 +357,7 @@ public class MapsFragment extends MapFragment implements
                     }
                 });
 
-                addPOIMarkers();
+                addFilteredPOIMarkers();
             }
 
         }, 100);

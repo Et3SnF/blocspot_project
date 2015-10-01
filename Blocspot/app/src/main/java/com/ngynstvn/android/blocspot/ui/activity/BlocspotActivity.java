@@ -56,6 +56,7 @@ public class BlocspotActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private Menu menu;
     private MenuItem item;
+    private MenuItem modeItem;
 
         // Fragment variables
 
@@ -148,6 +149,9 @@ public class BlocspotActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_items, menu);
         this.menu = menu;
 
+        MenuItem menuItem = menu.getItem(1);
+        modeItem = menuItem;
+
         // This is only compatible with honeycomb or higher
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -180,6 +184,8 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         Log.e(TAG, "onOptionsItemSelected() called");
 
+        MenuItem menuItem = menu.getItem(1);
+
         switch (item.getItemId()) {
 
             case R.id.action_list_mode:
@@ -198,6 +204,10 @@ public class BlocspotActivity extends AppCompatActivity implements
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
 
+                    item = menuItem;
+                    item.setEnabled(false);
+                    item.setVisible(false);
+
                     Log.v(TAG, "BlocspotActivity List Mode Pressed");
                 } else if (item.getTitle().equals(getResources().getString(R.string.map_mode_text))) {
                     this.item = item;
@@ -205,17 +215,21 @@ public class BlocspotActivity extends AppCompatActivity implements
                     mapsFragment.removeAllPOIMarkers();
                     mapsFragment.addFilteredPOIMarkers();
 
-                    if(mapsFragment.isFragmentUIActive()) {
-                        item.setTitle(getResources().getString(R.string.list_mode_text));
-                        item.setIcon(R.drawable.menu_list_mode_selector);
-                    }
-
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance(latitude,
                                     longitude, zoom)).commit();
 
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
+
+                    if(mapsFragment.isFragmentUIActive()) {
+                        item.setTitle(getResources().getString(R.string.list_mode_text));
+                        item.setIcon(R.drawable.menu_list_mode_selector);
+                    }
+
+                    item = menuItem;
+                    item.setEnabled(true);
+                    item.setVisible(true);
 
                     Log.v(TAG, "BlocspotActivity Map Mode Pressed");
                 }
@@ -228,6 +242,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
             case R.id.action_filter:
                 Log.v(TAG, item.getTitle() + " Icon Pressed");
+                this.item = item;
                 showCategoryDialog();
                 return true;
 
@@ -371,6 +386,9 @@ public class BlocspotActivity extends AppCompatActivity implements
             // Change the title back to list mode so it goes back to ListFragment
             item.setTitle(getResources().getString(R.string.list_mode_text));
 
+            modeItem.setEnabled(true);
+            modeItem.setVisible(true);
+            
             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot, mapsFragment).commit();
             mapsFragment.goToPOI(poi);
 
@@ -427,6 +445,11 @@ public class BlocspotActivity extends AppCompatActivity implements
 
         getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                 MapsFragment.newInstance()).commit();
+
+        if(mapsFragment.isFragmentUIActive()) {
+            modeItem.setEnabled(true);
+            modeItem.setVisible(true);
+        }
 
         categories.clear();
     }

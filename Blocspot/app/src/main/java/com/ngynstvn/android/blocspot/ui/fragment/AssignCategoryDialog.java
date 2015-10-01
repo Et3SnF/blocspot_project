@@ -20,12 +20,16 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.ui.Utils;
 import com.ngynstvn.android.blocspot.ui.adapter.AssignCategoryAdapter;
+
+import java.util.ArrayList;
 
 public class AssignCategoryDialog extends DialogFragment implements AssignCategoryAdapter.AssignCategoryAdapterDelegate {
 
     private static final String TAG = "Test: (" + AssignCategoryDialog.class.getSimpleName() + "): ";
     private static final String CATEGORY_TABLE = "category_table";
+    private static final String POI_TABLE = "poi_table";
 
     private AlertDialog.Builder builder;
     private RecyclerView recyclerView;
@@ -188,6 +192,18 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
             @Override
             public void run() {
                 database.update("poi_table", values, "_id = " + (getArguments().getInt("position")), null);
+
+                ArrayList<String> categories = new ArrayList<>();
+
+                for (String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+                    if (Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                        categories.add(category);
+                    } else if (!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                        categories.remove(category);
+                    }
+                }
+
+                BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
             }
         });
 
