@@ -98,7 +98,7 @@ public class BlocspotActivity extends AppCompatActivity implements
         mapsFragment.setMapFragDelegate(this);
 
         getFragmentManager().beginTransaction()
-                .add(R.id.fl_activity_blocspot, mapsFragment).commit();
+                .replace(R.id.fl_activity_blocspot, mapsFragment, Utils.MAPS_FRAGMENT).commit();
     }
 
     @Override
@@ -199,7 +199,7 @@ public class BlocspotActivity extends AppCompatActivity implements
                     }
 
                     getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
-                            new ListFragment()).commit();
+                            new ListFragment(), Utils.LIST_FRAGMENT).commit();
 
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
@@ -217,7 +217,7 @@ public class BlocspotActivity extends AppCompatActivity implements
 
                     getFragmentManager().beginTransaction()
                             .replace(R.id.fl_activity_blocspot, MapsFragment.newInstance(latitude,
-                                    longitude, zoom)).commit();
+                                    longitude, zoom), Utils.MAPS_FRAGMENT).commit();
 
                     searchView.onActionViewCollapsed();
                     searchView.setQuery("", false);
@@ -389,7 +389,7 @@ public class BlocspotActivity extends AppCompatActivity implements
             modeItem.setEnabled(true);
             modeItem.setVisible(true);
             
-            getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot, mapsFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot, mapsFragment, Utils.MAPS_FRAGMENT).commit();
             mapsFragment.goToPOI(poi);
 
         } else {
@@ -439,16 +439,33 @@ public class BlocspotActivity extends AppCompatActivity implements
             }
         }
 
-        BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
-        mapsFragment.removeAllPOIMarkers();
-        mapsFragment.addFilteredPOIMarkers();
+        MapsFragment test1 = (MapsFragment) getFragmentManager().findFragmentByTag(Utils.MAPS_FRAGMENT);
+        ListFragment test2 = (ListFragment) getFragmentManager().findFragmentByTag(Utils.LIST_FRAGMENT);
 
-        getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
-                MapsFragment.newInstance()).commit();
+        if(test1 != null && test1.isVisible()) {
+            Log.v(TAG, "Maps Fragment is visible");
 
-        if(mapsFragment.isFragmentUIActive()) {
+            BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+
             modeItem.setEnabled(true);
             modeItem.setVisible(true);
+
+            mapsFragment.removeAllPOIMarkers();
+            mapsFragment.addFilteredPOIMarkers();
+
+            getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                    MapsFragment.newInstance(), Utils.MAPS_FRAGMENT).commit();
+
+            return;
+        }
+        else if(test2 != null && test2.isVisible()) {
+            Log.v(TAG, "List Fragment is visible");
+
+            BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+
+            getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
+                    ListFragment.newInstance(), Utils.LIST_FRAGMENT).commit();
+            return;
         }
 
         categories.clear();

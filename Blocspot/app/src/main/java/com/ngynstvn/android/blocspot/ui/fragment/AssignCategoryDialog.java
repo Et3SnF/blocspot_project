@@ -214,7 +214,7 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
                 + " | " + "Cat Color: " + catItemColor);
 
         getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
-                ListFragment.newInstance(getArguments().getInt("position"))).commit();
+                ListFragment.newInstance(getArguments().getInt("position")), Utils.LIST_FRAGMENT).commit();
 
         dismiss();
     }

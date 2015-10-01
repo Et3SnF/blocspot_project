@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
 import com.ngynstvn.android.blocspot.R;
+import com.ngynstvn.android.blocspot.ui.Utils;
 
 public class EditNoteDialog extends DialogFragment {
 
@@ -147,7 +148,8 @@ public class EditNoteDialog extends DialogFragment {
                                     "been successfully updated", Toast.LENGTH_SHORT).show();
 
                             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
-                                    ListFragment.newInstance(getArguments().getInt("rowId"))).commit();
+                                    ListFragment.newInstance(getArguments().getInt("rowId")),
+                                    Utils.LIST_FRAGMENT).commit();
                         }
                     });
 
