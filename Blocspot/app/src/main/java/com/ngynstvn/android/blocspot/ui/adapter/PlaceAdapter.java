@@ -107,6 +107,19 @@ public class PlaceAdapter extends CursorRecyclerViewAdapter<PlaceAdapter.PlaceAd
     @Override
     public void onItemDismiss(int position) {
         BlocspotApplication.getSharedDataSource().removePOIFromDB(position);
+
+        ArrayList<String> categories = new ArrayList<>();
+
+        for(String category : Utils.newSPrefInstance(Utils.FILTER_LIST).getAll().keySet()) {
+            if(Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                categories.add(category);
+            }
+            else if(!Utils.newSPrefInstance(Utils.FILTER_LIST).getBoolean(category, false)) {
+                categories.remove(category);
+            }
+        }
+
+        BlocspotApplication.getSharedDataSource().filterFromDB(Utils.POI_TABLE, categories);
         notifyItemRemoved(position);
     }
 

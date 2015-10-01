@@ -3,16 +3,13 @@ package com.ngynstvn.android.blocspot.ui.activity;
 import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.SearchManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -27,10 +24,7 @@ import com.ngynstvn.android.blocspot.api.DataSource;
 import com.ngynstvn.android.blocspot.api.model.POI;
 import com.ngynstvn.android.blocspot.api.yelp.YelpAPI;
 import com.ngynstvn.android.blocspot.ui.Utils;
-import com.ngynstvn.android.blocspot.ui.adapter.PlaceAdapter;
-import com.ngynstvn.android.blocspot.ui.fragment.AssignCategoryDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.CatDialogFragment;
-import com.ngynstvn.android.blocspot.ui.fragment.EditNoteDialog;
 import com.ngynstvn.android.blocspot.ui.fragment.ListFragment;
 import com.ngynstvn.android.blocspot.ui.fragment.MapsFragment;
 
@@ -48,7 +42,6 @@ public class BlocspotActivity extends AppCompatActivity implements
     private static final String TAG = "Test (" + BlocspotActivity.class.getSimpleName() + ")";
     private static final String FTS_TABLE = "yelp_search_table";
     private static final String POI_TABLE = "poi_table";
-    private static final String FILTER_POI_TABLE = "filter_poi_table";
     private static int backpress_counter = 0;
 
     private static DataSource dataSource = BlocspotApplication.getSharedDataSource();

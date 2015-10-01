@@ -201,6 +201,7 @@ public class MapsFragment extends MapFragment implements
         }
 
         BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+
     }
 
     @Override

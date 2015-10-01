@@ -204,6 +204,8 @@ public class AssignCategoryDialog extends DialogFragment implements AssignCatego
                 }
 
                 BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+
+                categories.clear();
             }
         });
 
