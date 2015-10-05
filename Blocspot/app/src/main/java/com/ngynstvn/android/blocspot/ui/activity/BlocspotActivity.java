@@ -451,6 +451,8 @@ public class BlocspotActivity extends AppCompatActivity implements
             mapsFragment.removeAllPOIMarkers();
             mapsFragment.addFilteredPOIMarkers();
 
+            getFragmentManager().beginTransaction().remove(MapsFragment.newInstance()).commit();
+
             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                     MapsFragment.newInstance(), Utils.MAPS_FRAGMENT).commit();
 
@@ -459,6 +461,8 @@ public class BlocspotActivity extends AppCompatActivity implements
         else if(test2 != null && test2.isVisible()) {
 
             BlocspotApplication.getSharedDataSource().filterFromDB(POI_TABLE, categories);
+
+            getFragmentManager().beginTransaction().remove(ListFragment.newInstance()).commit();
 
             getFragmentManager().beginTransaction().replace(R.id.fl_activity_blocspot,
                     ListFragment.newInstance(), Utils.LIST_FRAGMENT).commit();

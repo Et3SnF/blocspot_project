@@ -142,9 +142,6 @@ public class EditNoteDialog extends DialogFragment {
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-                            BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
-                                    .getWritableDatabase().update("poi_table", values, "_id = "
-                                    + (getArguments().getInt("rowId")), null);
 
                             ArrayList<String> categories = new ArrayList<>();
 
@@ -156,6 +153,10 @@ public class EditNoteDialog extends DialogFragment {
                                     categories.remove(category);
                                 }
                             }
+
+                            BlocspotApplication.getSharedDataSource().getDatabaseOpenHelper()
+                                    .getWritableDatabase().update("poi_table", values, "_id = "
+                                    + (getArguments().getInt("rowId")), null);
 
                             BlocspotApplication.getSharedDataSource().filterFromDB(Utils.POI_TABLE, categories);
 
