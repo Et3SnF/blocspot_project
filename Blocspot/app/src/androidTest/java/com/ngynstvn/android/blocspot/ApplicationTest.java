@@ -54,25 +54,6 @@ public class ApplicationTest extends ApplicationTestCase<BlocspotApplication> {
         assertNotNull(BlocspotApplication.getSharedDataSource());
     }
 
-    public void testDatabaseInsertion() {
-        getApplication().onCreate();
-
-        boolean test1 = BlocspotApplication.getSharedDataSource().insertPOIToDB(new POI(1)) != -1;
-
-        boolean test2 = BlocspotApplication.getSharedDataSource().insertPOIToDB(
-                new POI(1, "Corn Man", "Food", "2338 Workman St", "Los Angeles", "CA",
-                34.072942, -118.214248, "This is an interesting name of a place. It actually " +
-                "does exist in East LA! This man has been serving elotes for the past 20 years",
-                false, 0.25f)) != -1;
-
-        if(test1 && test2) {
-            assertTrue(true);
-        }
-        else {
-            assertTrue(false);
-        }
-    }
-
     // ----- For Google Map Fragment ----- //
 
     public void testIfServicesExists() {
@@ -91,10 +72,6 @@ public class ApplicationTest extends ApplicationTestCase<BlocspotApplication> {
         else {
             assertTrue(false);
         }
-    }
-
-    public void testIfMapFragmentNotNull() {
-        assertNotNull(BlocspotApplication.getSharedMapsFragment());
     }
 
     public void testIfLatLngValueIsGood() {
