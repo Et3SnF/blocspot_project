@@ -15,10 +15,10 @@
 
 #### Screenshots
 
-![Imgur](http://i.imgur.com/4WT0bHA.png)
-![Imgur](http://i.imgur.com/7dvcpCy.png)
-![Imgur](http://i.imgur.com/YTWyK8j.png)
-![Imgur](http://i.imgur.com/hVFHGWq.png)
+![Imgur](http://i.imgur.com/4WT0bHAl.png)
+![Imgur](http://i.imgur.com/7dvcpCyl.png)
+![Imgur](http://i.imgur.com/YTWyK8jl.png)
+![Imgur](http://i.imgur.com/hVFHGWql.png)
 
 #### DOWNLOAD
 Would you like to see this on an emulator (Android or Genymotion) or on a physical Android device? Download link is below!
