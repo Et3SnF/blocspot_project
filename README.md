@@ -30,3 +30,4 @@ Would you like to see this on an emulator (Android or Genymotion) or on a physic
 * List containing favorite places is not updating property when item is deleted at times
 * Limited Yelp search query counts
 * Notification alert delays at times and does not display text properly
+* Needs a little better memory management. (Even though there have been no crashes have occurred due to memory issues)
