@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Blocspot/app/libs/jcommander-1.35.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Blocspot/app/libs/scribe-1.3.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Blocspot/app/libs/json_simple-1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

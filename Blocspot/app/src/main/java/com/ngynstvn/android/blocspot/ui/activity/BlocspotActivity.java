@@ -1,5 +1,6 @@
 package com.ngynstvn.android.blocspot.ui.activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.SearchManager;
@@ -83,6 +84,13 @@ public class BlocspotActivity extends AppCompatActivity implements
         Log.e(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blocspot);
+
+        // Android Marshmallow Support
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            Utils.requestPermission(BlocspotActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
+            Utils.requestPermission(BlocspotActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
 
         toolbar = (Toolbar) findViewById(R.id.tb_activity_blocspot);
         setSupportActionBar(toolbar);

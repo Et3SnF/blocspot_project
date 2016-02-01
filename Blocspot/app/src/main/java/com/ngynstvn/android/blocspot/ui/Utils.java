@@ -1,9 +1,13 @@
 package com.ngynstvn.android.blocspot.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.ngynstvn.android.blocspot.BlocspotApplication;
@@ -153,6 +157,27 @@ public class Utils {
         }
 
         return counter;
+    }
+
+
+    /**
+     *
+     * For Android 6.0 or higher only.
+     *
+     * As of Marshmallow, an additional permission request is required even if the permission
+     * is already declared in AndroidManifest. A dialog will pop up to request access to a permission.
+     *
+     */
+
+    public static void requestPermission(Activity activity, String permissionType) {
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            int permission = ActivityCompat.checkSelfPermission(activity,
+                    permissionType);
+
+            if(permission != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{permissionType}, 1);
+            }
+        }
     }
 
 }

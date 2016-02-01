@@ -39,8 +39,8 @@ public class YelpAPI {
     */
     private static final String CONSUMER_KEY = "Y0Myyxe8h_YEsHjfo-j6yg";
     private static final String CONSUMER_SECRET = "1qMgDlgy15dRMjh5ImZqjtEAXRg";
-    private static final String TOKEN = "6gp-qC2WHzIw6DKpTu-725G73pXmIxXx";
-    private static final String TOKEN_SECRET = "H7yDe6WlFTMvSYcEi-TIDE0CUZk";
+    private static final String TOKEN = "kg3rSfTUWziO8lPMSmPJOMWIYRWpzmyh";
+    private static final String TOKEN_SECRET = "UJwfy0ptrbeteZzrsV8XqXZS5qs";
 
     OAuthService service;
     Token accessToken;
